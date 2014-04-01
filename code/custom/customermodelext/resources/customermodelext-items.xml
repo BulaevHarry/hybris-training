@@ -20,18 +20,20 @@
 			xsi:noNamespaceSchemaLocation="items.xsd">
 
   <relations>
-        <relation code="CustomerOrganizationRelation"
+        <relation code="BlockableCustomerOrganizationRelation"
                 localized="false" generate="true" autocreate="true">
-            <deployment table="CustomerOrgRel" typecode="10500"/>
-            <sourceElement type="Customer" qualifier="customers" cardinality="many"/>
+            <deployment table="BlCustomerOrgRel" typecode="10500"/>
+            <sourceElement type="BlockableCustomer" qualifier="customers" cardinality="many"/>
             <targetElement type="Organization" qualifier="organizations" cardinality="many"/>
         </relation>
   </relations>
 
   <itemtypes>
-	<itemtype generate="false"
-	   code="Customer"
-	   autocreate="false"
+	<itemtype generate="true"
+	   code="BlockableCustomer"
+	   jaloclass="epam.customermodelext.jalo.BlockableCustomer"
+	   extends="Customer"
+	   autocreate="true"
    >
 		<attributes>
 			<attribute qualifier="status" type="java.lang.Boolean">
@@ -63,7 +65,7 @@
          <persistence type="property" />
         </attribute>
        
-        <attribute qualifier="name" type="localized:java.lang.String">
+        <attribute qualifier="name" type="java.lang.String">
          <description>Organization name</description>
          <modifiers optional="false"/>
          <persistence type="property" />

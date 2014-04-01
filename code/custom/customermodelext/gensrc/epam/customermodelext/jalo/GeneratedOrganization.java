@@ -1,20 +1,17 @@
 /*
  * ----------------------------------------------------------------
  * --- WARNING: THIS FILE IS GENERATED AND WILL BE OVERWRITTEN! ---
- * --- Generated at Apr 1, 2014 5:27:54 PM                      ---
+ * --- Generated at Apr 1, 2014 5:52:38 PM                      ---
  * ----------------------------------------------------------------
  */
 package epam.customermodelext.jalo;
 
 import de.hybris.platform.jalo.GenericItem;
 import de.hybris.platform.jalo.Item.AttributeMode;
-import de.hybris.platform.jalo.JaloInvalidParameterException;
 import de.hybris.platform.jalo.SessionContext;
-import de.hybris.platform.jalo.c2l.C2LManager;
-import de.hybris.platform.jalo.c2l.Language;
-import de.hybris.platform.jalo.user.Customer;
 import de.hybris.platform.util.Utilities;
 import epam.customermodelext.constants.CustomermodelextConstants;
+import epam.customermodelext.jalo.BlockableCustomer;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -31,11 +28,11 @@ public abstract class GeneratedOrganization extends GenericItem
 	public static final String PHONE = "phone";
 	/** Qualifier of the <code>Organization.customers</code> attribute **/
 	public static final String CUSTOMERS = "customers";
-	/** Relation ordering override parameter constants for CustomerOrganizationRelation from ((customermodelext))*/
-	protected static String CUSTOMERORGANIZATIONRELATION_SRC_ORDERED = "relation.CustomerOrganizationRelation.source.ordered";
-	protected static String CUSTOMERORGANIZATIONRELATION_TGT_ORDERED = "relation.CustomerOrganizationRelation.target.ordered";
-	/** Relation disable markmodifed parameter constants for CustomerOrganizationRelation from ((customermodelext))*/
-	protected static String CUSTOMERORGANIZATIONRELATION_MARKMODIFIED = "relation.CustomerOrganizationRelation.markmodified";
+	/** Relation ordering override parameter constants for BlockableCustomerOrganizationRelation from ((customermodelext))*/
+	protected static String BLOCKABLECUSTOMERORGANIZATIONRELATION_SRC_ORDERED = "relation.BlockableCustomerOrganizationRelation.source.ordered";
+	protected static String BLOCKABLECUSTOMERORGANIZATIONRELATION_TGT_ORDERED = "relation.BlockableCustomerOrganizationRelation.target.ordered";
+	/** Relation disable markmodifed parameter constants for BlockableCustomerOrganizationRelation from ((customermodelext))*/
+	protected static String BLOCKABLECUSTOMERORGANIZATIONRELATION_MARKMODIFIED = "relation.BlockableCustomerOrganizationRelation.markmodified";
 	/** Qualifier of the <code>Organization.name</code> attribute **/
 	public static final String NAME = "name";
 	/** Qualifier of the <code>Organization.id</code> attribute **/
@@ -59,15 +56,15 @@ public abstract class GeneratedOrganization extends GenericItem
 	 * <i>Generated method</i> - Getter of the <code>Organization.customers</code> attribute.
 	 * @return the customers
 	 */
-	public Collection<Customer> getCustomers(final SessionContext ctx)
+	public Collection<BlockableCustomer> getCustomers(final SessionContext ctx)
 	{
-		final List<Customer> items = getLinkedItems( 
+		final List<BlockableCustomer> items = getLinkedItems( 
 			ctx,
 			false,
-			CustomermodelextConstants.Relations.CUSTOMERORGANIZATIONRELATION,
+			CustomermodelextConstants.Relations.BLOCKABLECUSTOMERORGANIZATIONRELATION,
 			null,
-			Utilities.getRelationOrderingOverride(CUSTOMERORGANIZATIONRELATION_SRC_ORDERED, true),
-			Utilities.getRelationOrderingOverride(CUSTOMERORGANIZATIONRELATION_TGT_ORDERED, true)
+			Utilities.getRelationOrderingOverride(BLOCKABLECUSTOMERORGANIZATIONRELATION_SRC_ORDERED, true),
+			Utilities.getRelationOrderingOverride(BLOCKABLECUSTOMERORGANIZATIONRELATION_TGT_ORDERED, true)
 		);
 		return items;
 	}
@@ -76,7 +73,7 @@ public abstract class GeneratedOrganization extends GenericItem
 	 * <i>Generated method</i> - Getter of the <code>Organization.customers</code> attribute.
 	 * @return the customers
 	 */
-	public Collection<Customer> getCustomers()
+	public Collection<BlockableCustomer> getCustomers()
 	{
 		return getCustomers( getSession().getSessionContext() );
 	}
@@ -86,7 +83,7 @@ public abstract class GeneratedOrganization extends GenericItem
 		return getLinkedItemsCount(
 			ctx,
 			false,
-			CustomermodelextConstants.Relations.CUSTOMERORGANIZATIONRELATION,
+			CustomermodelextConstants.Relations.BLOCKABLECUSTOMERORGANIZATIONRELATION,
 			null
 		);
 	}
@@ -100,17 +97,17 @@ public abstract class GeneratedOrganization extends GenericItem
 	 * <i>Generated method</i> - Setter of the <code>Organization.customers</code> attribute. 
 	 * @param value the customers
 	 */
-	public void setCustomers(final SessionContext ctx, final Collection<Customer> value)
+	public void setCustomers(final SessionContext ctx, final Collection<BlockableCustomer> value)
 	{
 		setLinkedItems( 
 			ctx,
 			false,
-			CustomermodelextConstants.Relations.CUSTOMERORGANIZATIONRELATION,
+			CustomermodelextConstants.Relations.BLOCKABLECUSTOMERORGANIZATIONRELATION,
 			null,
 			value,
-			Utilities.getRelationOrderingOverride(CUSTOMERORGANIZATIONRELATION_SRC_ORDERED, true),
-			Utilities.getRelationOrderingOverride(CUSTOMERORGANIZATIONRELATION_TGT_ORDERED, true),
-			Utilities.getMarkModifiedOverride(CUSTOMERORGANIZATIONRELATION_MARKMODIFIED)
+			Utilities.getRelationOrderingOverride(BLOCKABLECUSTOMERORGANIZATIONRELATION_SRC_ORDERED, true),
+			Utilities.getRelationOrderingOverride(BLOCKABLECUSTOMERORGANIZATIONRELATION_TGT_ORDERED, true),
+			Utilities.getMarkModifiedOverride(BLOCKABLECUSTOMERORGANIZATIONRELATION_MARKMODIFIED)
 		);
 	}
 	
@@ -118,7 +115,7 @@ public abstract class GeneratedOrganization extends GenericItem
 	 * <i>Generated method</i> - Setter of the <code>Organization.customers</code> attribute. 
 	 * @param value the customers
 	 */
-	public void setCustomers(final Collection<Customer> value)
+	public void setCustomers(final Collection<BlockableCustomer> value)
 	{
 		setCustomers( getSession().getSessionContext(), value );
 	}
@@ -127,17 +124,17 @@ public abstract class GeneratedOrganization extends GenericItem
 	 * <i>Generated method</i> - Adds <code>value</code> to customers. 
 	 * @param value the item to add to customers
 	 */
-	public void addToCustomers(final SessionContext ctx, final Customer value)
+	public void addToCustomers(final SessionContext ctx, final BlockableCustomer value)
 	{
 		addLinkedItems( 
 			ctx,
 			false,
-			CustomermodelextConstants.Relations.CUSTOMERORGANIZATIONRELATION,
+			CustomermodelextConstants.Relations.BLOCKABLECUSTOMERORGANIZATIONRELATION,
 			null,
 			Collections.singletonList(value),
-			Utilities.getRelationOrderingOverride(CUSTOMERORGANIZATIONRELATION_SRC_ORDERED, true),
-			Utilities.getRelationOrderingOverride(CUSTOMERORGANIZATIONRELATION_TGT_ORDERED, true),
-			Utilities.getMarkModifiedOverride(CUSTOMERORGANIZATIONRELATION_MARKMODIFIED)
+			Utilities.getRelationOrderingOverride(BLOCKABLECUSTOMERORGANIZATIONRELATION_SRC_ORDERED, true),
+			Utilities.getRelationOrderingOverride(BLOCKABLECUSTOMERORGANIZATIONRELATION_TGT_ORDERED, true),
+			Utilities.getMarkModifiedOverride(BLOCKABLECUSTOMERORGANIZATIONRELATION_MARKMODIFIED)
 		);
 	}
 	
@@ -145,7 +142,7 @@ public abstract class GeneratedOrganization extends GenericItem
 	 * <i>Generated method</i> - Adds <code>value</code> to customers. 
 	 * @param value the item to add to customers
 	 */
-	public void addToCustomers(final Customer value)
+	public void addToCustomers(final BlockableCustomer value)
 	{
 		addToCustomers( getSession().getSessionContext(), value );
 	}
@@ -154,17 +151,17 @@ public abstract class GeneratedOrganization extends GenericItem
 	 * <i>Generated method</i> - Removes <code>value</code> from customers. 
 	 * @param value the item to remove from customers
 	 */
-	public void removeFromCustomers(final SessionContext ctx, final Customer value)
+	public void removeFromCustomers(final SessionContext ctx, final BlockableCustomer value)
 	{
 		removeLinkedItems( 
 			ctx,
 			false,
-			CustomermodelextConstants.Relations.CUSTOMERORGANIZATIONRELATION,
+			CustomermodelextConstants.Relations.BLOCKABLECUSTOMERORGANIZATIONRELATION,
 			null,
 			Collections.singletonList(value),
-			Utilities.getRelationOrderingOverride(CUSTOMERORGANIZATIONRELATION_SRC_ORDERED, true),
-			Utilities.getRelationOrderingOverride(CUSTOMERORGANIZATIONRELATION_TGT_ORDERED, true),
-			Utilities.getMarkModifiedOverride(CUSTOMERORGANIZATIONRELATION_MARKMODIFIED)
+			Utilities.getRelationOrderingOverride(BLOCKABLECUSTOMERORGANIZATIONRELATION_SRC_ORDERED, true),
+			Utilities.getRelationOrderingOverride(BLOCKABLECUSTOMERORGANIZATIONRELATION_TGT_ORDERED, true),
+			Utilities.getMarkModifiedOverride(BLOCKABLECUSTOMERORGANIZATIONRELATION_MARKMODIFIED)
 		);
 	}
 	
@@ -172,7 +169,7 @@ public abstract class GeneratedOrganization extends GenericItem
 	 * <i>Generated method</i> - Removes <code>value</code> from customers. 
 	 * @param value the item to remove from customers
 	 */
-	public void removeFromCustomers(final Customer value)
+	public void removeFromCustomers(final BlockableCustomer value)
 	{
 		removeFromCustomers( getSession().getSessionContext(), value );
 	}
@@ -256,11 +253,7 @@ public abstract class GeneratedOrganization extends GenericItem
 	 */
 	public String getName(final SessionContext ctx)
 	{
-		if( ctx == null || ctx.getLanguage() == null )
-		{
-			throw new JaloInvalidParameterException("GeneratedOrganization.getName requires a session language", 0 );
-		}
-		return (String)getLocalizedProperty( ctx, NAME);
+		return (String)getProperty( ctx, NAME);
 	}
 	
 	/**
@@ -273,34 +266,12 @@ public abstract class GeneratedOrganization extends GenericItem
 	}
 	
 	/**
-	 * <i>Generated method</i> - Getter of the <code>Organization.name</code> attribute. 
-	 * @return the localized name - Organization name
-	 */
-	public Map<Language,String> getAllName(final SessionContext ctx)
-	{
-		return (Map<Language,String>)getAllLocalizedProperties(ctx,NAME,C2LManager.getInstance().getAllLanguages());
-	}
-	
-	/**
-	 * <i>Generated method</i> - Getter of the <code>Organization.name</code> attribute. 
-	 * @return the localized name - Organization name
-	 */
-	public Map<Language,String> getAllName()
-	{
-		return getAllName( getSession().getSessionContext() );
-	}
-	
-	/**
 	 * <i>Generated method</i> - Setter of the <code>Organization.name</code> attribute. 
 	 * @param value the name - Organization name
 	 */
 	public void setName(final SessionContext ctx, final String value)
 	{
-		if( ctx == null || ctx.getLanguage() == null )
-		{
-			throw new JaloInvalidParameterException("GeneratedOrganization.setName requires a session language", 0 );
-		}
-		setLocalizedProperty(ctx, NAME,value);
+		setProperty(ctx, NAME,value);
 	}
 	
 	/**
@@ -310,24 +281,6 @@ public abstract class GeneratedOrganization extends GenericItem
 	public void setName(final String value)
 	{
 		setName( getSession().getSessionContext(), value );
-	}
-	
-	/**
-	 * <i>Generated method</i> - Setter of the <code>Organization.name</code> attribute. 
-	 * @param value the name - Organization name
-	 */
-	public void setAllName(final SessionContext ctx, final Map<Language,String> value)
-	{
-		setAllLocalizedProperties(ctx,NAME,value);
-	}
-	
-	/**
-	 * <i>Generated method</i> - Setter of the <code>Organization.name</code> attribute. 
-	 * @param value the name - Organization name
-	 */
-	public void setAllName(final Map<Language,String> value)
-	{
-		setAllName( getSession().getSessionContext(), value );
 	}
 	
 	/**
