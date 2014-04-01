@@ -1,0 +1,3 @@
+INSERT_UPDATE Organization;id;name;phone
+;1;Samsung;111-222-333
+;2;Apple;222-333-444
