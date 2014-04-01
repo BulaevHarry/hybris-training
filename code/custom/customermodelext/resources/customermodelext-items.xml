@@ -10,74 +10,64 @@
  Information and shall use it only in accordance with the terms of the
  license agreement you entered into with hybris.
 
-  
+
 -->
 <!--
-	ATTENTION: This is just an example file. You have to edit it according to your needs.
+ ATTENTION: This is just an example file. You have to edit it according to your needs.
 -->
 
-<items 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-			xsi:noNamespaceSchemaLocation="items.xsd">
+<items xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="items.xsd">
 
-  <relations>
-        <relation code="BlockableCustomerOrganizationRelation"
-                localized="false" generate="true" autocreate="true">
-            <deployment table="BlCustomerOrgRel" typecode="10500"/>
-            <sourceElement type="BlockableCustomer" qualifier="customers" cardinality="many"/>
-            <targetElement type="Organization" qualifier="organizations" cardinality="many"/>
-        </relation>
-  </relations>
+ <relations>
+  <relation code="BlockableCustomerOrganizationRelation" localized="false" generate="true" autocreate="true">
+   <deployment table="BlCustomerOrgRel" typecode="10500" />
+   <sourceElement type="BlockableCustomer" qualifier="customers" cardinality="many" />
+   <targetElement type="Organization" qualifier="organizations" cardinality="many" />
+  </relation>
+ </relations>
 
-  <itemtypes>
-	<itemtype generate="true"
-	   code="BlockableCustomer"
-	   jaloclass="epam.customermodelext.jalo.BlockableCustomer"
-	   extends="Customer"
-	   autocreate="true"
-   >
-		<attributes>
-			<attribute qualifier="status" type="java.lang.Boolean">
-				<description>Account lock state</description>
-				<persistence type="property"/>
-			</attribute>
+ <itemtypes>
+  <itemtype generate="true" code="BlockableCustomer" jaloclass="epam.customermodelext.jalo.BlockableCustomer"
+   extends="Customer" autocreate="true">
+   <attributes>
+    <attribute qualifier="status" type="java.lang.Boolean">
+     <description>Account lock state</description>
+     <persistence type="property" />
+    </attribute>
 
-			<attribute qualifier="attemptCount" type="java.lang.Integer">
-				<description>Login attempts counter</description>
-            <persistence type="property"/>
-			</attribute>
+    <attribute qualifier="attemptCount" type="java.lang.Integer">
+     <description>Login attempts counter</description>
+     <persistence type="property" />
+    </attribute>
 
-			<attribute qualifier="media" type="Media">
-				<persistence type="property"/>
-			</attribute>
+    <attribute qualifier="media" type="Media">
+     <persistence type="property" />
+    </attribute>
 
-		</attributes>
-	</itemtype>
- 
-   <itemtype generate="true"
-    code="Organization"
-    jaloclass="epam.customermodelext.jalo.Organization"
-    autocreate="true"
-   >
-     <attributes>
-        <attribute qualifier="id" type="java.lang.Integer">
-         <description>Identifier</description>
-         <modifiers optional="false"/>
-         <persistence type="property" />
-        </attribute>
-       
-        <attribute qualifier="name" type="java.lang.String">
-         <description>Organization name</description>
-         <modifiers optional="false"/>
-         <persistence type="property" />
-        </attribute>
-       
-        <attribute qualifier="phone" type="java.lang.String">
-         <description>Phone number</description>
-         <modifiers optional="false"/>
-         <persistence type="property" />
-        </attribute>
-       
-       </attributes>
-   </itemtype>
-  </itemtypes>
+   </attributes>
+  </itemtype>
+
+  <itemtype generate="true" code="Organization" jaloclass="epam.customermodelext.jalo.Organization" autocreate="true">
+   <attributes>
+    <attribute qualifier="id" type="java.lang.Integer">
+     <description>Identifier</description>
+     <modifiers optional="false" />
+     <persistence type="property" />
+    </attribute>
+
+    <attribute qualifier="name" type="java.lang.String">
+     <description>Organization name</description>
+     <modifiers optional="false" />
+     <persistence type="property" />
+    </attribute>
+
+    <attribute qualifier="phone" type="java.lang.String">
+     <description>Phone number</description>
+     <modifiers optional="false" />
+     <persistence type="property" />
+    </attribute>
+
+   </attributes>
+  </itemtype>
+ </itemtypes>
 </items>

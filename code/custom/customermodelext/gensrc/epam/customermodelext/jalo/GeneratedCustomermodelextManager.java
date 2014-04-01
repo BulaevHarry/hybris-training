@@ -1,7 +1,7 @@
 /*
  * ----------------------------------------------------------------
  * --- WARNING: THIS FILE IS GENERATED AND WILL BE OVERWRITTEN! ---
- * --- Generated at Apr 1, 2014 5:52:38 PM                      ---
+ * --- Generated at Apr 1, 2014 6:05:46 PM                      ---
  * ----------------------------------------------------------------
  */
 package epam.customermodelext.jalo;
