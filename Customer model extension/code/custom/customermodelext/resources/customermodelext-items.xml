@@ -27,12 +27,13 @@
  </relations>
 
  <itemtypes>
-  <itemtype generate="true" code="BlockableCustomer" jaloclass="epam.customermodelext.jalo.BlockableCustomer"
-   extends="Customer" autocreate="true">
+  <itemtype generate="true" code="BlockableCustomer" extends="Customer" autocreate="true">
    <attributes>
+
     <attribute qualifier="status" type="java.lang.Boolean">
      <description>Account lock state</description>
      <persistence type="property" />
+     <defaultvalue>java.lang.Boolean.FALSE</defaultvalue>
     </attribute>
 
     <attribute qualifier="attemptCount" type="java.lang.Integer">
@@ -40,30 +41,27 @@
      <persistence type="property" />
     </attribute>
 
-    <attribute qualifier="media" type="Media">
-     <persistence type="property" />
-    </attribute>
-
    </attributes>
   </itemtype>
 
-  <itemtype generate="true" code="Organization" jaloclass="epam.customermodelext.jalo.Organization" autocreate="true">
+  <itemtype generate="true" code="Organization" autocreate="true">
    <attributes>
+   
     <attribute qualifier="id" type="java.lang.Integer">
      <description>Identifier</description>
-     <modifiers optional="false" />
+     <modifiers optional="false" unique="true"/>
      <persistence type="property" />
     </attribute>
 
     <attribute qualifier="name" type="java.lang.String">
      <description>Organization name</description>
-     <modifiers optional="false" />
+     <modifiers optional="false" unique="true"/>
      <persistence type="property" />
     </attribute>
 
     <attribute qualifier="phone" type="java.lang.String">
      <description>Phone number</description>
-     <modifiers optional="false" />
+     <modifiers optional="false" unique="true"/>
      <persistence type="property" />
     </attribute>
 

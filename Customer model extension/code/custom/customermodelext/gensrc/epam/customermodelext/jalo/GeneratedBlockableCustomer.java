@@ -1,14 +1,13 @@
 /*
  * ----------------------------------------------------------------
  * --- WARNING: THIS FILE IS GENERATED AND WILL BE OVERWRITTEN! ---
- * --- Generated at Apr 1, 2014 6:05:46 PM                      ---
+ * --- Generated at Apr 1, 2014 6:46:38 PM                      ---
  * ----------------------------------------------------------------
  */
 package epam.customermodelext.jalo;
 
 import de.hybris.platform.jalo.Item.AttributeMode;
 import de.hybris.platform.jalo.SessionContext;
-import de.hybris.platform.jalo.media.Media;
 import de.hybris.platform.jalo.user.Customer;
 import de.hybris.platform.util.Utilities;
 import epam.customermodelext.constants.CustomermodelextConstants;
@@ -20,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Generated class for type {@link epam.customermodelext.jalo.BlockableCustomer BlockableCustomer}.
+ * Generated class for type {@link de.hybris.platform.jalo.user.Customer BlockableCustomer}.
  */
 @SuppressWarnings({"deprecation","unused","cast","PMD"})
 public abstract class GeneratedBlockableCustomer extends Customer
@@ -34,8 +33,6 @@ public abstract class GeneratedBlockableCustomer extends Customer
 	protected static String BLOCKABLECUSTOMERORGANIZATIONRELATION_MARKMODIFIED = "relation.BlockableCustomerOrganizationRelation.markmodified";
 	/** Qualifier of the <code>BlockableCustomer.attemptCount</code> attribute **/
 	public static final String ATTEMPTCOUNT = "attemptCount";
-	/** Qualifier of the <code>BlockableCustomer.media</code> attribute **/
-	public static final String MEDIA = "media";
 	/** Qualifier of the <code>BlockableCustomer.status</code> attribute **/
 	public static final String STATUS = "status";
 	protected static final Map<String, AttributeMode> DEFAULT_INITIAL_ATTRIBUTES;
@@ -43,7 +40,6 @@ public abstract class GeneratedBlockableCustomer extends Customer
 	{
 		final Map<String, AttributeMode> tmp = new HashMap<String, AttributeMode>(Customer.DEFAULT_INITIAL_ATTRIBUTES);
 		tmp.put(ATTEMPTCOUNT, AttributeMode.INITIAL);
-		tmp.put(MEDIA, AttributeMode.INITIAL);
 		tmp.put(STATUS, AttributeMode.INITIAL);
 		DEFAULT_INITIAL_ATTRIBUTES = Collections.unmodifiableMap(tmp);
 	}
@@ -124,42 +120,6 @@ public abstract class GeneratedBlockableCustomer extends Customer
 	public void setAttemptCount(final int value)
 	{
 		setAttemptCount( getSession().getSessionContext(), value );
-	}
-	
-	/**
-	 * <i>Generated method</i> - Getter of the <code>BlockableCustomer.media</code> attribute.
-	 * @return the media
-	 */
-	public Media getMedia(final SessionContext ctx)
-	{
-		return (Media)getProperty( ctx, MEDIA);
-	}
-	
-	/**
-	 * <i>Generated method</i> - Getter of the <code>BlockableCustomer.media</code> attribute.
-	 * @return the media
-	 */
-	public Media getMedia()
-	{
-		return getMedia( getSession().getSessionContext() );
-	}
-	
-	/**
-	 * <i>Generated method</i> - Setter of the <code>BlockableCustomer.media</code> attribute. 
-	 * @param value the media
-	 */
-	public void setMedia(final SessionContext ctx, final Media value)
-	{
-		setProperty(ctx, MEDIA,value);
-	}
-	
-	/**
-	 * <i>Generated method</i> - Setter of the <code>BlockableCustomer.media</code> attribute. 
-	 * @param value the media
-	 */
-	public void setMedia(final Media value)
-	{
-		setMedia( getSession().getSessionContext(), value );
 	}
 	
 	/**

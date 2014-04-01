@@ -1,7 +1,7 @@
 /*
  * ----------------------------------------------------------------
  * --- WARNING: THIS FILE IS GENERATED AND WILL BE OVERWRITTEN! ---
- * --- Generated at Apr 1, 2014 6:05:46 PM                      ---
+ * --- Generated at Apr 1, 2014 6:46:38 PM                      ---
  * ----------------------------------------------------------------
  */
 package epam.customermodelext.jalo;
@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Generated class for type {@link epam.customermodelext.jalo.Organization Organization}.
+ * Generated class for type {@link de.hybris.platform.jalo.GenericItem Organization}.
  */
 @SuppressWarnings({"deprecation","unused","cast","PMD"})
 public abstract class GeneratedOrganization extends GenericItem
