@@ -28,6 +28,7 @@
 
  <itemtypes>
   <itemtype generate="true" code="BlockableCustomer" extends="Customer" autocreate="true">
+   <deployment table="BlockableCustomer" typecode="10501" />
    <attributes>
 
     <attribute qualifier="status" type="java.lang.Boolean">
@@ -39,29 +40,31 @@
     <attribute qualifier="attemptCount" type="java.lang.Integer">
      <description>Login attempts counter</description>
      <persistence type="property" />
+     <defaultvalue>java.lang.Integer.valueOf(0)</defaultvalue>
     </attribute>
 
    </attributes>
   </itemtype>
 
   <itemtype generate="true" code="Organization" autocreate="true">
+   <deployment table="Organization" typecode="10502" />
    <attributes>
-   
+
     <attribute qualifier="id" type="java.lang.Integer">
      <description>Identifier</description>
-     <modifiers optional="false" unique="true"/>
+     <modifiers optional="false" unique="true" />
      <persistence type="property" />
     </attribute>
 
     <attribute qualifier="name" type="java.lang.String">
      <description>Organization name</description>
-     <modifiers optional="false" unique="true"/>
+     <modifiers optional="false" unique="true" />
      <persistence type="property" />
     </attribute>
 
     <attribute qualifier="phone" type="java.lang.String">
      <description>Phone number</description>
-     <modifiers optional="false" unique="true"/>
+     <modifiers optional="false" unique="true" />
      <persistence type="property" />
     </attribute>
 

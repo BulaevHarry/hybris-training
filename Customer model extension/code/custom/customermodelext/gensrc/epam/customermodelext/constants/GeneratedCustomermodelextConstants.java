@@ -1,7 +1,7 @@
 /*
  * ----------------------------------------------------------------
  * --- WARNING: THIS FILE IS GENERATED AND WILL BE OVERWRITTEN! ---
- * --- Generated at Apr 1, 2014 6:46:38 PM                      ---
+ * --- Generated at Apr 2, 2014 2:41:22 PM                      ---
  * ----------------------------------------------------------------
  */
 package epam.customermodelext.constants;
