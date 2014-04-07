@@ -11,16 +11,16 @@
  * 
  *  
  */
-package epam.customermodelext.constants;
+package epam.cme.constants;
 
 /**
- * Global class for all Customermodelext constants. You can add global constants for your extension into this class.
+ * Global class for all Cmecore constants. You can add global constants for your extension into this class.
  */
-public final class CustomermodelextConstants extends GeneratedCustomermodelextConstants
+public final class CmecoreConstants extends GeneratedCmecoreConstants
 {
-	public static final String EXTENSIONNAME = "customermodelext";
+	public static final String EXTENSIONNAME = "cmecore";
 
-	private CustomermodelextConstants()
+	private CmecoreConstants()
 	{
 		//empty to avoid instantiating this constant class
 	}

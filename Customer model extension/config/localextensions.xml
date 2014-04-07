@@ -145,7 +145,7 @@
 		<extension name="acceleratorfacades" />
 		<extension name="acceleratorcms" />
 		<extension name="acceleratorstorefrontcommons" />
-		<extension name="cmecore" />
+		<extension name="cmecore" /> 
 
 				
 	</extensions>

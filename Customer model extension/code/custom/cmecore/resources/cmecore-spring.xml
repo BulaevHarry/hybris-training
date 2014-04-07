@@ -18,10 +18,9 @@
            http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
            http://www.springframework.org/schema/aop
            http://www.springframework.org/schema/aop/spring-aop-3.1.xsd">
-           
-   <!-- Spring Integration -->
-   <import resource="classpath:/customermodelext/integration/hot-folder-store-hybris-spring.xml"/>
-
+		   
+   <import resource="classpath:/cmecore/integration/hot-folder-store-cme-spring.xml"/>  
+     
 	<!--
 	The hybris platform provides one single Spring application context for beans located at the jalo layer.
 	Each extension can add beans to this context by specifying them at this configuration file.
@@ -41,21 +40,21 @@
 	
 	<!--  Example how to override a manager -->
 	<!--
-	<bean id="core.productManager"   class="epam.customermodelext.jalo.CustomermodelextProductManager" 	init-method="init"	destroy-method="destroy" />
+	<bean id="core.productManager"   class="epam.cme.jalo.CmecoreProductManager" 	init-method="init"	destroy-method="destroy" />
 	-->
 	
 	
  	<!--  Example how to configure the class to use for jalo session creation -->
 	<!--
 	<bean id="jalosession"   class="de.hybris.platform.jalo.JaloSessionFactory">
-		<property name="targetClassName" value="epam.customermodelext.jalo.CustomermodelextJaloSession"/>
+		<property name="targetClassName" value="epam.cme.jalo.CmecoreJaloSession"/>
 	</bean>
 	-->
 
 	
 	<!--  Example how to override an item  -->
 	<!-- 
-	<bean id="de.hybris.platform.jalo.product.Product" class="epam.customermodelext.jalo.CustomermodelextProduct" scope="prototype" />		
+	<bean id="de.hybris.platform.jalo.product.Product" class="epam.cme.jalo.CmecoreProduct" scope="prototype" />		
  	-->
 
 	<!--  
@@ -64,9 +63,9 @@
      -->
 	
 	<!-- 
-	<bean id="customermodelextProfBean" class="epam.customermodelext.aop.CustomermodelextProfilingAspect"/>
+	<bean id="cmecoreProfBean" class="epam.cme.aop.CmecoreProfilingAspect"/>
 	<aop:config proxy-target-class="true">
-  		<aop:aspect id="customermodelextProfAspect" ref="customermodelextProfBean" >
+  		<aop:aspect id="cmecoreProfAspect" ref="cmecoreProfBean" >
     	  <aop:pointcut id="profiledMethods" 
 	      	expression="execution(* getModificationTime(..))" />  	            
 	   		<aop:around pointcut-ref="profiledMethods" method="profile" />
@@ -82,7 +81,5 @@
 	      	            !execution(* getPK(..))" />  	            
 	       <aop:pointcut id="profiledMethods" expression="execution(* *(..))" />	
 	  -->
-	
-			
 			
 </beans>

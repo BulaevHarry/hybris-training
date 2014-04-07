@@ -11,7 +11,7 @@
  * 
  *  
  */
-package epam.customermodelext.jalo;
+package epam.cme.jalo;
 
 import static org.junit.Assert.assertTrue;
 
@@ -24,13 +24,13 @@ import org.junit.Test;
 
 
 /**
- * JUnit Tests for the Customermodelext extension
+ * JUnit Tests for the Cmecore extension
  */
-public class CustomermodelextTest extends HybrisJUnit4TransactionalTest
+public class CmecoreTest extends HybrisJUnit4TransactionalTest
 {
 	/** Edit the local|project.properties to change logging behaviour (properties log4j.*). */
 	@SuppressWarnings("unused")
-	private static final Logger LOG = Logger.getLogger(CustomermodelextTest.class.getName());
+	private static final Logger LOG = Logger.getLogger(CmecoreTest.class.getName());
 
 	@Before
 	public void setUp()
@@ -48,7 +48,7 @@ public class CustomermodelextTest extends HybrisJUnit4TransactionalTest
 	 * This is a sample test method.
 	 */
 	@Test
-	public void testCustomermodelext()
+	public void testCmecore()
 	{
 		final boolean testTrue = true;
 		assertTrue("true is not true", testTrue);

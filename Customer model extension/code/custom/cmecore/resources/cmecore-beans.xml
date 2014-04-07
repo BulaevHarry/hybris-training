@@ -20,7 +20,7 @@
 	<!--
 		Example Data POJO
 	
-	<bean class="epam.customermodelext.data.MyPojo">
+	<bean class="epam.cme.data.MyPojo">
 		<property name="id" type="String"/>
 		<property name="flag" type="boolean"/>
 	</bean>

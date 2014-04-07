@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<testclasses>
-  <customermodelext>
-    <testclass>epam.customermodelext.jalo.CustomermodelextTest</testclass>
-  </customermodelext>
-</testclasses>

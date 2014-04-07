@@ -11,7 +11,7 @@
  * 
  *  
  */
-package epam.customermodelext.jalo;
+package epam.cme.jalo;
 
 import de.hybris.platform.core.Registry;
 import de.hybris.platform.util.JspContext;
@@ -20,17 +20,17 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
-import epam.customermodelext.constants.CustomermodelextConstants;
+import epam.cme.constants.CmecoreConstants;
 
 
 
 /**
- * This is the extension manager of the Customermodelext extension.
+ * This is the extension manager of the Cmecore extension.
  */
-public class CustomermodelextManager extends GeneratedCustomermodelextManager
+public class CmecoreManager extends GeneratedCmecoreManager
 {
 	/** Edit the local|project.properties to change logging behavior (properties 'log4j.*'). */
-	private static final Logger LOG = Logger.getLogger(CustomermodelextManager.class.getName());
+	private static final Logger LOG = Logger.getLogger(CmecoreManager.class.getName());
 
 	/*
 	 * Some important tips for development:
@@ -48,10 +48,10 @@ public class CustomermodelextManager extends GeneratedCustomermodelextManager
 	 * 
 	 * @return the current instance of this manager
 	 */
-	public static CustomermodelextManager getInstance()
+	public static CmecoreManager getInstance()
 	{
-		return (CustomermodelextManager) Registry.getCurrentTenant().getJaloConnection().getExtensionManager().getExtension(
-				CustomermodelextConstants.EXTENSIONNAME);
+		return (CmecoreManager) Registry.getCurrentTenant().getJaloConnection().getExtensionManager().getExtension(
+				CmecoreConstants.EXTENSIONNAME);
 	}
 
 
@@ -59,11 +59,11 @@ public class CustomermodelextManager extends GeneratedCustomermodelextManager
 	 * Never call the constructor of any manager directly, call getInstance() You can place your business logic here -
 	 * like registering a jalo session listener. Each manager is created once for each tenant.
 	 */
-	public CustomermodelextManager() // NOPMD 
+	public CmecoreManager() // NOPMD 
 	{
 		if (LOG.isDebugEnabled())
 		{
-			LOG.debug("constructor of CustomermodelextManager called.");
+			LOG.debug("constructor of CmecoreManager called.");
 		}
 	}
 
@@ -77,7 +77,7 @@ public class CustomermodelextManager extends GeneratedCustomermodelextManager
 	{
 		if (LOG.isDebugEnabled())
 		{
-			LOG.debug("init() of CustomermodelextManager called. " + getTenant().getTenantID());
+			LOG.debug("init() of CmecoreManager called. " + getTenant().getTenantID());
 		}
 	}
 
@@ -91,7 +91,7 @@ public class CustomermodelextManager extends GeneratedCustomermodelextManager
 	{
 		if (LOG.isDebugEnabled())
 		{
-			LOG.debug("destroy() of CustomermodelextManager called, current tenant: " + getTenant().getTenantID());
+			LOG.debug("destroy() of CmecoreManager called, current tenant: " + getTenant().getTenantID());
 		}
 	}
 

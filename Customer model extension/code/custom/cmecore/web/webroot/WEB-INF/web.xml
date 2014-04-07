@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 
-<web-app id="customermodelext" version="3.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<web-app id="cmecore" version="3.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
          xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" 
          metadata-complete="true">
   <absolute-ordering />
   
-	<display-name>customermodelext</display-name>
+	<display-name>cmecore</display-name>
 	
 	<welcome-file-list>
 		<welcome-file>index.jsp</welcome-file>
@@ -42,7 +42,7 @@
 	Enabling Spring managed Delegating Filter Proxy for hybris Filter Stack.
 -->
 	<filter>
-		<filter-name>customermodelextPlatformFilterChain</filter-name>
+		<filter-name>cmecorePlatformFilterChain</filter-name>
 		<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
 	</filter>
 	
@@ -52,7 +52,7 @@
 	</filter-mapping>
 	
 	<filter-mapping>
-		<filter-name>customermodelextPlatformFilterChain</filter-name>
+		<filter-name>cmecorePlatformFilterChain</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>	
 	
@@ -67,7 +67,7 @@
  -->
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
-		<param-value>WEB-INF/customermodelext-web-spring.xml</param-value>
+		<param-value>WEB-INF/cmecore-web-spring.xml</param-value>
 	</context-param>
 
 	<listener>

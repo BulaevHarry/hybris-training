@@ -13,15 +13,15 @@
   
 --><extensioninfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="extensioninfo.xsd">
 
-   <extension abstractclassprefix="Generated" classprefix="Customermodelext" managername="CustomermodelextManager" managersuperclass="de.hybris.platform.jalo.extension.Extension" name="customermodelext">
+   <extension abstractclassprefix="Generated" classprefix="Cmecore" managername="CmecoreManager" managersuperclass="de.hybris.platform.jalo.extension.Extension" name="cmecore">
                
       <!-- you should add all required extensions to this list, except platform extensions which are automatically required -->         
       <!-- <requires-extension name="cms"/> -->         
       
 
-      <coremodule generated="true" manager="epam.customermodelext.jalo.CustomermodelextManager" packageroot="epam.customermodelext"/>
+      <coremodule generated="true" manager="epam.cme.jalo.CmecoreManager" packageroot="epam.cme"/>
 
-      <!-- <webmodule jspcompile="false" webroot="/customermodelext"/> -->
+      <webmodule jspcompile="false" webroot="/cmecore"/>
 					
 	
 

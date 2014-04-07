@@ -13,7 +13,7 @@
 
 -->
 
-<project name="customermodelext" default="all">
+<project name="cmecore" default="all">
 	<property file="platformhome.properties" />
 
 	<!-- next line is only for eclipse to get rid of warnings -->

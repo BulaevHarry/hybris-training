@@ -15,7 +15,7 @@
 <!-- 
   WARNING: This is the Spring WEB configuration file. If you want to replace
   items or managers you have to do this from the extensions core configuration 
-  file (customermodelext/resources/customermodelext-spring.xml) 
+  file (cmecore/resources/cmecore-spring.xml) 
   -->
 
 <beans xmlns="http://www.springframework.org/schema/beans"
@@ -29,22 +29,22 @@
     
 	<!--  Configure the class to use for jalo session creation -->
 	<!-- <bean id="jalosession"   class="de.hybris.platform.jalo.JaloSessionFactory">
-		<property name="targetClassName" value="epam.customermodelext.jalo.CustomermodelextJaloSession"/>
+		<property name="targetClassName" value="epam.cme.jalo.CmecoreJaloSession"/>
 	</bean>-->
 
 	<!-- Spring managed FilterChain for hybris Filter stack -->
-	<bean id="customermodelextPlatformFilterChain" class="de.hybris.platform.servicelayer.web.PlatformFilterChain">
+	<bean id="cmecorePlatformFilterChain" class="de.hybris.platform.servicelayer.web.PlatformFilterChain">
 		<constructor-arg>
 			<list>
 				<ref bean="log4jFilter"/>
 				<ref bean="dynamicTenantActivationFilter"/>
 				<ref bean="sessionFilter"/>
-           		<ref bean="customermodelextSecureMediaFilter"/>				
+           		<ref bean="cmecoreSecureMediaFilter"/>				
 			</list>
 		</constructor-arg>
 	</bean>
  
-   <bean id="customermodelextSecureMediaFilter" class="de.hybris.platform.servicelayer.web.SecureMediaFilter">
+   <bean id="cmecoreSecureMediaFilter" class="de.hybris.platform.servicelayer.web.SecureMediaFilter">
        <property name="mediaPermissionService" ref="mediaPermissionService"/>
        <property name="modelService" ref="modelService"/>
        <property name="userService" ref="userService"/>
@@ -55,7 +55,7 @@
 	<!-- 
 	 WARNING: 
 	 Do NOT override hybris managers or items within the web module!
-	 Use always the core spring configuration file (customermodelext-spring.xml) in
+	 Use always the core spring configuration file (cmecore-spring.xml) in
 	 the extensions resources/ directory.
 	 -->
 </beans>
