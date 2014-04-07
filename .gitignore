@@ -4,6 +4,9 @@
 .checkstyle
 bin
 target
+Customer model extension/code/custom/cuppy
+Customer model extension/code/custom/cuppytrail
+Customer model extension/code/custom/cuppytrailhmc
 .pmd
 .ruleset
 .springBeans
