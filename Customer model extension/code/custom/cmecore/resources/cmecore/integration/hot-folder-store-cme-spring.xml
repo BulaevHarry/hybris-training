@@ -22,12 +22,21 @@
         http://www.springframework.org/schema/integration/file/spring-integration-file-2.1.xsd">
 
  <bean id="baseDirectoryCme" class="java.lang.String">
-  <constructor-arg value="#{baseDirectory}/${tenantId}/cme" />
+  <constructor-arg value="${cmecore.import.basefolder}" />
+ </bean>
+
+ <bean id="customerOrganizationOrderComparator" class="de.hybris.platform.acceleratorservices.dataimport.batch.FileOrderComparator">
+  <property name="prefixPriority">
+   <map>
+    <entry key="organization" value="2" />
+    <entry key="blockablecustomer" value="1" />
+   </map>
+  </property>
  </bean>
 
  <!-- 1) Scan for files -->
  <file:inbound-channel-adapter id="batchFilesCme" directory="#{baseDirectoryCme}"
-  filename-regex="^(.*)-(\d+)\.csv" comparator="fileOrderComparator">
+  filename-regex="^(.*)-(\d+)\.csv" comparator="customerOrganizationOrderComparator">
   <int:poller fixed-rate="2000" />
  </file:inbound-channel-adapter>
 
@@ -36,39 +45,39 @@
   directory="#{baseDirectoryCme}/processing" delete-source-files="true" />
  <int:service-activator input-channel="batchFilesCmeProc" output-channel="batchFilesHeaderInit"
   ref="cmeHeaderSetupTask" method="execute" />
-  
+
  <bean id="cmeHeaderSetupTask" class="de.hybris.platform.acceleratorservices.dataimport.batch.task.HeaderSetupTask">
   <property name="catalog" value="cmeProductCatalog" />
   <property name="net" value="false" />
   <property name="storeBaseDirectory" ref="baseDirectoryCme" />
  </bean>
- 
-  <bean id="batchOrganizationConverterMapping" class="de.hybris.platform.acceleratorservices.dataimport.batch.converter.mapping.impl.DefaultConverterMapping"
+
+ <bean id="batchOrganizationConverterMapping" class="de.hybris.platform.acceleratorservices.dataimport.batch.converter.mapping.impl.DefaultConverterMapping"
   p:mapping="organization" p:converter-ref="batchOrganizationConverter" />
-  
-  <bean id="batchBlockableCustomerConverterMapping" class="de.hybris.platform.acceleratorservices.dataimport.batch.converter.mapping.impl.DefaultConverterMapping"
+
+ <bean id="batchBlockableCustomerConverterMapping" class="de.hybris.platform.acceleratorservices.dataimport.batch.converter.mapping.impl.DefaultConverterMapping"
   p:mapping="blockablecustomer" p:converter-ref="batchBlockableCustomerConverter" />
- 
+
  <bean id="batchOrganizationConverter" class="de.hybris.platform.acceleratorservices.dataimport.batch.converter.impl.DefaultImpexConverter">
-    <property name="header">
-        <value>
-         INSERT_UPDATE Organization;id[unique=true];name[unique=true];phone[unique=true]
-        </value>
-    </property>
-    <property name="impexRow">
-        <value>;{+0};{1};{2}</value>
-    </property>
- </bean> 
- 
+  <property name="header">
+   <value>
+    INSERT_UPDATE Organization;id[unique=true];name[unique=true];phone[unique=true]
+   </value>
+  </property>
+  <property name="impexRow">
+   <value>;{+0};{1};{2}</value>
+  </property>
+ </bean>
+
  <bean id="batchBlockableCustomerConverter" class="de.hybris.platform.acceleratorservices.dataimport.batch.converter.impl.DefaultImpexConverter">
-    <property name="header">
-        <value>
-         INSERT_UPDATE BlockableCustomer;uid[unique=true];name;attemptCount;status;organizations(id)[unique=true]
-        </value>
-    </property>
-    <property name="impexRow">
-        <value>;{+0};{1};{2};{3};{4}</value>
-    </property>
- </bean> 
- 
+  <property name="header">
+   <value>
+    INSERT_UPDATE BlockableCustomer;uid[unique=true];name;attemptCount;status;organizations(id)[unique=true]
+   </value>
+  </property>
+  <property name="impexRow">
+   <value>;{+0};{1};{2};{3};{4}</value>
+  </property>
+ </bean>
+
 </beans>
