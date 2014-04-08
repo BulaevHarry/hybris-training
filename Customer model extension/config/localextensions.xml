@@ -146,6 +146,9 @@
 		<extension name="acceleratorcms" />
 		<extension name="acceleratorstorefrontcommons" />
 		<extension name="cmecore" /> 
+		<extension name="cuppy" /> 
+		<extension name="cuppytrail" /> 
+		<extension name="cuppytrailhmc" /> 
 
 				
 	</extensions>
