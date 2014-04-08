@@ -21,35 +21,22 @@
         http://www.springframework.org/schema/integration/file
         http://www.springframework.org/schema/integration/file/spring-integration-file-2.1.xsd">
 
- <bean id="baseDirectoryCme" class="java.lang.String">
-  <constructor-arg value="${cmecore.import.basefolder}" />
- </bean>
-
- <bean id="customerOrganizationOrderComparator" class="de.hybris.platform.acceleratorservices.dataimport.batch.FileOrderComparator">
-  <property name="prefixPriority">
-   <map>
-    <entry key="organization" value="2" />
-    <entry key="blockablecustomer" value="1" />
-   </map>
-  </property>
- </bean>
-
  <!-- 1) Scan for files -->
- <file:inbound-channel-adapter id="batchFilesCme" directory="#{baseDirectoryCme}"
+ <file:inbound-channel-adapter id="batchFilesCme" directory="${cmecore.import.basefolder}"
   filename-regex="^(.*)-(\d+)\.csv" comparator="customerOrganizationOrderComparator">
   <int:poller fixed-rate="2000" />
  </file:inbound-channel-adapter>
 
  <!-- 2) move the file to processing and setup header -->
  <file:outbound-gateway request-channel="batchFilesCme" reply-channel="batchFilesCmeProc"
-  directory="#{baseDirectoryCme}/processing" delete-source-files="true" />
+  directory="${cmecore.import.basefolder}/processing" delete-source-files="true" />
  <int:service-activator input-channel="batchFilesCmeProc" output-channel="batchFilesHeaderInit"
   ref="cmeHeaderSetupTask" method="execute" />
 
  <bean id="cmeHeaderSetupTask" class="de.hybris.platform.acceleratorservices.dataimport.batch.task.HeaderSetupTask">
   <property name="catalog" value="cmeProductCatalog" />
   <property name="net" value="false" />
-  <property name="storeBaseDirectory" ref="baseDirectoryCme" />
+  <property name="storeBaseDirectory" value="${cmecore.import.basefolder}" />
  </bean>
 
  <bean id="batchOrganizationConverterMapping" class="de.hybris.platform.acceleratorservices.dataimport.batch.converter.mapping.impl.DefaultConverterMapping"
@@ -77,6 +64,15 @@
   </property>
   <property name="impexRow">
    <value>;{+0};{1};{2};{3};{4}</value>
+  </property>
+ </bean>
+
+ <bean id="customerOrganizationOrderComparator" class="de.hybris.platform.acceleratorservices.dataimport.batch.FileOrderComparator">
+  <property name="prefixPriority">
+   <map>
+    <entry key="organization" value="2" />
+    <entry key="blockablecustomer" value="1" />
+   </map>
   </property>
  </bean>
 
