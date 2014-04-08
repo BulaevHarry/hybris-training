@@ -22,21 +22,12 @@
         http://www.springframework.org/schema/integration/file/spring-integration-file-2.1.xsd">
 
  <bean id="baseDirectoryCme" class="java.lang.String">
-  <constructor-arg value="${cmecore.import.basefolder}" />
- </bean>
-
- <bean id="customerOrganizationOrderComparator" class="de.hybris.platform.acceleratorservices.dataimport.batch.FileOrderComparator">
-  <property name="prefixPriority">
-   <map>
-    <entry key="organization" value="2" />
-    <entry key="blockablecustomer" value="1" />
-   </map>
-  </property>
+  <constructor-arg value="#{baseDirectory}/${tenantId}/cme" />
  </bean>
 
  <!-- 1) Scan for files -->
  <file:inbound-channel-adapter id="batchFilesCme" directory="#{baseDirectoryCme}"
-  filename-regex="^(.*)-(\d+)\.csv" comparator="customerOrganizationOrderComparator">
+  filename-regex="^(.*)-(\d+)\.csv" comparator="fileOrderComparator">
   <int:poller fixed-rate="2000" />
  </file:inbound-channel-adapter>
 
