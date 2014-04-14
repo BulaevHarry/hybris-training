@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<testclasses>
+  <cmestorefront>
+    <testclass>com.epam.cme.storefront.security.cookie.EnhancedCookieGeneratorTest</testclass>
+    <testclass>com.epam.cme.storefront.controllers.cms.CMSLinkComponentControllerTest</testclass>
+    <testclass>com.epam.cme.storefront.security.impl.WebHttpSessionRequestCacheUnitTest</testclass>
+    <testclass>com.epam.cme.storefront.controllers.cms.DefaultCMSComponentControllerTest</testclass>
+    <testclass>com.epam.cme.storefront.controllers.cms.ProductReferencesComponentControllerTest</testclass>
+    <testclass>com.epam.cme.storefront.interceptors.CSRFHandlerInterceptorTest</testclass>
+    <testclass>com.epam.cme.storefront.controllers.cms.CategoryFeatureComponentControllerTest</testclass>
+    <testclass>com.epam.cme.storefront.controllers.cms.MiniCartComponentControllerTest</testclass>
+    <testclass>com.epam.cme.storefront.interceptors.i18n.SetLanguageBeforeControllerHandlerTest</testclass>
+    <testclass>com.epam.cme.storefront.controllers.cms.ProductFeatureComponentControllerTest</testclass>
+    <testclass>com.epam.cme.storefront.controllers.cms.ProductCarouselComponentControllerTest</testclass>
+    <testclass>com.epam.cme.storefront.controllers.cms.NavigationBarComponentControllerTest</testclass>
+    <testclass>com.epam.cme.storefront.web.view.UiExperienceViewResolverTest</testclass>
+  </cmestorefront>
+</testclasses>

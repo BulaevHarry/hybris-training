@@ -1,0 +1,33 @@
+# 
+# Create the telco BaseStore
+#
+
+$productCatalog=telcoProductCatalog
+$classificationCatalog=TelcoClassification
+$currencies=USD
+$net=false
+$storeUid=telco
+$defaultCurrency=USD
+$languages=en
+$defaultLanguage=en
+$deliveryCountries=US
+$orderProcessCode=order-process
+$customerAllowedToIgnoreSuggestions=true
+$paymentProvider=Mockup
+
+INSERT_UPDATE PromotionGroup;Identifier[unique=true];
+;telcoPromoGrp;
+
+# Base Store
+INSERT_UPDATE BaseStore;uid[unique=true];catalogs(id);currencies(isocode);net;taxGroup(code);storelocatorDistanceUnit(code);defaultCurrency(isocode);languages(isocode);defaultLanguage(isocode);deliveryCountries(isocode);submitOrderProcessCode;customerAllowedToIgnoreSuggestions;paymentProvider;
+;$storeUid;$productCatalog,$classificationCatalog;$currencies;$net;;miles;$defaultCurrency;$languages;$defaultLanguage;$deliveryCountries;$orderProcessCode;$customerAllowedToIgnoreSuggestions;$paymentProvider;
+
+INSERT_UPDATE BaseStore;uid[unique=true];warehouses(code)
+;$storeUid;warehouse_telco
+
+INSERT_UPDATE BaseStore2DeliveryModeRel;source(uid)[unique=true];target(code)[unique=true]
+;$storeUid;premium-net
+;$storeUid;standard-net
+;$storeUid;premium-gross
+;$storeUid;standard-gross
+

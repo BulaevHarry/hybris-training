@@ -1,9 +1,0 @@
-#Ant properties
-#Fri Nov 29 15:56:54 CET 2013
-builddate=20131129 1556
-description=cmecore
-name=cmecore
-releasedate=20131128 1947
-vendor=hybris
-version=5.1.0.0
-version.api=5.1.0

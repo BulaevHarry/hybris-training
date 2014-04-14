@@ -1,0 +1,11 @@
+# 
+# Import the Telco BaseStore
+#
+
+# Language
+$lang=en
+
+$storeUid=telco
+
+UPDATE BaseStore;uid[unique=true];name[lang=$lang]
+;$storeUid;"Telco Store"

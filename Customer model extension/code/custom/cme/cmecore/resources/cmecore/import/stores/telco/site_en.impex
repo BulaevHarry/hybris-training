@@ -1,0 +1,9 @@
+#
+# Import the CMS Site configuration for the telco store
+#
+
+# Language
+$lang=en
+
+UPDATE CMSSite;uid[unique=true];name[lang=$lang];locale[lang=$lang]
+;telco;"telco Site";en_US

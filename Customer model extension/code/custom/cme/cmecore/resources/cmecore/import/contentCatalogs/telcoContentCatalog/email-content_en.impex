@@ -1,0 +1,32 @@
+#
+# Import the CMS content for the telco site emails
+#
+# ENGLISH LOCALIZATION
+#
+$contentCatalog=telcoContentCatalog
+$contentCV=catalogVersion(CatalogVersion.catalog(Catalog.id[default=$contentCatalog]),CatalogVersion.version[default=Staged])[default=$contentCatalog:Staged]
+$emailResourceTelco=jar:com.epam.cme.core.setup.CoreSystemSetup&/cmecore/import/contentCatalogs/common/emails
+$emailResource=$emailResourceTelco/acc
+
+# Language
+$lang=en
+
+# CMS components and Email velocity templates
+UPDATE RendererTemplate;code[unique=true];description[lang=$lang];templateScript[lang=$lang,translator=de.hybris.platform.commerceservices.impex.impl.FileLoaderValueTranslator]
+;telco-BannerComponent-template;"CMSBannerComponent Template";$emailResource/email-bannerComponentTemplate.vm
+;telco-CMSImageComponent-template;"CMSImageComponent Template";$emailResource/email-cmsImageComponentTemplate.vm
+;telco-CMSLinkComponent-template;"CMSLinkComponent Template";$emailResource/email-cmsLinkComponentTemplate.vm
+;telco-CMSParagraphComponent-template;"CMSParagraphComponent Template";$emailResource/email-cmsParagraphComponentTemplate.vm
+;telco-SimpleBannerComponent-template;"CMSSimpleBannerComponent Template";$emailResource/email-bannerComponentTemplate.vm
+;telco_Email_Customer_Registration_Body;"Customer Registration Email Body";$emailResource/email-customerRegistrationBody.vm
+;telco_Email_Customer_Registration_Subject;"Customer Registration Email Subject";$emailResource/email-customerRegistrationSubject.vm
+;telco_Email_Forgotten_Password_Body;"Forgotten Password Email Body";$emailResource/email-forgottenPasswordBody.vm
+;telco_Email_Forgotten_Password_Subject;"Forgotten Password Email Subject";$emailResource/email-forgottenPasswordSubject.vm
+;telco_Email_Order_Confirmation_Body;"Order Confirmation Email Body";$emailResourceTelco/email-orderConfirmationBody.vm
+;telco_Email_Order_Confirmation_Subject;"Order Confirmation Email Subject";$emailResource/email-orderConfirmationSubject.vm
+
+# Email Pages
+UPDATE EmailPage;$contentCV[unique=true];uid[unique=true];fromEmail[lang=$lang];fromName[lang=$lang]
+;;CustomerRegistrationEmail;"customerservices@hybris.com";"Customer Services Team"
+;;ForgottenPasswordEmail;"customerservices@hybris.com";"Customer Services Team"
+;;OrderConfirmationEmail;"customerservices@hybris.com";"Customer Services Team"

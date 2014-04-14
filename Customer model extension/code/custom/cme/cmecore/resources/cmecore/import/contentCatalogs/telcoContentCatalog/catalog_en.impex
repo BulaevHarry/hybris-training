@@ -1,0 +1,10 @@
+#
+# Import the telco Content Catalog
+#
+
+# Language
+$lang=en
+
+# Create Content Catalog
+UPDATE ContentCatalog;id[unique=true];name[lang=$lang]
+;telcoContentCatalog;"telco Content Catalog"

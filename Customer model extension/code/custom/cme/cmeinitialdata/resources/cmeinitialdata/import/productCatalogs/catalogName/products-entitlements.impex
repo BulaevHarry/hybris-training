@@ -1,0 +1,11 @@
+# ImpEx for Subscription Product Entitlements
+
+# Macros / Replacement Parameter definitions
+$productCatalog=
+$catalogVersion=catalogversion(catalog(id[default=$productCatalog]),version[default='Staged'])[unique=true,default='$productCatalog:Staged']
+
+INSERT_UPDATE SubscriptionProduct;code[unique=true];$catalogVersion
+
+INSERT_UPDATE NonMeteredSubscriptionEntitlement;id[unique=true];$catalogVersion
+
+INSERT_UPDATE MeteredSubscriptionEntitlement;id[unique=true];quantity;entitlement(id);subscriptionProduct(code, $catalogVersion);$catalogVersion

@@ -1,0 +1,25 @@
+# 
+# Import the Product Catalog and Classification Catalog
+#
+# ENGLISH LOCALIZATION
+#
+
+$lang=en
+
+$productCatalog=telcoProductCatalog
+
+UPDATE Catalog;id[unique=true];name[lang=$lang]
+;$productCatalog;"telco Product Catalog"
+
+
+UPDATE BillingFrequency;code[unique=true];nameInCart[lang=$lang];nameInOrder[lang=$lang];description[lang=$lang]
+;daily;Daily;;Daily
+;weekly;Weekly;;Weekly
+;monthly;Monthly;;Monthly
+;quarterly;Quarterly;;Quarterly
+;yearly;Annually;;Yearly
+
+UPDATE BillingEvent;code[unique=true];nameInCart[lang=$lang];nameInOrder[lang=$lang];description[lang=$lang]
+;paynow;Pay on Checkout;Paid on order;Pay Now
+;onfirstbill;On first bill;;On First Bill
+;oncancellation;On Cancellation;;Charged when subscription is canceled

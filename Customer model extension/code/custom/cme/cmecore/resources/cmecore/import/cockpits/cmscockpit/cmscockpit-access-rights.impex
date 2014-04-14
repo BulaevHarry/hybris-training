@@ -1,0 +1,18 @@
+#
+# Import Access Rights for CMS Cockpit
+# 
+
+$START_USERRIGHTS;;;;;;;;;
+Type;UID;MemberOfGroups;Password;Target;read;change;create;remove;change_perm
+UserGroup;cmsmanagergroup;cockpitgroup,employeegroup;;;;;;;
+
+# Access Rights for Products & Catalog;;;;;;;;;
+;;;;ClassAttributeAssignment;+;+;+;+;+;
+;;;;ClassificationClass;+;+;+;+;+;
+;;;;ClassificationAttribute;+;+;+;+;+;
+;;;;ClassificationAttributeTypeEnum;+;+;+;+;+;
+;;;;ClassificationAttributeVisibilityEnum;+;+;+;+;+;
+;;;;ClassificationAttributeValueList;+;+;+;+;+;
+;;;;ClassificationAttributeUnit;+;+;+;+;+;
+
+$END_USERRIGHTS;;;;;

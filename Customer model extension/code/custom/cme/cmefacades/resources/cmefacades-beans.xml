@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+ [y] hybris Platform
+
+ Copyright (c) 2000-2013 hybris AG
+ All rights reserved.
+
+ This software is the confidential and proprietary information of hybris
+ ("Confidential Information"). You shall not disclose such Confidential
+ Information and shall use it only in accordance with the terms of the
+ license agreement you entered into with hybris.
+-->
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="beans.xsd">
+
+	<!-- Add Telco accelerator facades specific product options -->
+	<enum class="de.hybris.platform.commercefacades.product.ProductOption">
+		<value>DEVICE_BUNDLE_TABS</value>
+		<value>SERVICE_PLAN_BUNDLE_TABS</value>
+		<value>SERVICE_ADDON_BUNDLE_TABS</value>
+	</enum>
+
+	<bean class="com.epam.cme.facades.data.DashboardBoxData">
+		<property name="type" type="String"/>
+		<property name="active" type="boolean"/>
+		<property name="mainComponent" type="BundleTemplateData"/>
+		<property name="dashboardBoxEntries" type="java.util.List&lt;DashboardBoxEntryData>"/>
+	</bean>
+
+	<bean class="com.epam.cme.facades.data.DashboardBoxEntryData">
+		<property name="component" type="BundleTemplateData"/>
+		<property name="orderEntry" type="de.hybris.platform.commercefacades.order.data.OrderEntryData"/>
+	</bean>
+
+	<bean class="com.epam.cme.facades.data.DashboardData">
+		<property name="bundleNo" type="int"/>
+		<property name="dashboardBoxes" type="java.util.List&lt;DashboardBoxData>"/>
+	</bean>
+
+	<bean class="com.epam.cme.facades.data.DashboardPopulatorParameters">
+		<property name="currentComponent" type="de.hybris.platform.configurablebundleservices.model.BundleTemplateModel"/>
+		<property name="bundleNo" type="int"/>
+		<property name="cart" type="de.hybris.platform.core.model.order.CartModel"/>
+	</bean>
+
+	<bean class="com.epam.cme.facades.data.BundleTemplateData">
+		<property name="id" type="String"/>
+		<property name="name" type="String"/>
+		<property name="type" type="String"/>
+		<property name="bundleBoxes" type="java.util.List&lt;BundleBoxData>"/>
+        <property name="version" type="String"/>
+	</bean>
+
+	<bean class="com.epam.cme.facades.data.BundleTemplateServiceAddOnsPopulatorParameters">
+		<property name="currentComponent" type="de.hybris.platform.configurablebundleservices.model.BundleTemplateModel"/>
+		<property name="bundleNo" type="Integer"/>
+		<property name="cart" type="de.hybris.platform.core.model.order.CartModel"/>
+	</bean>
+
+	<bean class="de.hybris.platform.commercefacades.order.data.CartData" extends="de.hybris.platform.commercefacades.order.data.AbstractOrderData">
+		<property name="firstIncompleteBundleComponentsMap" type="java.util.Map&lt;Integer, com.epam.cme.facades.data.BundleTemplateData>"/>
+		<property name="cartInvalidMessage" type="String"/>
+		<property name="allEntriesCount" type="Integer"/>
+	</bean>
+
+	<bean class="de.hybris.platform.commercefacades.order.data.OrderEntryData">
+		<property name="bundleNo" type="int"/>
+		<property name="component" type="com.epam.cme.facades.data.BundleTemplateData"/>
+		<property name="rootBundleTemplate" type="com.epam.cme.facades.data.BundleTemplateData"/>
+		<property name="removeable" type="boolean"/>
+		<property name="editable" type="boolean"/>
+		<property name="valid" type="boolean"/>
+	</bean>
+
+	<bean class="com.epam.cme.facades.data.BundleBoxData">
+		<property name="component" type="BundleTemplateData"/>
+		<property name="expanded" type="boolean"/>
+		<property name="selectionMessage" type="String"/>
+		<property name="nextButton" type="boolean"/>
+		<property name="reviewButton" type="boolean"/>
+		<property name="bundleBoxEntries" type="java.util.List&lt;BundleBoxEntryData>"/>
+	</bean>
+
+	<bean class="com.epam.cme.facades.data.BundleBoxEntryData">
+		<property name="selected" type="boolean"/>
+		<property name="disabled" type="boolean"/>
+		<property name="removable" type="boolean"/>
+		<property name="product" type="de.hybris.platform.commercefacades.product.data.ProductData"/>
+		<property name="orderEntry" type="de.hybris.platform.commercefacades.order.data.OrderEntryData"/>
+		<property name="disabledMessage" type="String"/>
+	</bean>
+
+	<bean class="com.epam.cme.facades.data.BundleTabData">
+		<property name="parentBundleTemplate" type="BundleTemplateData"/>
+		<property name="sourceComponent" type="BundleTemplateData"/>
+		<property name="targetComponent" type="BundleTemplateData"/>
+		<property name="frequencyTabs" type="java.util.List&lt;FrequencyTabData>"/>
+		<property name="preselected" type="boolean"/>
+	</bean>
+
+	<bean class="com.epam.cme.facades.data.FrequencyTabData">
+		<property name="termOfServiceFrequency" type="de.hybris.platform.subscriptionfacades.data.TermOfServiceFrequencyData"/>
+		<property name="termOfServiceNumber" type="int"/>
+		<property name="products" type="java.util.List&lt;de.hybris.platform.commercefacades.product.data.ProductData>"/>
+		<property name="preselected" type="boolean"/>
+	</bean>
+
+	<bean class="de.hybris.platform.commercefacades.product.data.ProductData">
+		<property name="bundleTabs" type="java.util.List&lt;com.epam.cme.facades.data.BundleTabData>"/>
+		<property name="thisBundleProductPrice" type="de.hybris.platform.commercefacades.product.data.PriceData"/>
+		<property name="otherBundleProductPrice" type="de.hybris.platform.commercefacades.product.data.PriceData"/>
+		<property name="preselected" type="boolean"/>
+		<property name="lowestBundlePrice" type="de.hybris.platform.commercefacades.product.data.PriceData"/>
+		<property name="disabled" type="boolean"/>
+		<property name="disabledMessage" type="String"/>
+		<property name="soldIndividually" type="boolean"/>
+	</bean>
+
+</beans>

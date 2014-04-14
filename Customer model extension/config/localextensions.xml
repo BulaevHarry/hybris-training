@@ -120,15 +120,15 @@
 
 										
 		<!-- ext-template -->
-		<extension name="ycommercewebservices" />
+		<!--<extension name="ycommercewebservices" />
 		<extension name="ycommercewebserviceshmc" />
 		<extension name="yacceleratorfulfilmentprocess" />
-		<extension name="yaddon" />
-		<extension name="ytelcoacceleratorcockpits" />
+		<extension name="yaddon" />-->
+		<!--<extension name="ytelcoacceleratorcockpits" />
 		<extension name="ytelcoacceleratorfacades" />
 		<extension name="ytelcoacceleratorstorefront" />
 		<extension name="ytelcoacceleratorcore" />
-		<extension name="ytelcoacceleratorinitialdata" />
+		<extension name="ytelcoacceleratorinitialdata" /> -->
 
 												
 		<!-- <extension name="ybackoffice" />-->
@@ -145,8 +145,12 @@
 		<extension name="acceleratorfacades" />
 		<extension name="acceleratorcms" />
 		<extension name="acceleratorstorefrontcommons" />
-		<extension name="cmecore" /> 
-
+		<extension name="cmecore" />
+		<extension name="cmeinitialdata" />
+		<extension name="cmeservices" />
+		<extension name="cmefacades" />
+		<extension name="cmestorefront" />
+		<extension name="cmecockpits" />		
 				
 	</extensions>
 </hybrisconfig>
