@@ -17,16 +17,10 @@ import de.hybris.platform.cms2.exceptions.CMSItemNotFoundException;
 import de.hybris.platform.cms2.model.pages.AbstractPageModel;
 import de.hybris.platform.cms2.model.pages.ContentPageModel;
 import de.hybris.platform.commercefacades.user.UserFacade;
-import de.hybris.platform.commercefacades.user.data.RegisterData;
 import de.hybris.platform.commercefacades.user.data.TitleData;
 import de.hybris.platform.commerceservices.customer.DuplicateUidException;
 import de.hybris.platform.subscriptionfacades.SubscriptionFacade;
 import de.hybris.platform.subscriptionfacades.exceptions.SubscriptionFacadeException;
-import com.epam.cme.storefront.breadcrumb.Breadcrumb;
-import com.epam.cme.storefront.controllers.util.GlobalMessages;
-import com.epam.cme.storefront.forms.LoginForm;
-import com.epam.cme.storefront.forms.RegisterForm;
-import com.epam.cme.storefront.security.AutoLoginStrategy;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -41,6 +35,15 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.servlet.support.RequestContextUtils;
+
+import com.epam.cme.facades.organization.OrganizationFacade;
+import com.epam.cme.facades.organization.data.OrganizationData;
+import com.epam.cme.facades.user.data.CmeRegisterData;
+import com.epam.cme.storefront.breadcrumb.Breadcrumb;
+import com.epam.cme.storefront.controllers.util.GlobalMessages;
+import com.epam.cme.storefront.forms.LoginForm;
+import com.epam.cme.storefront.forms.RegisterForm;
+import com.epam.cme.storefront.security.AutoLoginStrategy;
 
 
 public abstract class AbstractRegisterPageController extends AbstractPageController
@@ -60,6 +63,9 @@ public abstract class AbstractRegisterPageController extends AbstractPageControl
 	@Resource(name = "userFacade")
 	private UserFacade userFacade;
 
+	@Resource(name = "organizationFacade")
+	private OrganizationFacade organizationFacade;
+
 	@Resource(name = "subscriptionFacade")
 	private SubscriptionFacade subscriptionFacade;
 
@@ -77,6 +83,11 @@ public abstract class AbstractRegisterPageController extends AbstractPageControl
 		return userFacade;
 	}
 
+	protected OrganizationFacade getOrganizationFacade()
+	{
+		return organizationFacade;
+	}
+
 	protected SubscriptionFacade getSubscriptionFacade()
 	{
 		return subscriptionFacade;
@@ -86,6 +97,12 @@ public abstract class AbstractRegisterPageController extends AbstractPageControl
 	public Collection<TitleData> getTitles()
 	{
 		return getUserFacade().getTitles();
+	}
+
+	@ModelAttribute("organizations")
+	public Collection<OrganizationData> getOrganizations()
+	{
+		return getOrganizationFacade().getOrganizations();
 	}
 
 	protected String getDefaultRegistrationPage(final Model model) throws CMSItemNotFoundException
@@ -121,20 +138,18 @@ public abstract class AbstractRegisterPageController extends AbstractPageControl
 			GlobalMessages.addErrorMessage(model, "form.global.error");
 			return handleRegistrationError(model);
 		}
-
-		final RegisterData data = new RegisterData();
+		final CmeRegisterData data = new CmeRegisterData();
 		data.setFirstName(form.getFirstName());
 		data.setLastName(form.getLastName());
+		data.setOrganizationsIds(form.getOrganizations());
 		data.setLogin(form.getEmail());
 		data.setPassword(form.getPwd());
 		data.setTitleCode(form.getTitleCode());
 		try
 		{
-			getCustomerFacade().register(data);
+			getBlockableCustomerFacade().register(data);
 			getAutoLoginStrategy().login(form.getEmail(), form.getPwd(), request, response);
-
 			getSubscriptionFacade().updateProfile(new HashMap<String, String>());
-
 			RequestContextUtils.getOutputFlashMap(request).put(GlobalMessages.CONF_MESSAGES_HOLDER,
 					Collections.singletonList("registration.confirmation.message.title"));
 		}
@@ -153,7 +168,6 @@ public abstract class AbstractRegisterPageController extends AbstractPageControl
 			GlobalMessages.addErrorMessage(model, "registration.error.subscription.billing.profil");
 			return handleRegistrationError(model);
 		}
-
 		return REDIRECT_PREFIX + getSuccessRedirect(request, response);
 	}
 

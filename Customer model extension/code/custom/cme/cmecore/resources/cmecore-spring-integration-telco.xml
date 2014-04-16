@@ -11,34 +11,69 @@
  license agreement you entered into with hybris.
 -->
 
-<beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:int="http://www.springframework.org/schema/integration"
-       xmlns:file="http://www.springframework.org/schema/integration/file"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans
-           http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
-           http://www.springframework.org/schema/integration
-           http://www.springframework.org/schema/integration/spring-integration-2.1.xsd
-           http://www.springframework.org/schema/integration/file
-           http://www.springframework.org/schema/integration/file/spring-integration-file-2.1.xsd">
-	
-	<bean id="baseDirectoryTelco" class="java.lang.String">
-		<constructor-arg value="#{baseDirectory}/telco" />
-	</bean>
-	<!-- 1) Scan for files -->
-	<file:inbound-channel-adapter id="batchFilesTelco" directory="#{baseDirectoryTelco}"
-		filename-regex="^(.*)-(\d+)\.csv" comparator="fileOrderComparator">
-		<int:poller fixed-rate="1000" />
-	</file:inbound-channel-adapter>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xmlns:int="http://www.springframework.org/schema/integration" xmlns:file="http://www.springframework.org/schema/integration/file"
+ xmlns:p="http://www.springframework.org/schema/p"
+ xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+        http://www.springframework.org/schema/integration
+        http://www.springframework.org/schema/integration/spring-integration-2.1.xsd
+        http://www.springframework.org/schema/integration/file
+        http://www.springframework.org/schema/integration/file/spring-integration-file-2.1.xsd">
 
-	<!-- 2) move the file to processing and setup header -->
-	<file:outbound-gateway request-channel="batchFilesTelco" reply-channel="batchFilesTelcoProc"
-		directory="#{baseDirectoryTelco}/processing" delete-source-files="true" />
-	<int:service-activator input-channel="batchFilesTelcoProc" output-channel="batchFilesHeaderInit"
-		ref="telcoHeaderSetupTask" method="execute" />
-	<bean id="telcoHeaderSetupTask" class="de.hybris.platform.acceleratorservices.dataimport.batch.task.HeaderSetupTask">
-		<property name="catalog" value="telcoProductCatalog" />
-		<property name="net" value="false" />
-		<property name="storeBaseDirectory" ref="baseDirectoryTelco" />
-	</bean>
+ <!-- 1) Scan for files -->
+ <file:inbound-channel-adapter id="batchFilesCmeCore" directory="${cmecore.import.basefolder}"
+  filename-regex="^(.*)-(\d+)\.csv" comparator="customerOrganizationOrderComparator">
+  <int:poller fixed-rate="2000" />
+ </file:inbound-channel-adapter>
+
+ <!-- 2) move the file to processing and setup header -->
+ <file:outbound-gateway request-channel="batchFilesCmeCore" reply-channel="batchFilesCmeCoreProc"
+  directory="${cmecore.import.basefolder}/processing" delete-source-files="true" />
+ <int:service-activator input-channel="batchFilesCmeCoreProc" output-channel="batchFilesHeaderInit"
+  ref="cmeCoreHeaderSetupTask" method="execute" />
+
+ <bean id="cmeCoreHeaderSetupTask" class="de.hybris.platform.acceleratorservices.dataimport.batch.task.HeaderSetupTask">
+  <property name="catalog" value="cmeProductCatalog" />
+  <property name="net" value="false" />
+  <property name="storeBaseDirectory" value="${cmecore.import.basefolder}" />
+ </bean>
+
+ <bean id="batchOrganizationConverterMapping" class="de.hybris.platform.acceleratorservices.dataimport.batch.converter.mapping.impl.DefaultConverterMapping"
+  p:mapping="organization" p:converter-ref="batchOrganizationConverter" />
+
+ <bean id="batchBlockableCustomerConverterMapping" class="de.hybris.platform.acceleratorservices.dataimport.batch.converter.mapping.impl.DefaultConverterMapping"
+  p:mapping="blockablecustomer" p:converter-ref="batchBlockableCustomerConverter" />
+
+ <bean id="batchOrganizationConverter" class="de.hybris.platform.acceleratorservices.dataimport.batch.converter.impl.DefaultImpexConverter">
+  <property name="header">
+   <value>
+    INSERT_UPDATE Organization;id[unique=true];name[unique=true];phone[unique=true]
+   </value>
+  </property>
+  <property name="impexRow">
+   <value>;{+0};{1};{2}</value>
+  </property>
+ </bean>
+
+ <bean id="batchBlockableCustomerConverter" class="de.hybris.platform.acceleratorservices.dataimport.batch.converter.impl.DefaultImpexConverter">
+  <property name="header">
+   <value>
+    INSERT_UPDATE BlockableCustomer;uid[unique=true];name;attemptCount;status;organizations(id)[unique=true]
+   </value>
+  </property>
+  <property name="impexRow">
+   <value>;{+0};{1};{2};{3};{4}</value>
+  </property>
+ </bean>
+
+ <bean id="customerOrganizationOrderComparator" class="de.hybris.platform.acceleratorservices.dataimport.batch.FileOrderComparator">
+  <property name="prefixPriority">
+   <map>
+    <entry key="organization" value="2" />
+    <entry key="blockablecustomer" value="1" />
+   </map>
+  </property>
+ </bean>
+
 </beans>

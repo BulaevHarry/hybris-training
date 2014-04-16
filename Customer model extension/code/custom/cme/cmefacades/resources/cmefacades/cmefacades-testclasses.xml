@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <testclasses>
   <cmefacades>
-    <testclass>com.epam.cme.facades.converters.populator.PlanBundleTabsPopulatorIntegrationTest</testclass>
-    <testclass>com.epam.cme.facades.converters.populator.SearchProductTelcoPopulatorTest</testclass>
-    <testclass>com.epam.cme.facades.product.data.FrequencyTabDataTests</testclass>
-    <testclass>com.epam.cme.facades.converters.populator.DeviceBundleTabsPopulatorIntegrationTest</testclass>
-    <testclass>com.epam.cme.facades.product.impl.DefaultTelcoProductFacadeTest</testclass>
     <testclass>com.epam.cme.facades.order.converters.populator.BundleCartPopulatorTest</testclass>
-    <testclass>com.epam.cme.facades.order.converters.populator.BundleOrderEntryPopulatorTest</testclass>
     <testclass>com.epam.cme.facades.converters.populator.BundleTemplateServiceAddOnsBundleBoxesPopulatorIntegrationTest</testclass>
+    <testclass>com.epam.cme.facades.organization.impl.DefaultOrganizationFacadeIntegrationTest</testclass>
     <testclass>com.epam.cme.facades.order.DefaultTelcoCartFacadeIntegrationTest</testclass>
+    <testclass>com.epam.cme.facades.product.impl.DefaultTelcoProductFacadeTest</testclass>
+    <testclass>com.epam.cme.facades.converters.populator.SearchProductTelcoPopulatorTest</testclass>
+    <testclass>com.epam.cme.facades.order.converters.populator.BundleOrderEntryPopulatorTest</testclass>
+    <testclass>com.epam.cme.facades.product.data.FrequencyTabDataTests</testclass>
+    <testclass>com.epam.cme.facades.converters.populator.PlanBundleTabsPopulatorIntegrationTest</testclass>
+    <testclass>com.epam.cme.facades.converters.populator.DeviceBundleTabsPopulatorIntegrationTest</testclass>
   </cmefacades>
 </testclasses>
