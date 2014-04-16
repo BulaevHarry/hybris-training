@@ -2,5 +2,8 @@
 <testclasses>
   <cmeservices>
     <testclass>com.epam.cme.services.jalo.CmeservicesTest</testclass>
+    <testclass>com.epam.cme.services.organization.impl.DefaultOrganizationServiceIntegrationTest</testclass>
+    <testclass>com.epam.cme.services.organization.dao.impl.DefaultOrganizationDaoIntegrationTest</testclass>
+    <testclass>com.epam.cme.services.organization.impl.DefaultOrganizationServiceUnitTest</testclass>
   </cmeservices>
 </testclasses>

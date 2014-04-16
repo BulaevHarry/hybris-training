@@ -21,7 +21,6 @@ import de.hybris.platform.commercefacades.order.data.OrderEntryData;
 import de.hybris.platform.commercefacades.product.ProductFacade;
 import de.hybris.platform.commercefacades.product.ProductOption;
 import de.hybris.platform.commercefacades.product.data.ProductData;
-import com.epam.cme.storefront.controllers.ControllerConstants;
 
 import java.util.Arrays;
 
@@ -33,6 +32,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+
+import com.epam.cme.storefront.controllers.ControllerConstants;
 
 
 /**
@@ -95,7 +96,7 @@ public class CheckoutController extends AbstractCheckoutController
 		model.addAttribute("deliveryAddress", orderDetails.getDeliveryAddress());
 		model.addAttribute("deliveryMode", orderDetails.getDeliveryMode());
 		model.addAttribute("paymentInfo", orderDetails.getPaymentInfo());
-		model.addAttribute("email", getCustomerFacade().getCurrentCustomer().getUid());
+		model.addAttribute("email", getBlockableCustomerFacade().getCurrentCustomer().getUid());
 		model.addAttribute("pageType", PageType.OrderConfirmation);
 
 		final AbstractPageModel cmsPage = getContentPageForLabelOrId(CHECKOUT_ORDER_CONFIRMATION_CMS_PAGE_LABEL);
