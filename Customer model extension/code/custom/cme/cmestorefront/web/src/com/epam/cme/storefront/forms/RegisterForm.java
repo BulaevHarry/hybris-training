@@ -13,15 +13,13 @@
  */
 package com.epam.cme.storefront.forms;
 
-import java.util.List;
+import com.epam.cme.storefront.forms.validation.EqualAttributes;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
-
-import com.epam.cme.storefront.forms.validation.EqualAttributes;
 
 
 
@@ -38,7 +36,6 @@ public class RegisterForm
 	private String firstName;
 	private String lastName;
 	private String email;
-	private List<Integer> organizations;
 	private String pwd;
 	private String checkPwd;
 
@@ -117,17 +114,6 @@ public class RegisterForm
 	public void setEmail(final String email)
 	{
 		this.email = email;
-	}
-
-	@NotNull(message = "{register.organizations.invalid}")
-	public List<Integer> getOrganizations()
-	{
-		return organizations;
-	}
-
-	public void setOrganizations(final List<Integer> organizations)
-	{
-		this.organizations = organizations;
 	}
 
 	/**

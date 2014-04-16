@@ -10,23 +10,20 @@
  Information and shall use it only in accordance with the terms of the
  license agreement you entered into with hybris.
 
+  
+--><extensioninfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="extensioninfo.xsd">
 
--->
-<extensioninfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="extensioninfo.xsd">
+	<extension abstractclassprefix="Generated" classprefix="Ytelcoacceleratorfacades" name="cmefacades">
 
- <extension abstractclassprefix="Generated" classprefix="Ytelcoacceleratorfacades" name="cmefacades">
+		<!-- you should add all required extensions to this list, except platform extensions which are automatically required -->
+		<requires-extension name="subscriptionfacades"/>
+		<requires-extension name="acceleratorfacades"/>
+		<requires-extension name="cmecore"/>
 
-  <!-- you should add all required extensions to this list, except platform extensions which are automatically required -->
-  <requires-extension name="subscriptionfacades" />
-  <requires-extension name="acceleratorfacades" />
-  <requires-extension name="commercefacades" />
-  <requires-extension name="cmecore" />
-  <requires-extension name="cmeservices" />
+		<coremodule generated="true" manager="de.hybris.platform.jalo.extension.GenericManager" packageroot="com.epam.cme.facades"/>
 
-  <coremodule generated="true" manager="de.hybris.platform.jalo.extension.GenericManager" packageroot="com.epam.cme.facades" />
+		
 
-
-
- </extension>
+	</extension>
 
 </extensioninfo>
