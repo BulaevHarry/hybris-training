@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <testclasses>
   <cmecore>
-    <testclass>com.epam.cme.core.daos.impl.DefaultProductsFeaturesDaoIntegrationTest</testclass>
-    <testclass>com.epam.cme.core.services.impl.DefaultCompatibilityServiceIntegrationTest</testclass>
     <testclass>com.epam.cme.core.jalo.synchronization.BundleTemplateSynchronizationIntegrationTest</testclass>
     <testclass>com.epam.cme.core.bundle.impl.DefaultGuidedSellingServiceTest</testclass>
+    <testclass>com.epam.cme.core.services.impl.DefaultCompatibilityServiceIntegrationTest</testclass>
+    <testclass>com.epam.cme.core.daos.impl.DefaultProductsFeaturesDaoIntegrationTest</testclass>
   </cmecore>
 </testclasses>

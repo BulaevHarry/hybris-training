@@ -32,8 +32,6 @@ import de.hybris.platform.commercefacades.storesession.data.LanguageData;
 import de.hybris.platform.commercefacades.user.data.CustomerData;
 import de.hybris.platform.servicelayer.i18n.I18NService;
 import de.hybris.platform.servicelayer.session.SessionService;
-import com.epam.cme.storefront.constants.WebConstants;
-import com.epam.cme.storefront.controllers.AbstractController;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Collection;
@@ -50,6 +48,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.servlet.View;
+
+import com.epam.cme.facades.blockablecustomer.BlockableCustomerFacade;
+import com.epam.cme.storefront.constants.WebConstants;
+import com.epam.cme.storefront.controllers.AbstractController;
 
 
 /**
@@ -96,6 +98,9 @@ public abstract class AbstractPageController extends AbstractController
 	@Resource(name = "customerFacade")
 	private CustomerFacade customerFacade;
 
+	@Resource(name = "blockableCustomerFacade")
+	private BlockableCustomerFacade blockableCustomerFacade;
+
 	@Resource(name = "pageTitleResolver")
 	private PageTitleResolver pageTitleResolver;
 
@@ -137,9 +142,9 @@ public abstract class AbstractPageController extends AbstractController
 		return storeSessionFacade;
 	}
 
-	protected CustomerFacade getCustomerFacade()
+	protected BlockableCustomerFacade getBlockableCustomerFacade()
 	{
-		return customerFacade;
+		return blockableCustomerFacade;
 	}
 
 	protected SessionService getSessionService()
