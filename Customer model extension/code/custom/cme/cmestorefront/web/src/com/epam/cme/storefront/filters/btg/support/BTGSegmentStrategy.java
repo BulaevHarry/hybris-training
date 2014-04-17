@@ -20,7 +20,6 @@ import javax.servlet.http.HttpServletRequest;
 
 /**
  */
-public interface BTGSegmentStrategy
-{
-	void evaluateSegment(HttpServletRequest httpRequest) throws ServletException, IOException;
+public interface BTGSegmentStrategy {
+    void evaluateSegment(HttpServletRequest httpRequest) throws ServletException, IOException;
 }

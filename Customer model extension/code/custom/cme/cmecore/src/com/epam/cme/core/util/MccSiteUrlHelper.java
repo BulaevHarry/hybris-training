@@ -25,63 +25,52 @@ import java.util.TreeMap;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Required;
 
+public class MccSiteUrlHelper {
+    @SuppressWarnings("unused")
+    private static final Logger LOG = Logger.getLogger(MccSiteUrlHelper.class);
 
-public class MccSiteUrlHelper
-{
-	@SuppressWarnings("unused")
-	private static final Logger LOG = Logger.getLogger(MccSiteUrlHelper.class);
+    // Called from BeanShell by MCC
+    public static Map<String, String> getAllSitesAndUrls() {
+        final MccSiteUrlHelper mccSiteUrlHelper = Registry.getApplicationContext().getBean("mccTelcoSiteUrlHelper",
+                MccSiteUrlHelper.class);
+        return mccSiteUrlHelper.getSitesAndUrls();
+    }
 
-	// Called from BeanShell by MCC
-	public static Map<String, String> getAllSitesAndUrls()
-	{
-		final MccSiteUrlHelper mccSiteUrlHelper = Registry.getApplicationContext().getBean("mccTelcoSiteUrlHelper",
-				MccSiteUrlHelper.class);
-		return mccSiteUrlHelper.getSitesAndUrls();
-	}
+    private CMSSiteService cmsSiteService;
+    private SiteBaseUrlResolutionService siteBaseUrlResolutionService;
 
-	private CMSSiteService cmsSiteService;
-	private SiteBaseUrlResolutionService siteBaseUrlResolutionService;
+    protected CMSSiteService getCmsSiteService() {
+        return cmsSiteService;
+    }
 
-	protected CMSSiteService getCmsSiteService()
-	{
-		return cmsSiteService;
-	}
+    @Required
+    public void setCmsSiteService(final CMSSiteService cmsSiteService) {
+        this.cmsSiteService = cmsSiteService;
+    }
 
-	@Required
-	public void setCmsSiteService(final CMSSiteService cmsSiteService)
-	{
-		this.cmsSiteService = cmsSiteService;
-	}
+    protected SiteBaseUrlResolutionService getSiteBaseUrlResolutionService() {
+        return siteBaseUrlResolutionService;
+    }
 
-	protected SiteBaseUrlResolutionService getSiteBaseUrlResolutionService()
-	{
-		return siteBaseUrlResolutionService;
-	}
+    @Required
+    public void setSiteBaseUrlResolutionService(final SiteBaseUrlResolutionService siteBaseUrlResolutionService) {
+        this.siteBaseUrlResolutionService = siteBaseUrlResolutionService;
+    }
 
-	@Required
-	public void setSiteBaseUrlResolutionService(final SiteBaseUrlResolutionService siteBaseUrlResolutionService)
-	{
-		this.siteBaseUrlResolutionService = siteBaseUrlResolutionService;
-	}
+    public Map<String, String> getSitesAndUrls() {
+        final Map<String, String> siteToUrl = new TreeMap<String, String>();
 
-	public Map<String, String> getSitesAndUrls()
-	{
-		final Map<String, String> siteToUrl = new TreeMap<String, String>();
+        for (final CMSSiteModel cmsSiteModel : getCmsSiteService().getSites()) {
+            final String url = getSiteUrl(cmsSiteModel);
+            if (url != null && !url.isEmpty() && SiteChannel.TELCO.equals(cmsSiteModel.getChannel())) {
+                siteToUrl.put(cmsSiteModel.getName(), url);
+            }
+        }
 
-		for (final CMSSiteModel cmsSiteModel : getCmsSiteService().getSites())
-		{
-			final String url = getSiteUrl(cmsSiteModel);
-			if (url != null && !url.isEmpty() && SiteChannel.TELCO.equals(cmsSiteModel.getChannel()))
-			{
-				siteToUrl.put(cmsSiteModel.getName(), url);
-			}
-		}
+        return siteToUrl;
+    }
 
-		return siteToUrl;
-	}
-
-	protected String getSiteUrl(final CMSSiteModel cmsSiteModel)
-	{
-		return getSiteBaseUrlResolutionService().getWebsiteUrlForSite(cmsSiteModel, false, "/");
-	}
+    protected String getSiteUrl(final CMSSiteModel cmsSiteModel) {
+        return getSiteBaseUrlResolutionService().getWebsiteUrlForSite(cmsSiteModel, false, "/");
+    }
 }

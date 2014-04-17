@@ -25,53 +25,45 @@ import de.hybris.platform.servicelayer.dto.converter.Converter;
 
 import org.springframework.beans.factory.annotation.Required;
 
-
 /**
  * Velocity context for a customer email.
  */
-public class CustomerEmailContext extends AbstractEmailContext<StoreFrontCustomerProcessModel>
-{
-	private Converter<UserModel, CustomerData> customerConverter;
-	private CustomerData customerData;
+public class CustomerEmailContext extends AbstractEmailContext<StoreFrontCustomerProcessModel> {
+    private Converter<UserModel, CustomerData> customerConverter;
+    private CustomerData customerData;
 
-	@Override
-	public void init(final StoreFrontCustomerProcessModel storeFrontCustomerProcessModel, final EmailPageModel emailPageModel)
-	{
-		super.init(storeFrontCustomerProcessModel, emailPageModel);
-		customerData = getCustomerConverter().convert(getCustomer(storeFrontCustomerProcessModel));
-	}
+    @Override
+    public void init(final StoreFrontCustomerProcessModel storeFrontCustomerProcessModel,
+            final EmailPageModel emailPageModel) {
+        super.init(storeFrontCustomerProcessModel, emailPageModel);
+        customerData = getCustomerConverter().convert(getCustomer(storeFrontCustomerProcessModel));
+    }
 
-	@Override
-	protected BaseSiteModel getSite(final StoreFrontCustomerProcessModel storeFrontCustomerProcessModel)
-	{
-		return storeFrontCustomerProcessModel.getSite();
-	}
+    @Override
+    protected BaseSiteModel getSite(final StoreFrontCustomerProcessModel storeFrontCustomerProcessModel) {
+        return storeFrontCustomerProcessModel.getSite();
+    }
 
-	@Override
-	protected CustomerModel getCustomer(final StoreFrontCustomerProcessModel storeFrontCustomerProcessModel)
-	{
-		return storeFrontCustomerProcessModel.getCustomer();
-	}
+    @Override
+    protected CustomerModel getCustomer(final StoreFrontCustomerProcessModel storeFrontCustomerProcessModel) {
+        return storeFrontCustomerProcessModel.getCustomer();
+    }
 
-	protected Converter<UserModel, CustomerData> getCustomerConverter()
-	{
-		return customerConverter;
-	}
+    protected Converter<UserModel, CustomerData> getCustomerConverter() {
+        return customerConverter;
+    }
 
-	@Required
-	public void setCustomerConverter(final Converter<UserModel, CustomerData> customerConverter)
-	{
-		this.customerConverter = customerConverter;
-	}
+    @Required
+    public void setCustomerConverter(final Converter<UserModel, CustomerData> customerConverter) {
+        this.customerConverter = customerConverter;
+    }
 
-	public CustomerData getCustomer()
-	{
-		return customerData;
-	}
+    public CustomerData getCustomer() {
+        return customerData;
+    }
 
-	@Override
-	protected LanguageModel getEmailLanguage(final StoreFrontCustomerProcessModel businessProcessModel)
-	{
-		return businessProcessModel.getLanguage();
-	}
+    @Override
+    protected LanguageModel getEmailLanguage(final StoreFrontCustomerProcessModel businessProcessModel) {
+        return businessProcessModel.getLanguage();
+    }
 }

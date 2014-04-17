@@ -29,87 +29,71 @@ import org.apache.log4j.Logger;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-
 /**
  * Abstract Controller for CMS Components
  */
-public abstract class AbstractCMSComponentController<T extends AbstractCMSComponentModel> extends AbstractController
-{
-	protected static final Logger LOG = Logger.getLogger(AbstractCMSComponentController.class);
+public abstract class AbstractCMSComponentController<T extends AbstractCMSComponentModel> extends AbstractController {
+    protected static final Logger LOG = Logger.getLogger(AbstractCMSComponentController.class);
 
-	protected static final String COMPONENT_UID = "componentUid";
+    protected static final String COMPONENT_UID = "componentUid";
 
-	@Resource(name = "cmsComponentService")
-	private CMSComponentService cmsComponentService;
+    @Resource(name = "cmsComponentService")
+    private CMSComponentService cmsComponentService;
 
-	// Setter required for UnitTests
-	public void setCmsComponentService(final CMSComponentService cmsComponentService)
-	{
-		this.cmsComponentService = cmsComponentService;
-	}
+    // Setter required for UnitTests
+    public void setCmsComponentService(final CMSComponentService cmsComponentService) {
+        this.cmsComponentService = cmsComponentService;
+    }
 
-	@RequestMapping
-	public String handleGet(final HttpServletRequest request, final HttpServletResponse response, final Model model)
-			throws Exception
-	{
-		String componentUid = (String) request.getAttribute(COMPONENT_UID);
-		if (StringUtils.isEmpty(componentUid))
-		{
-			componentUid = request.getParameter(COMPONENT_UID);
-		}
+    @RequestMapping
+    public String handleGet(final HttpServletRequest request, final HttpServletResponse response, final Model model)
+            throws Exception {
+        String componentUid = (String) request.getAttribute(COMPONENT_UID);
+        if (StringUtils.isEmpty(componentUid)) {
+            componentUid = request.getParameter(COMPONENT_UID);
+        }
 
-		if (StringUtils.isEmpty(componentUid))
-		{
-			LOG.error("No component specified in [" + COMPONENT_UID + "]");
-			throw new AbstractPageController.HttpNotFoundException();
-		}
+        if (StringUtils.isEmpty(componentUid)) {
+            LOG.error("No component specified in [" + COMPONENT_UID + "]");
+            throw new AbstractPageController.HttpNotFoundException();
+        }
 
-		try
-		{
-			final T component = (T) cmsComponentService.getSimpleCMSComponent(componentUid);
-			if (component == null)
-			{
-				LOG.error("Component with UID [" + componentUid + "] is null");
-				throw new AbstractPageController.HttpNotFoundException();
-			}
-			else
-			{
-				// Add the component to the model
-				model.addAttribute("component", component);
+        try {
+            final T component = (T) cmsComponentService.getSimpleCMSComponent(componentUid);
+            if (component == null) {
+                LOG.error("Component with UID [" + componentUid + "] is null");
+                throw new AbstractPageController.HttpNotFoundException();
+            } else {
+                // Add the component to the model
+                model.addAttribute("component", component);
 
-				// Allow subclasses to handle the component
-				return handleComponent(request, response, model, component);
-			}
-		}
-		catch (final CMSItemNotFoundException e)
-		{
-			LOG.error("Could not find component with UID [" + componentUid + "]");
-			throw new AbstractPageController.HttpNotFoundException(e);
-		}
-	}
+                // Allow subclasses to handle the component
+                return handleComponent(request, response, model, component);
+            }
+        } catch (final CMSItemNotFoundException e) {
+            LOG.error("Could not find component with UID [" + componentUid + "]");
+            throw new AbstractPageController.HttpNotFoundException(e);
+        }
+    }
 
-	protected String handleComponent(final HttpServletRequest request, final HttpServletResponse response, final Model model,
-			final T component) throws Exception
-	{
-		fillModel(request, model, component);
-		return getView(component);
-	}
+    protected String handleComponent(final HttpServletRequest request, final HttpServletResponse response,
+            final Model model, final T component) throws Exception {
+        fillModel(request, model, component);
+        return getView(component);
+    }
 
-	protected abstract void fillModel(final HttpServletRequest request, final Model model, final T component);
+    protected abstract void fillModel(final HttpServletRequest request, final Model model, final T component);
 
-	protected String getView(final T component)
-	{
-		// build a jsp response based on the component type
-		return ControllerConstants.Views.Cms.ComponentPrefix + StringUtils.lowerCase(getTypeCode(component));
-	}
+    protected String getView(final T component) {
+        // build a jsp response based on the component type
+        return ControllerConstants.Views.Cms.ComponentPrefix + StringUtils.lowerCase(getTypeCode(component));
+    }
 
-	protected String getTypeCode(final T component)
-	{
-		return component.getItemtype();
-	}
+    protected String getTypeCode(final T component) {
+        return component.getItemtype();
+    }
 
-	protected CMSComponentService getCmsComponentService()
-	{
-		return cmsComponentService;
-	}
+    protected CMSComponentService getCmsComponentService() {
+        return cmsComponentService;
+    }
 }

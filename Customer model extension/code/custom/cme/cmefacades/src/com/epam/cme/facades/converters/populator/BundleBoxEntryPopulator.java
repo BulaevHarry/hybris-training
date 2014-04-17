@@ -28,51 +28,44 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Required;
 
-
 /**
- * It converts the extra product {@link ProductModel} for Guided selling to {@link BundleBoxEntryData}
+ * It converts the extra product {@link ProductModel} for Guided selling to
+ * {@link BundleBoxEntryData}
  */
 public class BundleBoxEntryPopulator<SOURCE extends ProductModel, TARGET extends BundleBoxEntryData> implements
-		Populator<SOURCE, TARGET>
-{
-	private Converter<ProductModel, ProductData> productConverter;
-	private ConfigurablePopulator<ProductModel, ProductData, ProductOption> productConfiguredPopulator;
+        Populator<SOURCE, TARGET> {
+    private Converter<ProductModel, ProductData> productConverter;
+    private ConfigurablePopulator<ProductModel, ProductData, ProductOption> productConfiguredPopulator;
 
-	@Override
-	public void populate(final ProductModel source, final BundleBoxEntryData target) throws ConversionException
-	{
-		final List options = Arrays.asList(ProductOption.BASIC, ProductOption.PRICE, ProductOption.SUMMARY,
-				ProductOption.DESCRIPTION, ProductOption.STOCK);
+    @Override
+    public void populate(final ProductModel source, final BundleBoxEntryData target) throws ConversionException {
+        final List options = Arrays.asList(ProductOption.BASIC, ProductOption.PRICE, ProductOption.SUMMARY,
+                ProductOption.DESCRIPTION, ProductOption.STOCK);
 
-		final ProductData productData = getProductConverter().convert((SubscriptionProductModel) source);
-		getProductConfiguredPopulator().populate(source, productData, options);
+        final ProductData productData = getProductConverter().convert((SubscriptionProductModel) source);
+        getProductConfiguredPopulator().populate(source, productData, options);
 
-		target.setProduct(productData);
+        target.setProduct(productData);
 
-	}
+    }
 
+    protected Converter<ProductModel, ProductData> getProductConverter() {
+        return productConverter;
+    }
 
-	protected Converter<ProductModel, ProductData> getProductConverter()
-	{
-		return productConverter;
-	}
+    @Required
+    public void setProductConverter(final Converter<ProductModel, ProductData> productConverter) {
+        this.productConverter = productConverter;
+    }
 
-	@Required
-	public void setProductConverter(final Converter<ProductModel, ProductData> productConverter)
-	{
-		this.productConverter = productConverter;
-	}
+    protected ConfigurablePopulator<ProductModel, ProductData, ProductOption> getProductConfiguredPopulator() {
+        return productConfiguredPopulator;
+    }
 
-	protected ConfigurablePopulator<ProductModel, ProductData, ProductOption> getProductConfiguredPopulator()
-	{
-		return productConfiguredPopulator;
-	}
-
-	@Required
-	public void setProductConfiguredPopulator(
-			final ConfigurablePopulator<ProductModel, ProductData, ProductOption> productConfiguredPopulator)
-	{
-		this.productConfiguredPopulator = productConfiguredPopulator;
-	}
+    @Required
+    public void setProductConfiguredPopulator(
+            final ConfigurablePopulator<ProductModel, ProductData, ProductOption> productConfiguredPopulator) {
+        this.productConfiguredPopulator = productConfiguredPopulator;
+    }
 
 }

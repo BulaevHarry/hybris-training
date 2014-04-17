@@ -26,54 +26,46 @@ import org.springframework.beans.factory.annotation.Required;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuccessHandler;
 
+public class StorefrontLogoutSuccessHandler extends SimpleUrlLogoutSuccessHandler {
+    private GUIDCookieStrategy guidCookieStrategy;
+    private CMSSiteService cmsSiteService;
 
-public class StorefrontLogoutSuccessHandler extends SimpleUrlLogoutSuccessHandler
-{
-	private GUIDCookieStrategy guidCookieStrategy;
-	private CMSSiteService cmsSiteService;
+    protected GUIDCookieStrategy getGuidCookieStrategy() {
+        return guidCookieStrategy;
+    }
 
-	protected GUIDCookieStrategy getGuidCookieStrategy()
-	{
-		return guidCookieStrategy;
-	}
+    @Required
+    public void setGuidCookieStrategy(final GUIDCookieStrategy guidCookieStrategy) {
+        this.guidCookieStrategy = guidCookieStrategy;
+    }
 
-	@Required
-	public void setGuidCookieStrategy(final GUIDCookieStrategy guidCookieStrategy)
-	{
-		this.guidCookieStrategy = guidCookieStrategy;
-	}
+    protected CMSSiteService getCmsSiteService() {
+        return cmsSiteService;
+    }
 
-	protected CMSSiteService getCmsSiteService()
-	{
-		return cmsSiteService;
-	}
+    @Required
+    public void setCmsSiteService(final CMSSiteService cmsSiteService) {
+        this.cmsSiteService = cmsSiteService;
+    }
 
-	@Required
-	public void setCmsSiteService(final CMSSiteService cmsSiteService)
-	{
-		this.cmsSiteService = cmsSiteService;
-	}
+    @Override
+    public void onLogoutSuccess(final HttpServletRequest request, final HttpServletResponse response,
+            final Authentication authentication) throws IOException, ServletException {
+        getGuidCookieStrategy().deleteCookie(request, response);
 
-	@Override
-	public void onLogoutSuccess(final HttpServletRequest request, final HttpServletResponse response, final Authentication authentication) throws IOException, ServletException
-	{
-		getGuidCookieStrategy().deleteCookie(request, response);
+        // Delegate to default redirect behaviour
+        super.onLogoutSuccess(request, response, authentication);
+    }
 
-		// Delegate to default redirect behaviour
-		super.onLogoutSuccess(request, response, authentication);
-	}
+    @Override
+    protected String determineTargetUrl(final HttpServletRequest request, final HttpServletResponse response) {
+        String targetUrl = super.determineTargetUrl(request, response);
 
-	@Override
-	protected String determineTargetUrl(final HttpServletRequest request, final HttpServletResponse response)
-	{
-		String targetUrl = super.determineTargetUrl(request, response);
+        final CMSSiteModel currentSiteModel = getCmsSiteService().getCurrentSite();
+        if (currentSiteModel != null) {
+            targetUrl += "&site=" + currentSiteModel.getUid();
+        }
 
-		final CMSSiteModel currentSiteModel = getCmsSiteService().getCurrentSite();
-		if (currentSiteModel != null)
-		{
-			targetUrl += "&site=" + currentSiteModel.getUid();
-		}
-
-		return targetUrl;
-	}
+        return targetUrl;
+    }
 }

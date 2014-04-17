@@ -29,91 +29,77 @@ import org.springframework.beans.factory.annotation.Required;
 import org.springframework.util.Assert;
 import org.springframework.web.util.CookieGenerator;
 
-
 /**
  * Default implementation of {@link GUIDCookieStrategy}
  */
-public class DefaultGUIDCookieStrategy implements GUIDCookieStrategy
-{
-	private static final Logger LOG = Logger.getLogger(DefaultGUIDCookieStrategy.class);
+public class DefaultGUIDCookieStrategy implements GUIDCookieStrategy {
+    private static final Logger LOG = Logger.getLogger(DefaultGUIDCookieStrategy.class);
 
-	private final SecureRandom random;
-	private final MessageDigest sha;
+    private final SecureRandom random;
+    private final MessageDigest sha;
 
-	private CookieGenerator cookieGenerator;
+    private CookieGenerator cookieGenerator;
 
-	public DefaultGUIDCookieStrategy() throws NoSuchAlgorithmException
-	{
-		random = SecureRandom.getInstance("SHA1PRNG");
-		sha = MessageDigest.getInstance("SHA-1");
-		Assert.notNull(random);
-		Assert.notNull(sha);
-	}
+    public DefaultGUIDCookieStrategy() throws NoSuchAlgorithmException {
+        random = SecureRandom.getInstance("SHA1PRNG");
+        sha = MessageDigest.getInstance("SHA-1");
+        Assert.notNull(random);
+        Assert.notNull(sha);
+    }
 
-	@Override
-	public void setCookie(final HttpServletRequest request, final HttpServletResponse response)
-	{
-		if (!request.isSecure())
-		{
-			// We must not generate the cookie for insecure requests, otherwise there is not point doing this at all
-			throw new IllegalStateException("Cannot set GUIDCookie on an insecure request!");
-		}
+    @Override
+    public void setCookie(final HttpServletRequest request, final HttpServletResponse response) {
+        if (!request.isSecure()) {
+            // We must not generate the cookie for insecure requests, otherwise there is not point
+            // doing this at all
+            throw new IllegalStateException("Cannot set GUIDCookie on an insecure request!");
+        }
 
-		final String guid = createGUID();
+        final String guid = createGUID();
 
-		getCookieGenerator().addCookie(response, guid);
-		request.getSession().setAttribute(SecureRequestCookieCheckBeforeControllerHandler.SECURE_GUID_SESSION_KEY, guid);
+        getCookieGenerator().addCookie(response, guid);
+        request.getSession()
+                .setAttribute(SecureRequestCookieCheckBeforeControllerHandler.SECURE_GUID_SESSION_KEY, guid);
 
-		if (LOG.isInfoEnabled())
-		{
-			LOG.info("Setting guid cookie and session attribute: " + guid);
-		}
-	}
+        if (LOG.isInfoEnabled()) {
+            LOG.info("Setting guid cookie and session attribute: " + guid);
+        }
+    }
 
-	@Override
-	public void deleteCookie(final HttpServletRequest request, final HttpServletResponse response)
-	{
-		if (!request.isSecure())
-		{
-			LOG.error("Cannot remove secure GUIDCookie during an insecure request. I should have been called from a secure page.");
-		}
-		else
-		{
-			// Its a secure page, we can delete the cookie
-			getCookieGenerator().removeCookie(response);
-		}
-	}
+    @Override
+    public void deleteCookie(final HttpServletRequest request, final HttpServletResponse response) {
+        if (!request.isSecure()) {
+            LOG.error("Cannot remove secure GUIDCookie during an insecure request. I should have been called from a secure page.");
+        } else {
+            // Its a secure page, we can delete the cookie
+            getCookieGenerator().removeCookie(response);
+        }
+    }
 
-	protected String createGUID()
-	{
-		final String randomNum = String.valueOf(getRandom().nextInt());
-		final byte[] result = getSha().digest(randomNum.getBytes());
-		return String.valueOf(Hex.encodeHex(result));
-	}
+    protected String createGUID() {
+        final String randomNum = String.valueOf(getRandom().nextInt());
+        final byte[] result = getSha().digest(randomNum.getBytes());
+        return String.valueOf(Hex.encodeHex(result));
+    }
 
-	protected CookieGenerator getCookieGenerator()
-	{
-		return cookieGenerator;
-	}
+    protected CookieGenerator getCookieGenerator() {
+        return cookieGenerator;
+    }
 
-	/**
-	 * @param cookieGenerator
-	 *           the cookieGenerator to set
-	 */
-	@Required
-	public void setCookieGenerator(final CookieGenerator cookieGenerator)
-	{
-		this.cookieGenerator = cookieGenerator;
-	}
+    /**
+     * @param cookieGenerator
+     *            the cookieGenerator to set
+     */
+    @Required
+    public void setCookieGenerator(final CookieGenerator cookieGenerator) {
+        this.cookieGenerator = cookieGenerator;
+    }
 
+    protected SecureRandom getRandom() {
+        return random;
+    }
 
-	protected SecureRandom getRandom()
-	{
-		return random;
-	}
-
-	protected MessageDigest getSha()
-	{
-		return sha;
-	}
+    protected MessageDigest getSha() {
+        return sha;
+    }
 }

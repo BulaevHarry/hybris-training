@@ -36,75 +36,62 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-
 /**
  * Login Controller. Handles login and register for the account flow.
  */
 @Controller
 @RequestMapping(value = "/login")
-public class LoginPageController extends AbstractLoginPageController
-{
+public class LoginPageController extends AbstractLoginPageController {
 
-	@Override
-	protected String getView()
-	{
-		return ControllerConstants.Views.Pages.Account.AccountLoginPage;
-	}
+    @Override
+    protected String getView() {
+        return ControllerConstants.Views.Pages.Account.AccountLoginPage;
+    }
 
-	@Override
-	protected String getSuccessRedirect(final HttpServletRequest request, final HttpServletResponse response)
-	{
-		if (httpSessionRequestCache.getRequest(request, response) != null)
-		{
-			return httpSessionRequestCache.getRequest(request, response).getRedirectUrl();
-		}
-		return "/my-account";
-	}
+    @Override
+    protected String getSuccessRedirect(final HttpServletRequest request, final HttpServletResponse response) {
+        if (httpSessionRequestCache.getRequest(request, response) != null) {
+            return httpSessionRequestCache.getRequest(request, response).getRedirectUrl();
+        }
+        return "/my-account";
+    }
 
-	@Override
-	protected AbstractPageModel getCmsPage() throws CMSItemNotFoundException
-	{
-		return getContentPageForLabelOrId("login");
-	}
+    @Override
+    protected AbstractPageModel getCmsPage() throws CMSItemNotFoundException {
+        return getContentPageForLabelOrId("login");
+    }
 
-	private HttpSessionRequestCache httpSessionRequestCache;
+    private HttpSessionRequestCache httpSessionRequestCache;
 
-	@Autowired
-	@Qualifier("httpSessionRequestCache")
-	public void setHttpSessionRequestCache(final HttpSessionRequestCache accHttpSessionRequestCache)
-	{
-		this.httpSessionRequestCache = accHttpSessionRequestCache;
-	}
+    @Autowired
+    @Qualifier("httpSessionRequestCache")
+    public void setHttpSessionRequestCache(final HttpSessionRequestCache accHttpSessionRequestCache) {
+        this.httpSessionRequestCache = accHttpSessionRequestCache;
+    }
 
-	@RequestMapping(method = RequestMethod.GET)
-	public String doLogin(@RequestHeader(value = "referer", required = false) final String referer,
-			@RequestParam(value = "error", defaultValue = "false") final boolean loginError, final Model model,
-			final HttpServletRequest request, final HttpServletResponse response, final HttpSession session)
-			throws CMSItemNotFoundException
-	{
-		if (!loginError)
-		{
-			storeReferer(referer, request, response);
-		}
-		return getDefaultLoginPage(loginError, session, model);
-	}
+    @RequestMapping(method = RequestMethod.GET)
+    public String doLogin(@RequestHeader(value = "referer", required = false) final String referer,
+            @RequestParam(value = "error", defaultValue = "false") final boolean loginError, final Model model,
+            final HttpServletRequest request, final HttpServletResponse response, final HttpSession session)
+            throws CMSItemNotFoundException {
+        if (!loginError) {
+            storeReferer(referer, request, response);
+        }
+        return getDefaultLoginPage(loginError, session, model);
+    }
 
-	protected void storeReferer(final String referer, final HttpServletRequest request, final HttpServletResponse response)
-	{
-		if (StringUtils.isNotBlank(referer))
-		{
-			httpSessionRequestCache.saveRequest(request, response);
-		}
-	}
+    protected void storeReferer(final String referer, final HttpServletRequest request,
+            final HttpServletResponse response) {
+        if (StringUtils.isNotBlank(referer)) {
+            httpSessionRequestCache.saveRequest(request, response);
+        }
+    }
 
-	@RequestMapping(value = "/register", method = RequestMethod.POST)
-	public String doRegister(@RequestHeader(value = "referer", required = false) final String referer,
-			@Valid final RegisterForm form, final BindingResult bindingResult, final Model model, final HttpServletRequest request,
-			final HttpServletResponse response) throws CMSItemNotFoundException
-	{
-		return processRegisterUserRequest(referer, form, bindingResult, model, request, response);
-	}
-
-
+    @RequestMapping(value = "/register", method = RequestMethod.POST)
+    public String doRegister(@RequestHeader(value = "referer", required = false) final String referer,
+            @Valid final RegisterForm form, final BindingResult bindingResult, final Model model,
+            final HttpServletRequest request, final HttpServletResponse response) throws CMSItemNotFoundException {
+        return processRegisterUserRequest(referer, form, bindingResult, model, request, response);
+    }
 
 }

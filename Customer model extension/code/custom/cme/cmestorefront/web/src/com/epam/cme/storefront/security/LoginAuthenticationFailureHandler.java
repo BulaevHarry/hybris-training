@@ -23,34 +23,27 @@ import org.springframework.beans.factory.annotation.Required;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 
+public class LoginAuthenticationFailureHandler extends SimpleUrlAuthenticationFailureHandler {
+    private BruteForceAttackCounter bruteForceAttackCounter;
 
-public class LoginAuthenticationFailureHandler extends SimpleUrlAuthenticationFailureHandler
-{
-	private BruteForceAttackCounter bruteForceAttackCounter;
+    @Override
+    public void onAuthenticationFailure(final HttpServletRequest request, final HttpServletResponse response,
+            final AuthenticationException exception) throws IOException, ServletException {
+        // Register brute attacks
+        bruteForceAttackCounter.registerLoginFailure(request.getParameter("j_username"));
 
-	@Override
-	public void onAuthenticationFailure(final HttpServletRequest request, final HttpServletResponse response,
-			final AuthenticationException exception) throws IOException, ServletException
-	{
-		// Register brute attacks
-		bruteForceAttackCounter.registerLoginFailure(request.getParameter("j_username"));
+        // Store the j_username in the session
+        request.getSession().setAttribute("SPRING_SECURITY_LAST_USERNAME", request.getParameter("j_username"));
 
-		// Store the j_username in the session
-		request.getSession().setAttribute("SPRING_SECURITY_LAST_USERNAME", request.getParameter("j_username"));
+        super.onAuthenticationFailure(request, response, exception);
+    }
 
-		super.onAuthenticationFailure(request, response, exception);
-	}
+    protected BruteForceAttackCounter getBruteForceAttackCounter() {
+        return bruteForceAttackCounter;
+    }
 
-
-
-	protected BruteForceAttackCounter getBruteForceAttackCounter()
-	{
-		return bruteForceAttackCounter;
-	}
-
-	@Required
-	public void setBruteForceAttackCounter(final BruteForceAttackCounter bruteForceAttackCounter)
-	{
-		this.bruteForceAttackCounter = bruteForceAttackCounter;
-	}
+    @Required
+    public void setBruteForceAttackCounter(final BruteForceAttackCounter bruteForceAttackCounter) {
+        this.bruteForceAttackCounter = bruteForceAttackCounter;
+    }
 }

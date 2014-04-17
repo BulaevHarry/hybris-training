@@ -19,37 +19,35 @@ import de.hybris.platform.core.model.type.ComposedTypeModel;
 
 import java.util.List;
 
-
 /**
  * Service which returns products based on feature compatibility and vendor compatibility
  */
-public interface CompatibilityService
-{
+public interface CompatibilityService {
 
-	/**
-	 * Return list of compatible products based on featureCompatiblity classification feature
-	 * 
-	 * @param code
-	 *           product Code
-	 * @param classAttributeAssignment
-	 * @param targetItemType
-	 *           the itemType that is to be searched
-	 * @return list of matching products
-	 */
-	List<ProductModel> getFeatureCompatibleProducts(String code, ClassAttributeAssignmentModel classAttributeAssignment,
-			ComposedTypeModel targetItemType);
+    /**
+     * Return list of compatible products based on featureCompatiblity classification feature
+     * 
+     * @param code
+     *            product Code
+     * @param classAttributeAssignment
+     * @param targetItemType
+     *            the itemType that is to be searched
+     * @return list of matching products
+     */
+    List<ProductModel> getFeatureCompatibleProducts(String code,
+            ClassAttributeAssignmentModel classAttributeAssignment, ComposedTypeModel targetItemType);
 
-	/**
-	 * 
-	 * Return list of compatible products based where product's manufacturer name = compatible products vendor
-	 * compatibility classification feature
-	 * 
-	 * @param code
-	 *           product Code
-	 * @param productTypeCode
-	 *           type of the searched products (e.g. Accessory)
-	 * @return list of matching products
-	 */
-	List<ProductModel> getAccessoriesForVendorCompatibility(String code, final String productTypeCode);
+    /**
+     * 
+     * Return list of compatible products based where product's manufacturer name = compatible
+     * products vendor compatibility classification feature
+     * 
+     * @param code
+     *            product Code
+     * @param productTypeCode
+     *            type of the searched products (e.g. Accessory)
+     * @return list of matching products
+     */
+    List<ProductModel> getAccessoriesForVendorCompatibility(String code, final String productTypeCode);
 
 }

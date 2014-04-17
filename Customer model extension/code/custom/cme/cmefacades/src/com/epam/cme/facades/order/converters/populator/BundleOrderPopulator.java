@@ -18,23 +18,20 @@ import de.hybris.platform.core.model.order.OrderModel;
 
 import org.springframework.util.Assert;
 
-
 /**
- * Bundling specific converter implementation for {@link OrderModel} as source and {@link OrderData} as target type.
+ * Bundling specific converter implementation for {@link OrderModel} as source and {@link OrderData}
+ * as target type.
  */
-public class BundleOrderPopulator<S extends OrderModel, T extends OrderData> extends AbstractBundleOrderPopulator<S, T>
-{
-	@Override
-	public void populate(final S source, final T target)
-	{
-		Assert.notNull(source, "Parameter source cannot be null.");
-		Assert.notNull(target, "Parameter target cannot be null.");
+public class BundleOrderPopulator<S extends OrderModel, T extends OrderData> extends AbstractBundleOrderPopulator<S, T> {
+    @Override
+    public void populate(final S source, final T target) {
+        Assert.notNull(source, "Parameter source cannot be null.");
+        Assert.notNull(target, "Parameter target cannot be null.");
 
-		if (source.getBillingTime() == null)
-		{
-			// compatibility mode: do not perform the bundling specific populator tasks
-			return;
-		}
+        if (source.getBillingTime() == null) {
+            // compatibility mode: do not perform the bundling specific populator tasks
+            return;
+        }
 
-	}
+    }
 }

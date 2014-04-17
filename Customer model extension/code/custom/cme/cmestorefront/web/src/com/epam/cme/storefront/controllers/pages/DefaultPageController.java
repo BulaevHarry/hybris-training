@@ -31,71 +31,65 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.util.UrlPathHelper;
 
-
 /**
- * Error handler to show a CMS managed error page. This is the catch-all controller that handles all GET requests that
- * are not handled by other controllers.
+ * Error handler to show a CMS managed error page. This is the catch-all controller that handles all
+ * GET requests that are not handled by other controllers.
  */
 @Controller
-//@RequestMapping()
-public class DefaultPageController extends AbstractPageController
-{
-	private static final String ERROR_CMS_PAGE = "notFound";
+// @RequestMapping()
+public class DefaultPageController extends AbstractPageController {
+    private static final String ERROR_CMS_PAGE = "notFound";
 
-	private final UrlPathHelper urlPathHelper = new UrlPathHelper();
+    private final UrlPathHelper urlPathHelper = new UrlPathHelper();
 
-	@Resource(name = "simpleBreadcrumbBuilder")
-	private ResourceBreadcrumbBuilder resourceBreadcrumbBuilder;
+    @Resource(name = "simpleBreadcrumbBuilder")
+    private ResourceBreadcrumbBuilder resourceBreadcrumbBuilder;
 
-	@Resource(name = "contentPageBreadcrumbBuilder")
-	private ContentPageBreadcrumbBuilder contentPageBreadcrumbBuilder;
+    @Resource(name = "contentPageBreadcrumbBuilder")
+    private ContentPageBreadcrumbBuilder contentPageBreadcrumbBuilder;
 
-	@RequestMapping(method = RequestMethod.GET)
-	public String get(final Model model, final HttpServletRequest request) throws CMSItemNotFoundException
-	{
-		// Check for CMS Page where label or id is like /page
-		final ContentPageModel pageForRequest = getContentPageForRequest(request);
-		if (pageForRequest != null)
-		{
-			storeCmsPageInModel(model, pageForRequest);
-			setUpMetaDataForContentPage(model, pageForRequest);
-			model.addAttribute(WebConstants.BREADCRUMBS_KEY, contentPageBreadcrumbBuilder.getBreadcrumbs(pageForRequest));
-			return getViewForPage(pageForRequest);
-		}
+    @RequestMapping(method = RequestMethod.GET)
+    public String get(final Model model, final HttpServletRequest request) throws CMSItemNotFoundException {
+        // Check for CMS Page where label or id is like /page
+        final ContentPageModel pageForRequest = getContentPageForRequest(request);
+        if (pageForRequest != null) {
+            storeCmsPageInModel(model, pageForRequest);
+            setUpMetaDataForContentPage(model, pageForRequest);
+            model.addAttribute(WebConstants.BREADCRUMBS_KEY,
+                    contentPageBreadcrumbBuilder.getBreadcrumbs(pageForRequest));
+            return getViewForPage(pageForRequest);
+        }
 
-		// No page found - display the notFound page with error from controller
-		storeCmsPageInModel(model, getContentPageForLabelOrId(ERROR_CMS_PAGE));
-		setUpMetaDataForContentPage(model, getContentPageForLabelOrId(ERROR_CMS_PAGE));
+        // No page found - display the notFound page with error from controller
+        storeCmsPageInModel(model, getContentPageForLabelOrId(ERROR_CMS_PAGE));
+        setUpMetaDataForContentPage(model, getContentPageForLabelOrId(ERROR_CMS_PAGE));
 
-		model.addAttribute(WebConstants.MODEL_KEY_ADDITIONAL_BREADCRUMB,
-				resourceBreadcrumbBuilder.getBreadcrumbs("breadcrumb.not.found"));
-		GlobalMessages.addErrorMessage(model, "system.error.page.not.found");
+        model.addAttribute(WebConstants.MODEL_KEY_ADDITIONAL_BREADCRUMB,
+                resourceBreadcrumbBuilder.getBreadcrumbs("breadcrumb.not.found"));
+        GlobalMessages.addErrorMessage(model, "system.error.page.not.found");
 
-		return ControllerConstants.Views.Pages.Error.ErrorNotFoundPage;
-	}
+        return ControllerConstants.Views.Pages.Error.ErrorNotFoundPage;
+    }
 
-	/**
-	 * Lookup the CMS Content Page for this request.
-	 * 
-	 * @param request
-	 *           The request
-	 * @return the CMS content page
-	 */
-	protected ContentPageModel getContentPageForRequest(final HttpServletRequest request)
-	{
-		// Get the path for this request.
-		// Note that the path begins with a '/'
-		final String lookupPathForRequest = urlPathHelper.getLookupPathForRequest(request);
+    /**
+     * Lookup the CMS Content Page for this request.
+     * 
+     * @param request
+     *            The request
+     * @return the CMS content page
+     */
+    protected ContentPageModel getContentPageForRequest(final HttpServletRequest request) {
+        // Get the path for this request.
+        // Note that the path begins with a '/'
+        final String lookupPathForRequest = urlPathHelper.getLookupPathForRequest(request);
 
-		try
-		{
-			// Lookup the CMS Content Page by label. Note that the label value must begin with a '/'.
-			return getCmsPageService().getPageForLabel(lookupPathForRequest);
-		}
-		catch (final CMSItemNotFoundException ignore)
-		{
-			// Ignore exception
-		}
-		return null;
-	}
+        try {
+            // Lookup the CMS Content Page by label. Note that the label value must begin with a
+            // '/'.
+            return getCmsPageService().getPageForLabel(lookupPathForRequest);
+        } catch (final CMSItemNotFoundException ignore) {
+            // Ignore exception
+        }
+        return null;
+    }
 }

@@ -14,14 +14,11 @@
 package com.epam.cme.cockpits.constants;
 
 @SuppressWarnings("PMD")
-public class CmeCockpitsConstants extends GeneratedCmeCockpitsConstants
-{
-	public static final String EXTENSIONNAME = "cmecockpits";
-	
-	private CmeCockpitsConstants()
-	{
-		//empty
-	}
-	
-	
+public class CmeCockpitsConstants extends GeneratedCmeCockpitsConstants {
+    public static final String EXTENSIONNAME = "cmecockpits";
+
+    private CmeCockpitsConstants() {
+        // empty
+    }
+
 }

@@ -16,26 +16,23 @@ package com.epam.cme.storefront.filters.btg.support.impl;
 import de.hybris.platform.core.model.ItemModel;
 import de.hybris.platform.product.ProductService;
 
-
 /**
- * Implementation of {@link AbstractParsingPkResolvingStrategy} that retrieves a product pk from the request
+ * Implementation of {@link AbstractParsingPkResolvingStrategy} that retrieves a product pk from the
+ * request
  */
-public class ProductPkResolvingStrategy extends AbstractParsingPkResolvingStrategy
-{
-	private ProductService productService;
+public class ProductPkResolvingStrategy extends AbstractParsingPkResolvingStrategy {
+    private ProductService productService;
 
-	/**
-	 * @param productService
-	 *           the productService to set
-	 */
-	public void setProductService(final ProductService productService)
-	{
-		this.productService = productService;
-	}
+    /**
+     * @param productService
+     *            the productService to set
+     */
+    public void setProductService(final ProductService productService) {
+        this.productService = productService;
+    }
 
-	@Override
-	protected ItemModel retrieveModel(final String key)
-	{
-		return productService.getProductForCode(key);
-	}
+    @Override
+    protected ItemModel retrieveModel(final String key) {
+        return productService.getProductForCode(key);
+    }
 }

@@ -24,67 +24,59 @@ import de.hybris.platform.servicelayer.util.ServicesUtil;
 
 import org.springframework.beans.factory.annotation.Required;
 
-
 /**
  * Listener for "forgotten password" functionality event.
  */
-public class ForgottenPasswordEventListener extends AbstractSiteEventListener<ForgottenPwdEvent>
-{
+public class ForgottenPasswordEventListener extends AbstractSiteEventListener<ForgottenPwdEvent> {
 
-	private ModelService modelService;
-	private BusinessProcessService businessProcessService;
+    private ModelService modelService;
+    private BusinessProcessService businessProcessService;
 
+    protected BusinessProcessService getBusinessProcessService() {
+        return businessProcessService;
+    }
 
-	protected BusinessProcessService getBusinessProcessService()
-	{
-		return businessProcessService;
-	}
+    @Required
+    public void setBusinessProcessService(final BusinessProcessService businessProcessService) {
+        this.businessProcessService = businessProcessService;
+    }
 
-	@Required
-	public void setBusinessProcessService(final BusinessProcessService businessProcessService)
-	{
-		this.businessProcessService = businessProcessService;
-	}
+    /**
+     * @return the modelService
+     */
+    protected ModelService getModelService() {
+        return modelService;
+    }
 
-	/**
-	 * @return the modelService
-	 */
-	protected ModelService getModelService()
-	{
-		return modelService;
-	}
+    /**
+     * @param modelService
+     *            the modelService to set
+     */
+    @Required
+    public void setModelService(final ModelService modelService) {
+        this.modelService = modelService;
+    }
 
-	/**
-	 * @param modelService
-	 *           the modelService to set
-	 */
-	@Required
-	public void setModelService(final ModelService modelService)
-	{
-		this.modelService = modelService;
-	}
+    @Override
+    protected void onSiteEvent(final ForgottenPwdEvent event) {
+        final ForgottenPasswordProcessModel forgottenPasswordProcessModel = (ForgottenPasswordProcessModel) getBusinessProcessService()
+                .createProcess(
+                        "telcoForgottenPassword-" + event.getCustomer().getUid() + "-" + System.currentTimeMillis(),
+                        "telcoForgottenPasswordEmailProcess");
+        forgottenPasswordProcessModel.setSite(event.getSite());
+        forgottenPasswordProcessModel.setCustomer(event.getCustomer());
+        forgottenPasswordProcessModel.setToken(event.getToken());
+        forgottenPasswordProcessModel.setLanguage(event.getLanguage());
+        forgottenPasswordProcessModel.setCurrency(event.getCurrency());
+        forgottenPasswordProcessModel.setStore(event.getBaseStore());
+        getModelService().save(forgottenPasswordProcessModel);
+        getBusinessProcessService().startProcess(forgottenPasswordProcessModel);
+    }
 
-	@Override
-	protected void onSiteEvent(final ForgottenPwdEvent event)
-	{
-		final ForgottenPasswordProcessModel forgottenPasswordProcessModel = (ForgottenPasswordProcessModel) getBusinessProcessService()
-				.createProcess("telcoForgottenPassword-" + event.getCustomer().getUid() + "-" + System.currentTimeMillis(),
-						"telcoForgottenPasswordEmailProcess");
-		forgottenPasswordProcessModel.setSite(event.getSite());
-		forgottenPasswordProcessModel.setCustomer(event.getCustomer());
-		forgottenPasswordProcessModel.setToken(event.getToken());
-		forgottenPasswordProcessModel.setLanguage(event.getLanguage());
-		forgottenPasswordProcessModel.setCurrency(event.getCurrency());
-		forgottenPasswordProcessModel.setStore(event.getBaseStore());
-		getModelService().save(forgottenPasswordProcessModel);
-		getBusinessProcessService().startProcess(forgottenPasswordProcessModel);
-	}
-
-	@Override
-	protected boolean shouldHandleEvent(final ForgottenPwdEvent event)
-	{
-		final BaseSiteModel site = event.getSite();
-		ServicesUtil.validateParameterNotNullStandardMessage("event.site", site);
-		return SiteChannel.TELCO.equals(site.getChannel());
-	}
+    @Override
+    protected boolean shouldHandleEvent(final ForgottenPwdEvent event) {
+        final BaseSiteModel site = event.getSite();
+        ServicesUtil.validateParameterNotNullStandardMessage("event.site", site);
+        return SiteChannel.TELCO.equals(site.getChannel());
+    }
 }

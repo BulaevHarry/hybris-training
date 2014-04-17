@@ -20,30 +20,25 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
 
-
 /**
- * FilterBean to produce the request scoped BTG event {@link RefererHeaderUsedBTGRuleDataEvent}
- * This is a spring configured filter that is executed by the PlatformFilterChain.
+ * FilterBean to produce the request scoped BTG event {@link RefererHeaderUsedBTGRuleDataEvent} This
+ * is a spring configured filter that is executed by the PlatformFilterChain.
  */
-public class RefererHeaderBtgFilter extends AbstractBtgFilter
-{
-	private static final String REFERER_HEADER_NAME = "Referer";
+public class RefererHeaderBtgFilter extends AbstractBtgFilter {
+    private static final String REFERER_HEADER_NAME = "Referer";
 
-	@Override
-	protected AbstractBTGRuleDataEvent getEvent(final HttpServletRequest request)
-	{
-		RefererHeaderUsedBTGRuleDataEvent result = null;
-		final String referrer = request.getHeader(REFERER_HEADER_NAME);
-		if (!StringUtils.isBlank(referrer))
-		{
-			result = new RefererHeaderUsedBTGRuleDataEvent(referrer);
-		}
-		return result;
-	}
+    @Override
+    protected AbstractBTGRuleDataEvent getEvent(final HttpServletRequest request) {
+        RefererHeaderUsedBTGRuleDataEvent result = null;
+        final String referrer = request.getHeader(REFERER_HEADER_NAME);
+        if (!StringUtils.isBlank(referrer)) {
+            result = new RefererHeaderUsedBTGRuleDataEvent(referrer);
+        }
+        return result;
+    }
 
-	@Override
-	protected boolean isRequestScoped()
-	{
-		return true;
-	}
+    @Override
+    protected boolean isRequestScoped() {
+        return true;
+    }
 }

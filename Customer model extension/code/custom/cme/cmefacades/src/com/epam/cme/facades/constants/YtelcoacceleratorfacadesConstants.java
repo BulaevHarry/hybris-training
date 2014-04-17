@@ -14,14 +14,11 @@
 package com.epam.cme.facades.constants;
 
 @SuppressWarnings("PMD")
-public class YtelcoacceleratorfacadesConstants extends GeneratedYtelcoacceleratorfacadesConstants
-{
-	public static final String EXTENSIONNAME = "cmefacades";
-	
-	private YtelcoacceleratorfacadesConstants()
-	{
-		//empty
-	}
-	
-	
+public class YtelcoacceleratorfacadesConstants extends GeneratedYtelcoacceleratorfacadesConstants {
+    public static final String EXTENSIONNAME = "cmefacades";
+
+    private YtelcoacceleratorfacadesConstants() {
+        // empty
+    }
+
 }

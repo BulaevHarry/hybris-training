@@ -47,7 +47,6 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-
 /**
  * Responsible for setting up application - to main responsibility belongs:
  * <p>
@@ -60,362 +59,320 @@ import org.springframework.web.filter.OncePerRequestFilter;
  * </p>
  * <br/>
  * <b>Note</b>: In former versions (i.e. 4.1.1 and earlier) as a preview mechanism we used
- * {@link de.hybris.platform.cms2.misc.AbstractPreviewServlet} which actually is obsolete. All necessary logic was
- * adapted and moved here. This is a spring configured filter that is executed by the PlatformFilterChain.
+ * {@link de.hybris.platform.cms2.misc.AbstractPreviewServlet} which actually is obsolete. All
+ * necessary logic was adapted and moved here. This is a spring configured filter that is executed
+ * by the PlatformFilterChain.
  */
-public class CMSSiteFilter extends OncePerRequestFilter implements CMSFilter
-{
-	@SuppressWarnings("unused")
-	private static final Logger LOG = Logger.getLogger(CMSSiteFilter.class);
+public class CMSSiteFilter extends OncePerRequestFilter implements CMSFilter {
+    @SuppressWarnings("unused")
+    private static final Logger LOG = Logger.getLogger(CMSSiteFilter.class);
 
-	protected static final int MISSING_CMS_SITE_ERROR_STATUS = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
-	protected static final String MISSING_CMS_SITE_ERROR_MESSAGE = "Cannot find CMSSite associated with current URL";
-	protected static final String INCORRECT_CMS_SITE_CHANNEL_ERROR_MESSAGE = "Matched CMSSite for current URL has unsupported channel";
+    protected static final int MISSING_CMS_SITE_ERROR_STATUS = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
+    protected static final String MISSING_CMS_SITE_ERROR_MESSAGE = "Cannot find CMSSite associated with current URL";
+    protected static final String INCORRECT_CMS_SITE_CHANNEL_ERROR_MESSAGE = "Matched CMSSite for current URL has unsupported channel";
 
-	private CMSSiteService cmsSiteService;
-	private SessionService sessionService;
-	private CMSPreviewService cmsPreviewService;
-	private CommerceCommonI18NService commerceCommonI18NService;
-	private BaseSiteService baseSiteService;
-	private UrlResolver<PreviewDataModel> previewDataModelUrlResolver;
-	private ContextInformationLoader contextInformationLoader;
-	private CMSPageContextService cmsPageContextService;
+    private CMSSiteService cmsSiteService;
+    private SessionService sessionService;
+    private CMSPreviewService cmsPreviewService;
+    private CommerceCommonI18NService commerceCommonI18NService;
+    private BaseSiteService baseSiteService;
+    private UrlResolver<PreviewDataModel> previewDataModelUrlResolver;
+    private ContextInformationLoader contextInformationLoader;
+    private CMSPageContextService cmsPageContextService;
 
-	@Override
-	protected void doFilterInternal(final HttpServletRequest httpRequest, final HttpServletResponse httpResponse,
-			final FilterChain filterChain) throws ServletException, IOException
-	{
-		final String requestURL = httpRequest.getRequestURL().toString();
+    @Override
+    protected void doFilterInternal(final HttpServletRequest httpRequest, final HttpServletResponse httpResponse,
+            final FilterChain filterChain) throws ServletException, IOException {
+        final String requestURL = httpRequest.getRequestURL().toString();
 
-		final CmsPageRequestContextData cmsPageRequestContextData = getCmsPageContextService().initialiseCmsPageContextForRequest(
-				httpRequest);
+        final CmsPageRequestContextData cmsPageRequestContextData = getCmsPageContextService()
+                .initialiseCmsPageContextForRequest(httpRequest);
 
-		//check whether exits valid preview data
-		if (cmsPageRequestContextData.getPreviewData() == null)
-		{
-			//process normal request (i.e. normal browser non-cmscockpit request)
-			if (processNormalRequest(httpRequest, httpResponse))
-			{
-				//proceed filters
-				filterChain.doFilter(httpRequest, httpResponse);
-			}
-		}
-		else if (StringUtils.contains(requestURL, PREVIEW_TOKEN))
-		{
-			final String redirectURL = processPreviewRequest(httpRequest, cmsPageRequestContextData);
+        // check whether exits valid preview data
+        if (cmsPageRequestContextData.getPreviewData() == null) {
+            // process normal request (i.e. normal browser non-cmscockpit request)
+            if (processNormalRequest(httpRequest, httpResponse)) {
+                // proceed filters
+                filterChain.doFilter(httpRequest, httpResponse);
+            }
+        } else if (StringUtils.contains(requestURL, PREVIEW_TOKEN)) {
+            final String redirectURL = processPreviewRequest(httpRequest, cmsPageRequestContextData);
 
-			//redirect to computed URL
-			if (redirectURL.charAt(0) == '/')
-			{
-				final String contextPath = httpRequest.getContextPath();
-				final String encodedRedirectUrl = httpResponse.encodeRedirectURL(contextPath + redirectURL);
-				httpResponse.sendRedirect(encodedRedirectUrl);
-			}
-			else
-			{
-				final String encodedRedirectUrl = httpResponse.encodeRedirectURL(redirectURL);
-				httpResponse.sendRedirect(encodedRedirectUrl);
-			}
+            // redirect to computed URL
+            if (redirectURL.charAt(0) == '/') {
+                final String contextPath = httpRequest.getContextPath();
+                final String encodedRedirectUrl = httpResponse.encodeRedirectURL(contextPath + redirectURL);
+                httpResponse.sendRedirect(encodedRedirectUrl);
+            } else {
+                final String encodedRedirectUrl = httpResponse.encodeRedirectURL(redirectURL);
+                httpResponse.sendRedirect(encodedRedirectUrl);
+            }
 
-			//next filter in chain won't be invoked!!!
-		}
-		else
-		{
-			//proceed filters
-			filterChain.doFilter(httpRequest, httpResponse);
-		}
-	}
+            // next filter in chain won't be invoked!!!
+        } else {
+            // proceed filters
+            filterChain.doFilter(httpRequest, httpResponse);
+        }
+    }
 
-	/**
-	 * Processing normal request (i.e. when user goes directly to that application - not from cmscockpit)
-	 * <p/>
-	 * <b>Note:</b> <br/>
-	 * We preparing application by setting correct:
-	 * <ul>
-	 * <li>Current Site</li>
-	 * <li>Current Catalog Versions</li>
-	 * <li>Enabled language fallback</li>
-	 * </ul>
-	 * 
-	 * @see ContextInformationLoader#initializeSiteFromRequest(String)
-	 * @see ContextInformationLoader#setCatalogVersions()
-	 * @param httpRequest
-	 *           current request
-	 * @param httpResponse
-	 *           the http response
-	 * @throws java.io.IOException
-	 */
-	protected boolean processNormalRequest(final HttpServletRequest httpRequest, final HttpServletResponse httpResponse)
-			throws IOException
-	{
-		final String queryString = httpRequest.getQueryString();
-		final String currentRequestURL = httpRequest.getRequestURL().toString();
+    /**
+     * Processing normal request (i.e. when user goes directly to that application - not from
+     * cmscockpit)
+     * <p/>
+     * <b>Note:</b> <br/>
+     * We preparing application by setting correct:
+     * <ul>
+     * <li>Current Site</li>
+     * <li>Current Catalog Versions</li>
+     * <li>Enabled language fallback</li>
+     * </ul>
+     * 
+     * @see ContextInformationLoader#initializeSiteFromRequest(String)
+     * @see ContextInformationLoader#setCatalogVersions()
+     * @param httpRequest
+     *            current request
+     * @param httpResponse
+     *            the http response
+     * @throws java.io.IOException
+     */
+    protected boolean processNormalRequest(final HttpServletRequest httpRequest, final HttpServletResponse httpResponse)
+            throws IOException {
+        final String queryString = httpRequest.getQueryString();
+        final String currentRequestURL = httpRequest.getRequestURL().toString();
 
-		//set current site
-		CMSSiteModel cmsSiteModel = getCurrentCmsSite();
-		if (cmsSiteModel == null || StringUtils.contains(queryString, CLEAR_CMSSITE_PARAM))
-		{
-			final String absoluteURL = StringUtils.removeEnd(currentRequestURL, "/")
-					+ (StringUtils.isBlank(queryString) ? "" : "?" + queryString);
+        // set current site
+        CMSSiteModel cmsSiteModel = getCurrentCmsSite();
+        if (cmsSiteModel == null || StringUtils.contains(queryString, CLEAR_CMSSITE_PARAM)) {
+            final String absoluteURL = StringUtils.removeEnd(currentRequestURL, "/")
+                    + (StringUtils.isBlank(queryString) ? "" : "?" + queryString);
 
-			cmsSiteModel = getContextInformationLoader().initializeSiteFromRequest(absoluteURL);
-		}
+            cmsSiteModel = getContextInformationLoader().initializeSiteFromRequest(absoluteURL);
+        }
 
-		if (cmsSiteModel == null)
-		{
-			// Failed to lookup CMS site
-			httpResponse.sendError(MISSING_CMS_SITE_ERROR_STATUS, MISSING_CMS_SITE_ERROR_MESSAGE);
-			return false;
-		}
-		else if (!SiteChannel.B2C.equals(cmsSiteModel.getChannel()) && !SiteChannel.TELCO.equals(cmsSiteModel.getChannel())) // Restrict to B2C and Telco channel
-		{
-			// CMS site that we looked up was for an unsupported channel
-			httpResponse.sendError(MISSING_CMS_SITE_ERROR_STATUS, INCORRECT_CMS_SITE_CHANNEL_ERROR_MESSAGE);
-			return false;
-		}
+        if (cmsSiteModel == null) {
+            // Failed to lookup CMS site
+            httpResponse.sendError(MISSING_CMS_SITE_ERROR_STATUS, MISSING_CMS_SITE_ERROR_MESSAGE);
+            return false;
+        } else if (!SiteChannel.B2C.equals(cmsSiteModel.getChannel())
+                && !SiteChannel.TELCO.equals(cmsSiteModel.getChannel())) // Restrict to B2C and
+                                                                         // Telco channel
+        {
+            // CMS site that we looked up was for an unsupported channel
+            httpResponse.sendError(MISSING_CMS_SITE_ERROR_STATUS, INCORRECT_CMS_SITE_CHANNEL_ERROR_MESSAGE);
+            return false;
+        }
 
-		if (!isActiveSite(cmsSiteModel))
-		{
-			throw new IllegalStateException("Site is not active. Active flag behaviour must be implement for this project.");
-		}
+        if (!isActiveSite(cmsSiteModel)) {
+            throw new IllegalStateException(
+                    "Site is not active. Active flag behaviour must be implement for this project.");
+        }
 
-		getContextInformationLoader().setCatalogVersions();
-		//set fall back language enabled
-		setFallbackLanguage(httpRequest, Boolean.TRUE);
+        getContextInformationLoader().setCatalogVersions();
+        // set fall back language enabled
+        setFallbackLanguage(httpRequest, Boolean.TRUE);
 
-		return true;
-	}
+        return true;
+    }
 
-	protected boolean isActiveSite(final CMSSiteModel site)
-	{
-		return site.getActive() != null && site.getActive().booleanValue();
-	}
+    protected boolean isActiveSite(final CMSSiteModel site) {
+        return site.getActive() != null && site.getActive().booleanValue();
+    }
 
-	/**
-	 * Processing preview request (i.e. request with additional parameters like {@link CMSFilter#PREVIEW_TOKEN} requested
-	 * from cmscockpit) )
-	 * <p/>
-	 * <b>Note:</b> Processing preview data in order to generate target URL, and load necessary information in user
-	 * session
-	 * <ul>
-	 * <li>Initialize information (Active CMSSite, Catalog versions,Current catalog version ) information getting from
-	 * valid Preview Data</li>
-	 * <li>Load all fake information (like: User, User group, Language, Time ...)
-	 * <li>Generating target URL according to Preview Data
-	 * </ul>
-	 * 
-	 * @param httpRequest
-	 *           current request
-	 * @return target URL
-	 */
-	protected String processPreviewRequest(final HttpServletRequest httpRequest,
-			final CmsPageRequestContextData cmsPageRequestContextData)
-	{
-		final PreviewDataModel previewDataModel = cmsPageRequestContextData.getPreviewData();
+    /**
+     * Processing preview request (i.e. request with additional parameters like
+     * {@link CMSFilter#PREVIEW_TOKEN} requested from cmscockpit) )
+     * <p/>
+     * <b>Note:</b> Processing preview data in order to generate target URL, and load necessary
+     * information in user session
+     * <ul>
+     * <li>Initialize information (Active CMSSite, Catalog versions,Current catalog version )
+     * information getting from valid Preview Data</li>
+     * <li>Load all fake information (like: User, User group, Language, Time ...)
+     * <li>Generating target URL according to Preview Data
+     * </ul>
+     * 
+     * @param httpRequest
+     *            current request
+     * @return target URL
+     */
+    protected String processPreviewRequest(final HttpServletRequest httpRequest,
+            final CmsPageRequestContextData cmsPageRequestContextData) {
+        final PreviewDataModel previewDataModel = cmsPageRequestContextData.getPreviewData();
 
-		previewDataModel.setLanguage(filterPreviewLanguageForSite(httpRequest, previewDataModel.getLanguage()));
-		previewDataModel.setUiExperience(previewDataModel.getUiExperience());
+        previewDataModel.setLanguage(filterPreviewLanguageForSite(httpRequest, previewDataModel.getLanguage()));
+        previewDataModel.setUiExperience(previewDataModel.getUiExperience());
 
-		//load necessary information 
-		getContextInformationLoader().initializePreviewRequest(previewDataModel);
-		//load fake context information
-		getContextInformationLoader().loadFakeContextInformation(httpRequest, previewDataModel);
-		//generate destination URL
-		final String destinationURL = generatePreviewUrl(httpRequest, previewDataModel);
+        // load necessary information
+        getContextInformationLoader().initializePreviewRequest(previewDataModel);
+        // load fake context information
+        getContextInformationLoader().loadFakeContextInformation(httpRequest, previewDataModel);
+        // generate destination URL
+        final String destinationURL = generatePreviewUrl(httpRequest, previewDataModel);
 
-		// persist changes
-		previewDataModel.setResourcePath(destinationURL);
-		getContextInformationLoader().storePreviewData(previewDataModel);
+        // persist changes
+        previewDataModel.setResourcePath(destinationURL);
+        getContextInformationLoader().storePreviewData(previewDataModel);
 
-		final CMSPreviewTicketModel ticket = getCmsPreviewService().createPreviewTicket(previewDataModel);
-		String parameterDelimiter = "?";
-		if (StringUtils.contains(destinationURL, "?"))
-		{
-			parameterDelimiter = "&";
-		}
-		return destinationURL + parameterDelimiter + PREVIEW_TICKET_ID_PARAM + "=" + ticket.getId();
-	}
+        final CMSPreviewTicketModel ticket = getCmsPreviewService().createPreviewTicket(previewDataModel);
+        String parameterDelimiter = "?";
+        if (StringUtils.contains(destinationURL, "?")) {
+            parameterDelimiter = "&";
+        }
+        return destinationURL + parameterDelimiter + PREVIEW_TICKET_ID_PARAM + "=" + ticket.getId();
+    }
 
-	/**
-	 * Filters the preview language to a language supported by the site. If the requested preview language is not
-	 * supported, returns the default site language instead.
-	 * 
-	 * @param httpRequest
-	 *           current request
-	 * @param previewLanguage
-	 *           the preview language
-	 * @return LanguageModel the filtered language for previewing
-	 */
-	protected LanguageModel filterPreviewLanguageForSite(final HttpServletRequest httpRequest, final LanguageModel previewLanguage)
-	{
-		final CMSSiteModel currentSite = getCurrentCmsSite();
-		final CommerceCommonI18NService commerceCommonI18NService = getCommerceCommonI18NService();
+    /**
+     * Filters the preview language to a language supported by the site. If the requested preview
+     * language is not supported, returns the default site language instead.
+     * 
+     * @param httpRequest
+     *            current request
+     * @param previewLanguage
+     *            the preview language
+     * @return LanguageModel the filtered language for previewing
+     */
+    protected LanguageModel filterPreviewLanguageForSite(final HttpServletRequest httpRequest,
+            final LanguageModel previewLanguage) {
+        final CMSSiteModel currentSite = getCurrentCmsSite();
+        final CommerceCommonI18NService commerceCommonI18NService = getCommerceCommonI18NService();
 
-		getBaseSiteService().setCurrentBaseSite(currentSite, false);
-		final Collection<LanguageModel> siteLanguages = commerceCommonI18NService.getAllLanguages();
-		if (siteLanguages.contains(previewLanguage))
-		{
-			// The preview language is supported
-			return previewLanguage;
-		}
-		return commerceCommonI18NService.getDefaultLanguage();
-	}
+        getBaseSiteService().setCurrentBaseSite(currentSite, false);
+        final Collection<LanguageModel> siteLanguages = commerceCommonI18NService.getAllLanguages();
+        if (siteLanguages.contains(previewLanguage)) {
+            // The preview language is supported
+            return previewLanguage;
+        }
+        return commerceCommonI18NService.getDefaultLanguage();
+    }
 
-	/**
-	 * Enables or disables language fall back
-	 * <p/>
-	 * 
-	 * @param httpRequest
-	 *           current request
-	 * @param enabled
-	 *           enabled or disabled
-	 */
-	protected void setFallbackLanguage(final HttpServletRequest httpRequest, final Boolean enabled)
-	{
-		final SessionService sessionService = getSessionService();
-		if (sessionService != null)
-		{
-			sessionService.setAttribute(LocalizableItem.LANGUAGE_FALLBACK_ENABLED, enabled);
-			sessionService.setAttribute(AbstractItemModel.LANGUAGE_FALLBACK_ENABLED_SERVICE_LAYER, enabled);
-		}
-	}
+    /**
+     * Enables or disables language fall back
+     * <p/>
+     * 
+     * @param httpRequest
+     *            current request
+     * @param enabled
+     *            enabled or disabled
+     */
+    protected void setFallbackLanguage(final HttpServletRequest httpRequest, final Boolean enabled) {
+        final SessionService sessionService = getSessionService();
+        if (sessionService != null) {
+            sessionService.setAttribute(LocalizableItem.LANGUAGE_FALLBACK_ENABLED, enabled);
+            sessionService.setAttribute(AbstractItemModel.LANGUAGE_FALLBACK_ENABLED_SERVICE_LAYER, enabled);
+        }
+    }
 
-	/**
-	 * Generates target URL accordingly to valid Preview Data passed as a parameter
-	 * <p/>
-	 * 
-	 * @param httpRequest
-	 *           current request
-	 * @param previewDataModel
-	 *           valid data model contains all necessary information
-	 * @return target URL
-	 */
-	protected String generatePreviewUrl(final HttpServletRequest httpRequest, final PreviewDataModel previewDataModel)
-	{
-		String generatedPreviewUrl = StringUtils.EMPTY;
-		if (previewDataModel != null && StringUtils.isBlank(generatedPreviewUrl))
-		{
-			final AbstractPageModel abstractPageModel = previewDataModel.getPage();
-			if (abstractPageModel == null)
-			{
-				generatedPreviewUrl = previewDataModel.getResourcePath();
-			}
-			else
-			{
-				generatedPreviewUrl = getPreviewDataModelUrlResolver().resolve(previewDataModel);
-			}
-		}
-		if (StringUtils.isBlank(generatedPreviewUrl))
-		{
-			generatedPreviewUrl = UrlUtils.extractHostInformationFromRequest(httpRequest, getCmsSiteService().getCurrentSite());
-		}
+    /**
+     * Generates target URL accordingly to valid Preview Data passed as a parameter
+     * <p/>
+     * 
+     * @param httpRequest
+     *            current request
+     * @param previewDataModel
+     *            valid data model contains all necessary information
+     * @return target URL
+     */
+    protected String generatePreviewUrl(final HttpServletRequest httpRequest, final PreviewDataModel previewDataModel) {
+        String generatedPreviewUrl = StringUtils.EMPTY;
+        if (previewDataModel != null && StringUtils.isBlank(generatedPreviewUrl)) {
+            final AbstractPageModel abstractPageModel = previewDataModel.getPage();
+            if (abstractPageModel == null) {
+                generatedPreviewUrl = previewDataModel.getResourcePath();
+            } else {
+                generatedPreviewUrl = getPreviewDataModelUrlResolver().resolve(previewDataModel);
+            }
+        }
+        if (StringUtils.isBlank(generatedPreviewUrl)) {
+            generatedPreviewUrl = UrlUtils.extractHostInformationFromRequest(httpRequest, getCmsSiteService()
+                    .getCurrentSite());
+        }
 
-		return generatedPreviewUrl;
-	}
+        return generatedPreviewUrl;
+    }
 
-	/**
-	 * Retrieves current mapping handler in order to generate proper target URL for CMS Page
-	 * <p/>
-	 * 
-	 * @return current mapping handler
-	 */
-	protected UrlResolver<PreviewDataModel> getPreviewDataModelUrlResolver()
-	{
-		return previewDataModelUrlResolver;
-	}
+    /**
+     * Retrieves current mapping handler in order to generate proper target URL for CMS Page
+     * <p/>
+     * 
+     * @return current mapping handler
+     */
+    protected UrlResolver<PreviewDataModel> getPreviewDataModelUrlResolver() {
+        return previewDataModelUrlResolver;
+    }
 
-	@Required
-	public void setPreviewDataModelUrlResolver(final UrlResolver<PreviewDataModel> previewDataModelUrlResolver)
-	{
-		this.previewDataModelUrlResolver = previewDataModelUrlResolver;
-	}
+    @Required
+    public void setPreviewDataModelUrlResolver(final UrlResolver<PreviewDataModel> previewDataModelUrlResolver) {
+        this.previewDataModelUrlResolver = previewDataModelUrlResolver;
+    }
 
-	protected CMSSiteService getCmsSiteService()
-	{
-		return cmsSiteService;
-	}
+    protected CMSSiteService getCmsSiteService() {
+        return cmsSiteService;
+    }
 
-	@Required
-	public void setCmsSiteService(final CMSSiteService cmsSiteService)
-	{
-		this.cmsSiteService = cmsSiteService;
-	}
+    @Required
+    public void setCmsSiteService(final CMSSiteService cmsSiteService) {
+        this.cmsSiteService = cmsSiteService;
+    }
 
-	protected SessionService getSessionService()
-	{
-		return sessionService;
-	}
+    protected SessionService getSessionService() {
+        return sessionService;
+    }
 
-	@Required
-	public void setSessionService(final SessionService sessionService)
-	{
-		this.sessionService = sessionService;
-	}
+    @Required
+    public void setSessionService(final SessionService sessionService) {
+        this.sessionService = sessionService;
+    }
 
-	protected CMSPreviewService getCmsPreviewService()
-	{
-		return cmsPreviewService;
-	}
+    protected CMSPreviewService getCmsPreviewService() {
+        return cmsPreviewService;
+    }
 
-	@Required
-	public void setCmsPreviewService(final CMSPreviewService cmsPreviewService)
-	{
-		this.cmsPreviewService = cmsPreviewService;
-	}
+    @Required
+    public void setCmsPreviewService(final CMSPreviewService cmsPreviewService) {
+        this.cmsPreviewService = cmsPreviewService;
+    }
 
-	protected CommerceCommonI18NService getCommerceCommonI18NService()
-	{
-		return commerceCommonI18NService;
-	}
+    protected CommerceCommonI18NService getCommerceCommonI18NService() {
+        return commerceCommonI18NService;
+    }
 
-	@Required
-	public void setCommerceCommonI18NService(final CommerceCommonI18NService commerceCommonI18NService)
-	{
-		this.commerceCommonI18NService = commerceCommonI18NService;
-	}
+    @Required
+    public void setCommerceCommonI18NService(final CommerceCommonI18NService commerceCommonI18NService) {
+        this.commerceCommonI18NService = commerceCommonI18NService;
+    }
 
-	protected BaseSiteService getBaseSiteService()
-	{
-		return baseSiteService;
-	}
+    protected BaseSiteService getBaseSiteService() {
+        return baseSiteService;
+    }
 
-	@Required
-	public void setBaseSiteService(final BaseSiteService baseSiteService)
-	{
-		this.baseSiteService = baseSiteService;
-	}
+    @Required
+    public void setBaseSiteService(final BaseSiteService baseSiteService) {
+        this.baseSiteService = baseSiteService;
+    }
 
-	protected ContextInformationLoader getContextInformationLoader()
-	{
-		return contextInformationLoader;
-	}
+    protected ContextInformationLoader getContextInformationLoader() {
+        return contextInformationLoader;
+    }
 
-	@Required
-	public void setContextInformationLoader(final ContextInformationLoader contextInformationLoader)
-	{
-		this.contextInformationLoader = contextInformationLoader;
-	}
+    @Required
+    public void setContextInformationLoader(final ContextInformationLoader contextInformationLoader) {
+        this.contextInformationLoader = contextInformationLoader;
+    }
 
-	protected CMSPageContextService getCmsPageContextService()
-	{
-		return cmsPageContextService;
-	}
+    protected CMSPageContextService getCmsPageContextService() {
+        return cmsPageContextService;
+    }
 
-	@Required
-	public void setCmsPageContextService(final CMSPageContextService cmsPageContextService)
-	{
-		this.cmsPageContextService = cmsPageContextService;
-	}
+    @Required
+    public void setCmsPageContextService(final CMSPageContextService cmsPageContextService) {
+        this.cmsPageContextService = cmsPageContextService;
+    }
 
-	protected CMSSiteModel getCurrentCmsSite()
-	{
-		try
-		{
-			return getCmsSiteService().getCurrentSite();
-		}
-		catch (final JaloObjectNoLongerValidException ignore)
-		{
-			return null;
-		}
-	}
+    protected CMSSiteModel getCurrentCmsSite() {
+        try {
+            return getCmsSiteService().getCurrentSite();
+        } catch (final JaloObjectNoLongerValidException ignore) {
+            return null;
+        }
+    }
 }

@@ -21,17 +21,15 @@ import java.lang.annotation.Retention;
 import javax.validation.Constraint;
 import javax.validation.Payload;
 
-
 @Retention(RUNTIME)
 @Constraint(validatedBy = EqualAttributesValidator.class)
 @Documented
-public @interface EqualAttributes
-{
-	String message();
+public @interface EqualAttributes {
+    String message();
 
-	Class<?>[] groups() default {};
+    Class<?>[] groups() default {};
 
-	Class<? extends Payload>[] payload() default {};
+    Class<? extends Payload>[] payload() default {};
 
-	String[] value();
+    String[] value();
 }

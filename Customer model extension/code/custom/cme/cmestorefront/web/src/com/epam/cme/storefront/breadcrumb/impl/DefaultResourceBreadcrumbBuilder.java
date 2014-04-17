@@ -30,95 +30,80 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
-
 /**
  * BasicBreadcrumbBuilder implementation
  */
-public class DefaultResourceBreadcrumbBuilder implements ResourceBreadcrumbBuilder
-{
-	private static final String LAST_LINK_CLASS = "active";
+public class DefaultResourceBreadcrumbBuilder implements ResourceBreadcrumbBuilder {
+    private static final String LAST_LINK_CLASS = "active";
 
-	private I18NService i18nService;
+    private I18NService i18nService;
 
-	private String parentBreadcrumbResourceKey;
-	private String parentBreadcrumbLinkPath;
+    private String parentBreadcrumbResourceKey;
+    private String parentBreadcrumbLinkPath;
 
-	protected I18NService getI18nService()
-	{
-		return i18nService;
-	}
+    protected I18NService getI18nService() {
+        return i18nService;
+    }
 
-	@Required
-	public void setI18nService(final I18NService i18nService)
-	{
-		this.i18nService = i18nService;
-	}
+    @Required
+    public void setI18nService(final I18NService i18nService) {
+        this.i18nService = i18nService;
+    }
 
-	protected MessageSource getMessageSource()
-	{
-		final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-		if (requestAttributes != null)
-		{
-			final HttpServletRequest request = requestAttributes.getRequest();
-			final Theme theme = RequestContextUtils.getTheme(request);
-			if (theme != null)
-			{
-				return theme.getMessageSource();
-			}
-		}
+    protected MessageSource getMessageSource() {
+        final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder
+                .getRequestAttributes();
+        if (requestAttributes != null) {
+            final HttpServletRequest request = requestAttributes.getRequest();
+            final Theme theme = RequestContextUtils.getTheme(request);
+            if (theme != null) {
+                return theme.getMessageSource();
+            }
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-	protected String getParentBreadcrumbResourceKey()
-	{
-		return parentBreadcrumbResourceKey;
-	}
+    protected String getParentBreadcrumbResourceKey() {
+        return parentBreadcrumbResourceKey;
+    }
 
-	// Optional
-	public void setParentBreadcrumbResourceKey(final String parentBreadcrumbResourceKey)
-	{
-		this.parentBreadcrumbResourceKey = parentBreadcrumbResourceKey;
-	}
+    // Optional
+    public void setParentBreadcrumbResourceKey(final String parentBreadcrumbResourceKey) {
+        this.parentBreadcrumbResourceKey = parentBreadcrumbResourceKey;
+    }
 
-	protected String getParentBreadcrumbLinkPath()
-	{
-		return parentBreadcrumbLinkPath;
-	}
+    protected String getParentBreadcrumbLinkPath() {
+        return parentBreadcrumbLinkPath;
+    }
 
-	// Optional
-	public void setParentBreadcrumbLinkPath(final String parentBreadcrumbLinkPath)
-	{
-		this.parentBreadcrumbLinkPath = parentBreadcrumbLinkPath;
-	}
+    // Optional
+    public void setParentBreadcrumbLinkPath(final String parentBreadcrumbLinkPath) {
+        this.parentBreadcrumbLinkPath = parentBreadcrumbLinkPath;
+    }
 
-	@Override
-	public List<Breadcrumb> getBreadcrumbs(final String resourceKey) throws IllegalArgumentException
-	{
-		final List<Breadcrumb> breadcrumbs = new ArrayList<Breadcrumb>();
-		final MessageSource messageSource = getMessageSource();
+    @Override
+    public List<Breadcrumb> getBreadcrumbs(final String resourceKey) throws IllegalArgumentException {
+        final List<Breadcrumb> breadcrumbs = new ArrayList<Breadcrumb>();
+        final MessageSource messageSource = getMessageSource();
 
+        if (getParentBreadcrumbResourceKey() != null && !getParentBreadcrumbResourceKey().isEmpty()) {
+            final String name = messageSource.getMessage(getParentBreadcrumbResourceKey(), null, getI18nService()
+                    .getCurrentLocale());
+            final String breadcrumbLinkPath = getParentBreadcrumbLinkPath();
+            final String link = breadcrumbLinkPath != null && !breadcrumbLinkPath.isEmpty() ? breadcrumbLinkPath : "#";
+            breadcrumbs.add(new Breadcrumb(link, name, null));
+        }
 
-		if (getParentBreadcrumbResourceKey() != null && !getParentBreadcrumbResourceKey().isEmpty())
-		{
-			final String name = messageSource
-					.getMessage(getParentBreadcrumbResourceKey(), null, getI18nService().getCurrentLocale());
-			final String breadcrumbLinkPath = getParentBreadcrumbLinkPath();
-			final String link = breadcrumbLinkPath != null && !breadcrumbLinkPath.isEmpty() ? breadcrumbLinkPath : "#";
-			breadcrumbs.add(new Breadcrumb(link, name, null));
-		}
+        if (StringUtils.isNotBlank(resourceKey)) {
+            final String name = messageSource.getMessage(resourceKey, null, getI18nService().getCurrentLocale());
+            breadcrumbs.add(new Breadcrumb("#", name, null));
+        }
 
-		if (StringUtils.isNotBlank(resourceKey))
-		{
-			final String name = messageSource.getMessage(resourceKey, null, getI18nService().getCurrentLocale());
-			breadcrumbs.add(new Breadcrumb("#", name, null));
-		}
+        if (!breadcrumbs.isEmpty()) {
+            breadcrumbs.get(breadcrumbs.size() - 1).setLinkClass(LAST_LINK_CLASS);
+        }
 
-		if (!breadcrumbs.isEmpty())
-		{
-			breadcrumbs.get(breadcrumbs.size() - 1).setLinkClass(LAST_LINK_CLASS);
-		}
-
-		return breadcrumbs;
-	}
+        return breadcrumbs;
+    }
 }

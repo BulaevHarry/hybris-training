@@ -33,7 +33,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-
 /**
  * Derived authentication provider supporting additional authentication checks. See
  * {@link de.hybris.platform.spring.security.RejectUserPreAuthenticationChecks}.
@@ -44,141 +43,117 @@ import org.springframework.security.core.userdetails.UserDetails;
  * </ul>
  * any login as admin disables SearchRestrictions and therefore no page can be viewed correctly
  */
-public class AcceleratorAuthenticationProvider extends CoreAuthenticationProvider
-{
-	private static final Logger LOG = Logger.getLogger(AcceleratorAuthenticationProvider.class);
-	private static final String ROLE_ADMIN_GROUP = "ROLE_" + Constants.USER.ADMIN_USERGROUP.toUpperCase();
+public class AcceleratorAuthenticationProvider extends CoreAuthenticationProvider {
+    private static final Logger LOG = Logger.getLogger(AcceleratorAuthenticationProvider.class);
+    private static final String ROLE_ADMIN_GROUP = "ROLE_" + Constants.USER.ADMIN_USERGROUP.toUpperCase();
 
-	private BruteForceAttackCounter bruteForceAttackCounter;
-	private UserService userService;
-	private ModelService modelService;
-	private GrantedAuthority adminAuthority = new SimpleGrantedAuthority(ROLE_ADMIN_GROUP);
-	private CartService cartService;
+    private BruteForceAttackCounter bruteForceAttackCounter;
+    private UserService userService;
+    private ModelService modelService;
+    private GrantedAuthority adminAuthority = new SimpleGrantedAuthority(ROLE_ADMIN_GROUP);
+    private CartService cartService;
 
-	@Override
-	public Authentication authenticate(final Authentication authentication) throws AuthenticationException
-	{
-		final String username = (authentication.getPrincipal() == null) ? "NONE_PROVIDED" : authentication.getName();
+    @Override
+    public Authentication authenticate(final Authentication authentication) throws AuthenticationException {
+        final String username = (authentication.getPrincipal() == null) ? "NONE_PROVIDED" : authentication.getName();
 
-		if (getBruteForceAttackCounter().isAttack(username))
-		{
-			try
-			{
-				final UserModel userModel = getUserService().getUserForUID(StringUtils.lowerCase(username));
-				userModel.setLoginDisabled(true);
-				getModelService().save(userModel);
-				bruteForceAttackCounter.resetUserCounter(userModel.getUid());
-			}
-			catch (final UnknownIdentifierException e)
-			{
-				LOG.warn("Brute force attack attempt for non existing user name " + username);
-			}
-			finally
-			{
-				throw new BadCredentialsException(messages.getMessage("CoreAuthenticationProvider.badCredentials", "Bad credentials"));
-			}
-		}
+        if (getBruteForceAttackCounter().isAttack(username)) {
+            try {
+                final UserModel userModel = getUserService().getUserForUID(StringUtils.lowerCase(username));
+                userModel.setLoginDisabled(true);
+                getModelService().save(userModel);
+                bruteForceAttackCounter.resetUserCounter(userModel.getUid());
+            } catch (final UnknownIdentifierException e) {
+                LOG.warn("Brute force attack attempt for non existing user name " + username);
+            } finally {
+                throw new BadCredentialsException(messages.getMessage("CoreAuthenticationProvider.badCredentials",
+                        "Bad credentials"));
+            }
+        }
 
-		// check if the user of the cart matches the current user and if the
-		// user is not anonymous. If otherwise, remove delete the session cart as it might
-		// be stolen / from another user
-		final String sessionCartUserId = getCartService().getSessionCart().getUser().getUid();
+        // check if the user of the cart matches the current user and if the
+        // user is not anonymous. If otherwise, remove delete the session cart as it might
+        // be stolen / from another user
+        final String sessionCartUserId = getCartService().getSessionCart().getUser().getUid();
 
-		if (!username.equals(sessionCartUserId) && !sessionCartUserId.equals(userService.getAnonymousUser().getUid()))
-		{
-			getCartService().setSessionCart(null);
-		}
+        if (!username.equals(sessionCartUserId) && !sessionCartUserId.equals(userService.getAnonymousUser().getUid())) {
+            getCartService().setSessionCart(null);
+        }
 
-		return super.authenticate(authentication);
-	}
+        return super.authenticate(authentication);
+    }
 
-	/**
-	 * 
-	 * @see de.hybris.platform.spring.security.CoreAuthenticationProvider#additionalAuthenticationChecks(org.springframework.security.core.userdetails.UserDetails,
-	 *      org.springframework.security.authentication.AbstractAuthenticationToken)
-	 */
-	@Override
-	protected void additionalAuthenticationChecks(final UserDetails details, final AbstractAuthenticationToken authentication)
-			throws AuthenticationException
-	{
-		super.additionalAuthenticationChecks(details, authentication);
+    /**
+     * 
+     * @see de.hybris.platform.spring.security.CoreAuthenticationProvider#additionalAuthenticationChecks(org.springframework.security.core.userdetails.UserDetails,
+     *      org.springframework.security.authentication.AbstractAuthenticationToken)
+     */
+    @Override
+    protected void additionalAuthenticationChecks(final UserDetails details,
+            final AbstractAuthenticationToken authentication) throws AuthenticationException {
+        super.additionalAuthenticationChecks(details, authentication);
 
-		// Check if user has supplied no password
-		if (StringUtils.isEmpty((String) authentication.getCredentials()))
-		{
-			throw new BadCredentialsException("Login without password");
-		}
+        // Check if user has supplied no password
+        if (StringUtils.isEmpty((String) authentication.getCredentials())) {
+            throw new BadCredentialsException("Login without password");
+        }
 
-		// Check if the user is in role admingroup
-		if (getAdminAuthority() != null && details.getAuthorities().contains(getAdminAuthority()))
-		{
-			throw new LockedException("Login attempt as " + Constants.USER.ADMIN_USERGROUP + " is rejected");
-		}
-	}
+        // Check if the user is in role admingroup
+        if (getAdminAuthority() != null && details.getAuthorities().contains(getAdminAuthority())) {
+            throw new LockedException("Login attempt as " + Constants.USER.ADMIN_USERGROUP + " is rejected");
+        }
+    }
 
-	/**
-	 * @param adminGroup
-	 *           the adminGroup to set
-	 */
-	public void setAdminGroup(final String adminGroup)
-	{
-		if (StringUtils.isBlank(adminGroup))
-		{
-			adminAuthority = null;
-		}
-		else
-		{
-			adminAuthority = new SimpleGrantedAuthority(adminGroup);
-		}
-	}
+    /**
+     * @param adminGroup
+     *            the adminGroup to set
+     */
+    public void setAdminGroup(final String adminGroup) {
+        if (StringUtils.isBlank(adminGroup)) {
+            adminAuthority = null;
+        } else {
+            adminAuthority = new SimpleGrantedAuthority(adminGroup);
+        }
+    }
 
-	protected GrantedAuthority getAdminAuthority()
-	{
-		return adminAuthority;
-	}
+    protected GrantedAuthority getAdminAuthority() {
+        return adminAuthority;
+    }
 
-	protected BruteForceAttackCounter getBruteForceAttackCounter()
-	{
-		return bruteForceAttackCounter;
-	}
+    protected BruteForceAttackCounter getBruteForceAttackCounter() {
+        return bruteForceAttackCounter;
+    }
 
-	@Required
-	public void setBruteForceAttackCounter(final BruteForceAttackCounter bruteForceAttackCounter)
-	{
-		this.bruteForceAttackCounter = bruteForceAttackCounter;
-	}
+    @Required
+    public void setBruteForceAttackCounter(final BruteForceAttackCounter bruteForceAttackCounter) {
+        this.bruteForceAttackCounter = bruteForceAttackCounter;
+    }
 
-	protected UserService getUserService()
-	{
-		return userService;
-	}
+    protected UserService getUserService() {
+        return userService;
+    }
 
-	@Required
-	public void setUserService(final UserService userService)
-	{
-		this.userService = userService;
-	}
+    @Required
+    public void setUserService(final UserService userService) {
+        this.userService = userService;
+    }
 
-	protected ModelService getModelService()
-	{
-		return modelService;
-	}
+    protected ModelService getModelService() {
+        return modelService;
+    }
 
-	@Required
-	public void setModelService(final ModelService modelService)
-	{
-		this.modelService = modelService;
-	}
+    @Required
+    public void setModelService(final ModelService modelService) {
+        this.modelService = modelService;
+    }
 
-	protected CartService getCartService()
-	{
-		return cartService;
-	}
+    protected CartService getCartService() {
+        return cartService;
+    }
 
-	@Required
-	public void setCartService(final CartService cartService)
-	{
-		this.cartService = cartService;
-	}
+    @Required
+    public void setCartService(final CartService cartService) {
+        this.cartService = cartService;
+    }
 
 }

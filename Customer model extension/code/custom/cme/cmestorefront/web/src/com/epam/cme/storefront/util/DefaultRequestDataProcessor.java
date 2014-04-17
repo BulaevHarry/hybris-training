@@ -20,31 +20,26 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.web.servlet.support.RequestDataValueProcessor;
 
+public class DefaultRequestDataProcessor implements RequestDataValueProcessor {
+    @Override
+    public String processAction(final HttpServletRequest request, final String action) {
+        return action;
+    }
 
-public class DefaultRequestDataProcessor implements RequestDataValueProcessor
-{
-	@Override
-	public String processAction(final HttpServletRequest request, final String action)
-	{
-		return action;
-	}
+    @Override
+    public String processFormFieldValue(final HttpServletRequest request, final String name, final String value,
+            final String type) {
+        return value;
+    }
 
-	@Override
-	public String processFormFieldValue(final HttpServletRequest request, final String name, final String value, final String type)
-	{
-		return value;
-	}
+    @Override
+    public Map<String, String> getExtraHiddenFields(final HttpServletRequest request) {
+        return new HashMap<String, String>();
+    }
 
-	@Override
-	public Map<String, String> getExtraHiddenFields(final HttpServletRequest request)
-	{
-		return new HashMap<String, String>();
-	}
-
-	@Override
-	public String processUrl(final HttpServletRequest request, final String url)
-	{
-		return url;
-	}
+    @Override
+    public String processUrl(final HttpServletRequest request, final String url) {
+        return url;
+    }
 
 }

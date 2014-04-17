@@ -16,47 +16,39 @@ package com.epam.cme.storefront.forms;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-
 /**
  * Form object for updating the password.
  */
-public class UpdatePasswordForm
-{
-	private String currentPassword;
-	private String newPassword;
-	private String checkNewPassword;
+public class UpdatePasswordForm {
+    private String currentPassword;
+    private String newPassword;
+    private String checkNewPassword;
 
-	@NotNull(message = "{profile.currentPassword.invalid}")
-	public String getCurrentPassword()
-	{
-		return currentPassword;
-	}
+    @NotNull(message = "{profile.currentPassword.invalid}")
+    public String getCurrentPassword() {
+        return currentPassword;
+    }
 
-	public void setCurrentPassword(final String currentPassword)
-	{
-		this.currentPassword = currentPassword;
-	}
+    public void setCurrentPassword(final String currentPassword) {
+        this.currentPassword = currentPassword;
+    }
 
-	@NotNull(message = "{profile.newPassword.invalid}")
-	@Size(min = 6, max = 255, message = "{updatePwd.pwd.invalid}")
-	public String getNewPassword()
-	{
-		return newPassword;
-	}
+    @NotNull(message = "{profile.newPassword.invalid}")
+    @Size(min = 6, max = 255, message = "{updatePwd.pwd.invalid}")
+    public String getNewPassword() {
+        return newPassword;
+    }
 
-	public void setNewPassword(final String newPassword)
-	{
-		this.newPassword = newPassword;
-	}
+    public void setNewPassword(final String newPassword) {
+        this.newPassword = newPassword;
+    }
 
-	@NotNull(message = "{profile.checkNewPassword.invalid}")
-	public String getCheckNewPassword()
-	{
-		return checkNewPassword;
-	}
+    @NotNull(message = "{profile.checkNewPassword.invalid}")
+    public String getCheckNewPassword() {
+        return checkNewPassword;
+    }
 
-	public void setCheckNewPassword(final String checkNewPassword)
-	{
-		this.checkNewPassword = checkNewPassword;
-	}
+    public void setCheckNewPassword(final String checkNewPassword) {
+        this.checkNewPassword = checkNewPassword;
+    }
 }

@@ -28,51 +28,42 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
  * Allows to overwrite the UiExperience level in the session via
- * de.hybris.platform.acceleratorservices.uiexperience.UiExperienceService#setOverrideUiExperienceLevel
+ * de.hybris.platform.acceleratorservices
+ * .uiexperience.UiExperienceService#setOverrideUiExperienceLevel
  */
-public class SetUiExperienceBeforeControllerHandler implements BeforeControllerHandler
-{
-	private static final Logger LOG = Logger.getLogger(SetLanguageBeforeControllerHandler.class);
+public class SetUiExperienceBeforeControllerHandler implements BeforeControllerHandler {
+    private static final Logger LOG = Logger.getLogger(SetLanguageBeforeControllerHandler.class);
 
-	public static final String DEFAULT_UI_EXPERIENCE_LEVEL_PARAM = "uiel";
+    public static final String DEFAULT_UI_EXPERIENCE_LEVEL_PARAM = "uiel";
 
-	@Resource(name = "uiExperienceService")
-	private UiExperienceService uiExperienceService;
+    @Resource(name = "uiExperienceService")
+    private UiExperienceService uiExperienceService;
 
-	@Resource(name = "enumerationService")
-	private EnumerationService enumerationService;
+    @Resource(name = "enumerationService")
+    private EnumerationService enumerationService;
 
-	@Override
-	public boolean beforeController(final HttpServletRequest request, final HttpServletResponse response)
-	{
-		if (isGetMethod(request))
-		{
-			final String uiExperienceLevelParam = request.getParameter(DEFAULT_UI_EXPERIENCE_LEVEL_PARAM);
-			if (StringUtils.isNotBlank(uiExperienceLevelParam))
-			{
-				try
-				{
-					final UiExperienceLevel uiExperienceLevel =
-						enumerationService.getEnumerationValue(UiExperienceLevel.class, uiExperienceLevelParam);
-					uiExperienceService.setOverrideUiExperienceLevel(uiExperienceLevel);
+    @Override
+    public boolean beforeController(final HttpServletRequest request, final HttpServletResponse response) {
+        if (isGetMethod(request)) {
+            final String uiExperienceLevelParam = request.getParameter(DEFAULT_UI_EXPERIENCE_LEVEL_PARAM);
+            if (StringUtils.isNotBlank(uiExperienceLevelParam)) {
+                try {
+                    final UiExperienceLevel uiExperienceLevel = enumerationService.getEnumerationValue(
+                            UiExperienceLevel.class, uiExperienceLevelParam);
+                    uiExperienceService.setOverrideUiExperienceLevel(uiExperienceLevel);
 
-				}
-				catch (final UnknownIdentifierException ile)
-				{
-					LOG.warn("Can not change uiExperienceLevel [" + uiExperienceLevelParam + "]. " + ile.getMessage
-						());
-					if (LOG.isDebugEnabled())
-					{
-						LOG.debug("Exception changing UiExperienceLevel", ile);
-					}
-				}
-			}
-		}
-		return true;
-	}
+                } catch (final UnknownIdentifierException ile) {
+                    LOG.warn("Can not change uiExperienceLevel [" + uiExperienceLevelParam + "]. " + ile.getMessage());
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug("Exception changing UiExperienceLevel", ile);
+                    }
+                }
+            }
+        }
+        return true;
+    }
 
-	protected boolean isGetMethod(final HttpServletRequest request)
-	{
-		return RequestMethod.GET.name().equalsIgnoreCase(request.getMethod());
-	}
+    protected boolean isGetMethod(final HttpServletRequest request) {
+        return RequestMethod.GET.name().equalsIgnoreCase(request.getMethod());
+    }
 }

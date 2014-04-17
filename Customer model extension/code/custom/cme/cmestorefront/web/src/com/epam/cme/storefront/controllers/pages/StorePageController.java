@@ -44,148 +44,133 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.util.UriComponentsBuilder;
 
-
 /**
  */
 @Controller
 @RequestMapping(value = "/**/store")
-public class StorePageController extends AbstractPageController
-{
-	protected static final Logger LOG = Logger.getLogger(StorePageController.class);
-	/**
-	 * We use this suffix pattern because of an issue with Spring 3.1 where a Uri value is incorrectly extracted if it
-	 * contains on or more '.' characters. Please see https://jira.springsource.org/browse/SPR-6164 for a discussion on
-	 * the issue and future resolution.
-	 */
-	private static final String STORE_CODE_PATH_VARIABLE_PATTERN = "/{storeCode:.*}";
+public class StorePageController extends AbstractPageController {
+    protected static final Logger LOG = Logger.getLogger(StorePageController.class);
+    /**
+     * We use this suffix pattern because of an issue with Spring 3.1 where a Uri value is
+     * incorrectly extracted if it contains on or more '.' characters. Please see
+     * https://jira.springsource.org/browse/SPR-6164 for a discussion on the issue and future
+     * resolution.
+     */
+    private static final String STORE_CODE_PATH_VARIABLE_PATTERN = "/{storeCode:.*}";
 
-	private static final String STORE_FINDER_CMS_PAGE_LABEL = "storefinder";
-	private static final String GOOGLE_API_KEY_ID = "googleApiKey";
-	private static final String GOOGLE_API_VERSION = "googleApiVersion";
+    private static final String STORE_FINDER_CMS_PAGE_LABEL = "storefinder";
+    private static final String GOOGLE_API_KEY_ID = "googleApiKey";
+    private static final String GOOGLE_API_VERSION = "googleApiVersion";
 
-	@Resource(name = "configurationService")
-	private ConfigurationService configurationService;
+    @Resource(name = "configurationService")
+    private ConfigurationService configurationService;
 
-	@Resource(name = "storeBreadcrumbBuilder")
-	private StoreBreadcrumbBuilder storeBreadcrumbBuilder;
+    @Resource(name = "storeBreadcrumbBuilder")
+    private StoreBreadcrumbBuilder storeBreadcrumbBuilder;
 
-	@Resource(name = "storeFinderFacade")
-	private StoreFinderFacade storeFinderFacade;
+    @Resource(name = "storeFinderFacade")
+    private StoreFinderFacade storeFinderFacade;
 
-	@ModelAttribute("googleApiVersion")
-	public String getGoogleApiVersion()
-	{
-		return configurationService.getConfiguration().getString(GOOGLE_API_VERSION);
-	}
+    @ModelAttribute("googleApiVersion")
+    public String getGoogleApiVersion() {
+        return configurationService.getConfiguration().getString(GOOGLE_API_VERSION);
+    }
 
-	@ModelAttribute("googleApiKey")
-	public String getGoogleApiKey(final HttpServletRequest request)
-	{
-		final String googleApiKey = getHostConfigService().getProperty(GOOGLE_API_KEY_ID, request.getServerName());
-		if (StringUtils.isEmpty(googleApiKey))
-		{
-			LOG.warn("No Google API key found for server: " + request.getServerName());
-		}
-		return googleApiKey;
-	}
+    @ModelAttribute("googleApiKey")
+    public String getGoogleApiKey(final HttpServletRequest request) {
+        final String googleApiKey = getHostConfigService().getProperty(GOOGLE_API_KEY_ID, request.getServerName());
+        if (StringUtils.isEmpty(googleApiKey)) {
+            LOG.warn("No Google API key found for server: " + request.getServerName());
+        }
+        return googleApiKey;
+    }
 
-	@RequestMapping(value = STORE_CODE_PATH_VARIABLE_PATTERN, method = RequestMethod.GET)
-	public String storeDetail(@PathVariable("storeCode") final String storeCode,
-			@RequestParam(value = "lat", required = false) final Double sourceLatitude,
-			@RequestParam(value = "long", required = false) final Double sourceLongitude,
-			@RequestParam(value = "q", required = false) final String locationQuery, final Model model)
-			throws CMSItemNotFoundException
-	{
-		final StoreFinderForm storeFinderForm = new StoreFinderForm();
-		model.addAttribute("storeFinderForm", storeFinderForm);
-		final StorePositionForm storePositionForm = new StorePositionForm();
-		model.addAttribute("storePositionForm", storePositionForm);
+    @RequestMapping(value = STORE_CODE_PATH_VARIABLE_PATTERN, method = RequestMethod.GET)
+    public String storeDetail(@PathVariable("storeCode") final String storeCode,
+            @RequestParam(value = "lat", required = false) final Double sourceLatitude,
+            @RequestParam(value = "long", required = false) final Double sourceLongitude,
+            @RequestParam(value = "q", required = false) final String locationQuery, final Model model)
+            throws CMSItemNotFoundException {
+        final StoreFinderForm storeFinderForm = new StoreFinderForm();
+        model.addAttribute("storeFinderForm", storeFinderForm);
+        final StorePositionForm storePositionForm = new StorePositionForm();
+        model.addAttribute("storePositionForm", storePositionForm);
 
-		if (sourceLatitude != null && sourceLongitude != null)
-		{
-			final GeoPoint geoPoint = new GeoPoint();
-			geoPoint.setLatitude(sourceLatitude);
-			geoPoint.setLongitude(sourceLongitude);
+        if (sourceLatitude != null && sourceLongitude != null) {
+            final GeoPoint geoPoint = new GeoPoint();
+            geoPoint.setLatitude(sourceLatitude);
+            geoPoint.setLongitude(sourceLongitude);
 
-			// Get the point of service data with the formatted distance
-			final PointOfServiceData pointOfServiceData = storeFinderFacade.getPointOfServiceForNameAndPosition(storeCode, geoPoint);
-			pointOfServiceData.setUrl("/store/" + pointOfServiceData.getName());
-			model.addAttribute("store", pointOfServiceData);
+            // Get the point of service data with the formatted distance
+            final PointOfServiceData pointOfServiceData = storeFinderFacade.getPointOfServiceForNameAndPosition(
+                    storeCode, geoPoint);
+            pointOfServiceData.setUrl("/store/" + pointOfServiceData.getName());
+            model.addAttribute("store", pointOfServiceData);
 
-			if (locationQuery != null && !locationQuery.isEmpty())
-			{
-				model.addAttribute("locationQuery", locationQuery);
+            if (locationQuery != null && !locationQuery.isEmpty()) {
+                model.addAttribute("locationQuery", locationQuery);
 
-				// Build URL to location query
-				final String storeFinderSearchUrl = UriComponentsBuilder.fromPath("/store-finder").queryParam("q", locationQuery)
-						.build().toString();
-				model.addAttribute(WebConstants.BREADCRUMBS_KEY,
-						storeBreadcrumbBuilder.getBreadcrumbs(pointOfServiceData, storeFinderSearchUrl));
-			}
-			else
-			{
-				// Build URL to position query
-				final String storeFinderSearchUrl = UriComponentsBuilder.fromPath("/store-finder/position")
-						.queryParam("lat", sourceLatitude).queryParam("long", sourceLongitude).build().toString();
-				model.addAttribute(WebConstants.BREADCRUMBS_KEY,
-						storeBreadcrumbBuilder.getBreadcrumbs(pointOfServiceData, storeFinderSearchUrl));
-			}
+                // Build URL to location query
+                final String storeFinderSearchUrl = UriComponentsBuilder.fromPath("/store-finder")
+                        .queryParam("q", locationQuery).build().toString();
+                model.addAttribute(WebConstants.BREADCRUMBS_KEY,
+                        storeBreadcrumbBuilder.getBreadcrumbs(pointOfServiceData, storeFinderSearchUrl));
+            } else {
+                // Build URL to position query
+                final String storeFinderSearchUrl = UriComponentsBuilder.fromPath("/store-finder/position")
+                        .queryParam("lat", sourceLatitude).queryParam("long", sourceLongitude).build().toString();
+                model.addAttribute(WebConstants.BREADCRUMBS_KEY,
+                        storeBreadcrumbBuilder.getBreadcrumbs(pointOfServiceData, storeFinderSearchUrl));
+            }
 
-			setUpMetaData(model, pointOfServiceData);
-		}
-		else
-		{
-			// No source point specified - just lookup the POS by name
-			final PointOfServiceData pointOfServiceData = storeFinderFacade.getPointOfServiceForName(storeCode);
-			pointOfServiceData.setUrl("/store/" + pointOfServiceData.getName());
-			model.addAttribute("store", pointOfServiceData);
-			model.addAttribute(WebConstants.BREADCRUMBS_KEY, storeBreadcrumbBuilder.getBreadcrumbs(pointOfServiceData));
+            setUpMetaData(model, pointOfServiceData);
+        } else {
+            // No source point specified - just lookup the POS by name
+            final PointOfServiceData pointOfServiceData = storeFinderFacade.getPointOfServiceForName(storeCode);
+            pointOfServiceData.setUrl("/store/" + pointOfServiceData.getName());
+            model.addAttribute("store", pointOfServiceData);
+            model.addAttribute(WebConstants.BREADCRUMBS_KEY, storeBreadcrumbBuilder.getBreadcrumbs(pointOfServiceData));
 
-			setUpMetaData(model, pointOfServiceData);
-		}
+            setUpMetaData(model, pointOfServiceData);
+        }
 
-		storeCmsPageInModel(model, getStoreFinderPage());
-		return ControllerConstants.Views.Pages.StoreFinder.StoreFinderDetailsPage;
-	}
+        storeCmsPageInModel(model, getStoreFinderPage());
+        return ControllerConstants.Views.Pages.StoreFinder.StoreFinderDetailsPage;
+    }
 
-	protected void setUpMetaData(final Model model, final PointOfServiceData pointOfServiceData)
-	{
-		final String metaKeywords = createMetaKeywords(pointOfServiceData);
-		final String metaDescription = MetaSanitizerUtil.sanitizeDescription(pointOfServiceData.getDescription());
-		setUpMetaData(model, metaKeywords, metaDescription);
-	}
+    protected void setUpMetaData(final Model model, final PointOfServiceData pointOfServiceData) {
+        final String metaKeywords = createMetaKeywords(pointOfServiceData);
+        final String metaDescription = MetaSanitizerUtil.sanitizeDescription(pointOfServiceData.getDescription());
+        setUpMetaData(model, metaKeywords, metaDescription);
+    }
 
-	@RequestMapping(value = STORE_CODE_PATH_VARIABLE_PATTERN + "/map", method = RequestMethod.GET)
-	public String viewMap(@PathVariable("storeCode") final String storeCode, final Model model) throws GeoLocatorException,
-			MapServiceException, CMSItemNotFoundException
-	{
-		final StoreFinderForm storeFinderForm = new StoreFinderForm();
-		model.addAttribute("storeFinderForm", storeFinderForm);
-		final StorePositionForm storePositionForm = new StorePositionForm();
-		model.addAttribute("storePositionForm", storePositionForm);
+    @RequestMapping(value = STORE_CODE_PATH_VARIABLE_PATTERN + "/map", method = RequestMethod.GET)
+    public String viewMap(@PathVariable("storeCode") final String storeCode, final Model model)
+            throws GeoLocatorException, MapServiceException, CMSItemNotFoundException {
+        final StoreFinderForm storeFinderForm = new StoreFinderForm();
+        model.addAttribute("storeFinderForm", storeFinderForm);
+        final StorePositionForm storePositionForm = new StorePositionForm();
+        model.addAttribute("storePositionForm", storePositionForm);
 
-		final PointOfServiceData pointOfServiceData = storeFinderFacade.getPointOfServiceForName(storeCode);
-		pointOfServiceData.setUrl("/store/" + pointOfServiceData.getName());
-		model.addAttribute("store", pointOfServiceData);
+        final PointOfServiceData pointOfServiceData = storeFinderFacade.getPointOfServiceForName(storeCode);
+        pointOfServiceData.setUrl("/store/" + pointOfServiceData.getName());
+        model.addAttribute("store", pointOfServiceData);
 
-		storeCmsPageInModel(model, getStoreFinderPage());
-		model.addAttribute(WebConstants.BREADCRUMBS_KEY,
-				storeBreadcrumbBuilder.getBreadcrumbsForSubPage(pointOfServiceData, "storeDetails.map.link"));
+        storeCmsPageInModel(model, getStoreFinderPage());
+        model.addAttribute(WebConstants.BREADCRUMBS_KEY,
+                storeBreadcrumbBuilder.getBreadcrumbsForSubPage(pointOfServiceData, "storeDetails.map.link"));
 
-		return ControllerConstants.Views.Pages.StoreFinder.StoreFinderViewMapPage;
-	}
+        return ControllerConstants.Views.Pages.StoreFinder.StoreFinderViewMapPage;
+    }
 
-	protected AbstractPageModel getStoreFinderPage() throws CMSItemNotFoundException
-	{
-		return getContentPageForLabelOrId(STORE_FINDER_CMS_PAGE_LABEL);
-	}
+    protected AbstractPageModel getStoreFinderPage() throws CMSItemNotFoundException {
+        return getContentPageForLabelOrId(STORE_FINDER_CMS_PAGE_LABEL);
+    }
 
-	private String createMetaKeywords(final PointOfServiceData pointOfServiceData)
-	{
-		final AddressData address = pointOfServiceData.getAddress();
+    private String createMetaKeywords(final PointOfServiceData pointOfServiceData) {
+        final AddressData address = pointOfServiceData.getAddress();
 
-		final String[] keywords =
-		{ address.getTown(), address.getPostalCode(), address.getCountry().getName() };
-		return StringUtils.join(keywords, ',');
-	}
+        final String[] keywords = { address.getTown(), address.getPostalCode(), address.getCountry().getName() };
+        return StringUtils.join(keywords, ',');
+    }
 }

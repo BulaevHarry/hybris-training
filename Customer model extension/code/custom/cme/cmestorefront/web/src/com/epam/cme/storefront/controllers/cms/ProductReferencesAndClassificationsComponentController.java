@@ -30,32 +30,31 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-
 /**
- * Component controller that displays controller for the product references and feature compatible products
+ * Component controller that displays controller for the product references and feature compatible
+ * products
  */
 @Controller("ProductReferencesAndClassificationsComponentController")
 @RequestMapping(value = TelcoControllerConstants.Actions.Cms.ProductReferencesAndClassificationsComponent)
-public class ProductReferencesAndClassificationsComponentController extends ProductReferencesComponentController
-{
-	@Resource(name = "telcoProductFacade")
-	private TelcoProductFacade telcoProductFacade;
+public class ProductReferencesAndClassificationsComponentController extends ProductReferencesComponentController {
+    @Resource(name = "telcoProductFacade")
+    private TelcoProductFacade telcoProductFacade;
 
-	@Override
-	protected void fillModel(final HttpServletRequest request, final Model model, final ProductReferencesComponentModel component)
-	{
-		final ProductReferencesAndClassificationsComponentModel refAndClassificationsComponent = (ProductReferencesAndClassificationsComponentModel) component;
+    @Override
+    protected void fillModel(final HttpServletRequest request, final Model model,
+            final ProductReferencesComponentModel component) {
+        final ProductReferencesAndClassificationsComponentModel refAndClassificationsComponent = (ProductReferencesAndClassificationsComponentModel) component;
 
-		final List<ProductData> referenceAndClassificationsProducts = telcoProductFacade
-				.getProductReferencesAndFeatureCompatibleProductsForCode(ProductDataHelper.getCurrentProduct(request),
-						refAndClassificationsComponent.getProductReferenceTypes(),
-						ProductReferencesComponentController.PRODUCT_OPTIONS,
-						refAndClassificationsComponent.getMaximumNumberProducts(),
-						refAndClassificationsComponent.getClassAttributeAssignment(),
-						refAndClassificationsComponent.getTargetItemType());
+        final List<ProductData> referenceAndClassificationsProducts = telcoProductFacade
+                .getProductReferencesAndFeatureCompatibleProductsForCode(ProductDataHelper.getCurrentProduct(request),
+                        refAndClassificationsComponent.getProductReferenceTypes(),
+                        ProductReferencesComponentController.PRODUCT_OPTIONS,
+                        refAndClassificationsComponent.getMaximumNumberProducts(),
+                        refAndClassificationsComponent.getClassAttributeAssignment(),
+                        refAndClassificationsComponent.getTargetItemType());
 
-		model.addAttribute("title", refAndClassificationsComponent.getTitle());
+        model.addAttribute("title", refAndClassificationsComponent.getTitle());
 
-		model.addAttribute("productAccessories", referenceAndClassificationsProducts);
-	}
+        model.addAttribute("productAccessories", referenceAndClassificationsProducts);
+    }
 }

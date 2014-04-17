@@ -29,29 +29,25 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-
 /**
  *
  */
 @Controller("CMSLinkComponentController")
 @RequestMapping(value = ControllerConstants.Actions.Cms.CMSLinkComponent)
-public class CMSLinkComponentController extends AbstractCMSComponentController<CMSLinkComponentModel>
-{
-	@Resource(name = "productUrlConverter")
-	private Converter<ProductModel, ProductData> productUrlConverter;
+public class CMSLinkComponentController extends AbstractCMSComponentController<CMSLinkComponentModel> {
+    @Resource(name = "productUrlConverter")
+    private Converter<ProductModel, ProductData> productUrlConverter;
 
-	@Resource(name = "categoryUrlConverter")
-	private Converter<CategoryModel, CategoryData> categoryUrlConverter;
+    @Resource(name = "categoryUrlConverter")
+    private Converter<CategoryModel, CategoryData> categoryUrlConverter;
 
-	@Override
-	protected void fillModel(final HttpServletRequest request, final Model model, final CMSLinkComponentModel component)
-	{
-		model.addAttribute("url", getUrl(component));
-	}
+    @Override
+    protected void fillModel(final HttpServletRequest request, final Model model, final CMSLinkComponentModel component) {
+        model.addAttribute("url", getUrl(component));
+    }
 
-	protected String getUrl(final CMSLinkComponentModel component)
-	{
-		// Call the function getUrlForCMSLinkComponent so that this code is only in one place
-		return Functions.getUrlForCMSLinkComponent(component, null, productUrlConverter, categoryUrlConverter);
-	}
+    protected String getUrl(final CMSLinkComponentModel component) {
+        // Call the function getUrlForCMSLinkComponent so that this code is only in one place
+        return Functions.getUrlForCMSLinkComponent(component, null, productUrlConverter, categoryUrlConverter);
+    }
 }

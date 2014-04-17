@@ -30,43 +30,37 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-
 /**
  * Checkout Register Controller. Handles login and register for the checkout flow.
  */
 @Controller
 @RequestMapping(value = "/register/checkout")
-public class CheckoutRegisterController extends AbstractRegisterPageController
-{
-	@Override
-	protected AbstractPageModel getCmsPage() throws CMSItemNotFoundException
-	{
-		return getContentPageForLabelOrId("checkout-register");
-	}
+public class CheckoutRegisterController extends AbstractRegisterPageController {
+    @Override
+    protected AbstractPageModel getCmsPage() throws CMSItemNotFoundException {
+        return getContentPageForLabelOrId("checkout-register");
+    }
 
-	@Override
-	protected String getSuccessRedirect(final HttpServletRequest request, final HttpServletResponse response)
-	{
-		//Redirect to the main checkout controller to handle checkout.
-		return "/checkout";
-	}
+    @Override
+    protected String getSuccessRedirect(final HttpServletRequest request, final HttpServletResponse response) {
+        // Redirect to the main checkout controller to handle checkout.
+        return "/checkout";
+    }
 
-	@Override
-	protected String getView()
-	{
-		return ControllerConstants.Views.Pages.Checkout.CheckoutRegisterPage;
-	}
+    @Override
+    protected String getView() {
+        return ControllerConstants.Views.Pages.Checkout.CheckoutRegisterPage;
+    }
 
-	@RequestMapping(method = RequestMethod.GET)
-	public String doCheckoutRegister(final Model model) throws CMSItemNotFoundException
-	{
-		return getDefaultRegistrationPage(model);
-	}
+    @RequestMapping(method = RequestMethod.GET)
+    public String doCheckoutRegister(final Model model) throws CMSItemNotFoundException {
+        return getDefaultRegistrationPage(model);
+    }
 
-	@RequestMapping(value = "/newcustomer", method = RequestMethod.POST)
-	public String doCheckoutRegister(@Valid final RegisterForm form, final BindingResult bindingResult, final Model model,
-			final HttpServletRequest request, final HttpServletResponse response) throws CMSItemNotFoundException
-	{
-		return processRegisterUserRequest(null, form, bindingResult, model, request, response);
-	}
+    @RequestMapping(value = "/newcustomer", method = RequestMethod.POST)
+    public String doCheckoutRegister(@Valid final RegisterForm form, final BindingResult bindingResult,
+            final Model model, final HttpServletRequest request, final HttpServletResponse response)
+            throws CMSItemNotFoundException {
+        return processRegisterUserRequest(null, form, bindingResult, model, request, response);
+    }
 }

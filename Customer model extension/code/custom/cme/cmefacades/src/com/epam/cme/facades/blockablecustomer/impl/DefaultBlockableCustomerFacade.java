@@ -29,40 +29,38 @@ import com.epam.cme.facades.blockablecustomer.BlockableCustomerFacade;
 import com.epam.cme.facades.user.data.CmeRegisterData;
 import com.epam.cme.services.organization.OrganizationService;
 
+public class DefaultBlockableCustomerFacade extends DefaultCustomerFacade implements BlockableCustomerFacade {
 
-public class DefaultBlockableCustomerFacade extends DefaultCustomerFacade implements BlockableCustomerFacade
-{
+    private OrganizationService organizationService;
 
-	private OrganizationService organizationService;
+    @Override
+    public void register(final CmeRegisterData cmeRegisterData) throws DuplicateUidException,
+            UnknownIdentifierException, IllegalArgumentException {
+        validateParameterNotNullStandardMessage("cmeRegisterData", cmeRegisterData);
+        Assert.hasText(cmeRegisterData.getFirstName(), "The field [FirstName] cannot be empty");
+        Assert.hasText(cmeRegisterData.getLastName(), "The field [LastName] cannot be empty");
+        Assert.hasText(cmeRegisterData.getLogin(), "The field [Login] cannot be empty");
+        Assert.notNull(cmeRegisterData.getOrganizationsIds(), "The field [Organizations] cannot be empty");
+        final BlockableCustomerModel newCustomer = getModelService().create(BlockableCustomerModel.class);
+        newCustomer.setName(getCustomerNameStrategy().getName(cmeRegisterData.getFirstName(),
+                cmeRegisterData.getLastName()));
+        newCustomer.setOrganizations(organizationService.getOrganizationsByIds(cmeRegisterData.getOrganizationsIds()));
+        if (StringUtils.isNotBlank(cmeRegisterData.getFirstName())
+                && StringUtils.isNotBlank(cmeRegisterData.getLastName())) {
+            newCustomer.setName(getCustomerNameStrategy().getName(cmeRegisterData.getFirstName(),
+                    cmeRegisterData.getLastName()));
+        }
+        final TitleModel title = getUserService().getTitleForCode(cmeRegisterData.getTitleCode());
+        newCustomer.setTitle(title);
+        setUidForRegister(cmeRegisterData, newCustomer);
+        newCustomer.setSessionLanguage(getCommonI18NService().getCurrentLanguage());
+        newCustomer.setSessionCurrency(getCommonI18NService().getCurrentCurrency());
+        getCustomerAccountService().register(newCustomer, cmeRegisterData.getPassword());
+    }
 
-	@Override
-	public void register(final CmeRegisterData cmeRegisterData) throws DuplicateUidException, UnknownIdentifierException,
-			IllegalArgumentException
-	{
-		validateParameterNotNullStandardMessage("cmeRegisterData", cmeRegisterData);
-		Assert.hasText(cmeRegisterData.getFirstName(), "The field [FirstName] cannot be empty");
-		Assert.hasText(cmeRegisterData.getLastName(), "The field [LastName] cannot be empty");
-		Assert.hasText(cmeRegisterData.getLogin(), "The field [Login] cannot be empty");
-		Assert.notNull(cmeRegisterData.getOrganizationsIds(), "The field [Organizations] cannot be empty");
-		final BlockableCustomerModel newCustomer = getModelService().create(BlockableCustomerModel.class);
-		newCustomer.setName(getCustomerNameStrategy().getName(cmeRegisterData.getFirstName(), cmeRegisterData.getLastName()));
-		newCustomer.setOrganizations(organizationService.getOrganizationsByIds(cmeRegisterData.getOrganizationsIds()));
-		if (StringUtils.isNotBlank(cmeRegisterData.getFirstName()) && StringUtils.isNotBlank(cmeRegisterData.getLastName()))
-		{
-			newCustomer.setName(getCustomerNameStrategy().getName(cmeRegisterData.getFirstName(), cmeRegisterData.getLastName()));
-		}
-		final TitleModel title = getUserService().getTitleForCode(cmeRegisterData.getTitleCode());
-		newCustomer.setTitle(title);
-		setUidForRegister(cmeRegisterData, newCustomer);
-		newCustomer.setSessionLanguage(getCommonI18NService().getCurrentLanguage());
-		newCustomer.setSessionCurrency(getCommonI18NService().getCurrentCurrency());
-		getCustomerAccountService().register(newCustomer, cmeRegisterData.getPassword());
-	}
-
-	@Required
-	public void setOrganizationService(final OrganizationService organizationService)
-	{
-		this.organizationService = organizationService;
-	}
+    @Required
+    public void setOrganizationService(final OrganizationService organizationService) {
+        this.organizationService = organizationService;
+    }
 
 }

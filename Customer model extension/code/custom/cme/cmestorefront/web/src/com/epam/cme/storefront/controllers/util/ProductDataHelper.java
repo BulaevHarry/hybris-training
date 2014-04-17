@@ -15,21 +15,17 @@ package com.epam.cme.storefront.controllers.util;
 
 import javax.servlet.http.HttpServletRequest;
 
-
 /**
  * Helper that contains product data related utility methods
  */
-public class ProductDataHelper
-{
-	public static final String CURRENT_PRODUCT = "currentProductCode";
+public class ProductDataHelper {
+    public static final String CURRENT_PRODUCT = "currentProductCode";
 
-	public static String getCurrentProduct(final HttpServletRequest request)
-	{
-		return (String) request.getAttribute(CURRENT_PRODUCT);
-	}
+    public static String getCurrentProduct(final HttpServletRequest request) {
+        return (String) request.getAttribute(CURRENT_PRODUCT);
+    }
 
-	public static void setCurrentProduct(final HttpServletRequest request, final String currentProductCode)
-	{
-		request.setAttribute(CURRENT_PRODUCT, currentProductCode);
-	}
+    public static void setCurrentProduct(final HttpServletRequest request, final String currentProductCode) {
+        request.setAttribute(CURRENT_PRODUCT, currentProductCode);
+    }
 }

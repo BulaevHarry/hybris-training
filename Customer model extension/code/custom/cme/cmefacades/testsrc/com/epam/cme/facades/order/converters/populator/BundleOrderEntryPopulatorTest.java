@@ -24,41 +24,36 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-
 @UnitTest
-public class BundleOrderEntryPopulatorTest
-{
+public class BundleOrderEntryPopulatorTest {
 
-	@Rule
-	public ExpectedException thrown = ExpectedException.none();
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
 
-	private final BundleOrderEntryPopulator bundlingOrderEntryPopulator = new BundleOrderEntryPopulator();
+    private final BundleOrderEntryPopulator bundlingOrderEntryPopulator = new BundleOrderEntryPopulator();
 
-	@Test
-	public void testSourceParamCannotBeNull()
-	{
-		thrown.expect(IllegalArgumentException.class);
-		thrown.expectMessage("source cannot be null");
+    @Test
+    public void testSourceParamCannotBeNull() {
+        thrown.expect(IllegalArgumentException.class);
+        thrown.expectMessage("source cannot be null");
 
-		bundlingOrderEntryPopulator.populate(null, new OrderEntryData());
-	}
+        bundlingOrderEntryPopulator.populate(null, new OrderEntryData());
+    }
 
-	@Test
-	public void testTargetParamCannotBeNull()
-	{
-		thrown.expect(IllegalArgumentException.class);
-		thrown.expectMessage("target cannot be null");
+    @Test
+    public void testTargetParamCannotBeNull() {
+        thrown.expect(IllegalArgumentException.class);
+        thrown.expectMessage("target cannot be null");
 
-		bundlingOrderEntryPopulator.populate(new OrderEntryModel(), null);
-	}
+        bundlingOrderEntryPopulator.populate(new OrderEntryModel(), null);
+    }
 
-	@Test
-	public void testStandAloneProductsNotEditable()
-	{
-		final OrderEntryData entry = new OrderEntryData();
-		final CartEntryModel cartEntry = new CartEntryModel();
-		cartEntry.setBundleNo(Integer.valueOf(0));
-		bundlingOrderEntryPopulator.adjustEditable(entry, cartEntry, null);
-		Assert.assertFalse(entry.isEditable());
-	}
+    @Test
+    public void testStandAloneProductsNotEditable() {
+        final OrderEntryData entry = new OrderEntryData();
+        final CartEntryModel cartEntry = new CartEntryModel();
+        cartEntry.setBundleNo(Integer.valueOf(0));
+        bundlingOrderEntryPopulator.adjustEditable(entry, cartEntry, null);
+        Assert.assertFalse(entry.isEditable());
+    }
 }

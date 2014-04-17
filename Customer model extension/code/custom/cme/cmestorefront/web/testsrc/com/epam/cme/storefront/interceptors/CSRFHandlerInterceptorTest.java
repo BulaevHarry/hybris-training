@@ -34,96 +34,85 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
-
 @IntegrationTest
-public class CSRFHandlerInterceptorTest extends ServicelayerTest
-{
-	private static final String SESSION_CSRF_ATTRIBUTE = "com.epam.cme.storefront.util.CSRFTokenManager.tokenval";
-	private static final String CSRF_URL_PROPERTY = "csrf.allowed.url.patterns";
+public class CSRFHandlerInterceptorTest extends ServicelayerTest {
+    private static final String SESSION_CSRF_ATTRIBUTE = "com.epam.cme.storefront.util.CSRFTokenManager.tokenval";
+    private static final String CSRF_URL_PROPERTY = "csrf.allowed.url.patterns";
 
-	@InjectMocks
-	private final CSRFHandlerInterceptor csrfHandlerInterceptor = new CSRFHandlerInterceptor();
+    @InjectMocks
+    private final CSRFHandlerInterceptor csrfHandlerInterceptor = new CSRFHandlerInterceptor();
 
-	@Mock
-	private HttpServletRequest request;
-	@Mock
-	private HttpServletResponse response;
+    @Mock
+    private HttpServletRequest request;
+    @Mock
+    private HttpServletResponse response;
 
-	@Before
-	public void prepare()
-	{
-		MockitoAnnotations.initMocks(this);
-	}
+    @Before
+    public void prepare() {
+        MockitoAnnotations.initMocks(this);
+    }
 
+    @Test
+    public void shouldNotCheckWithNonPostRequest() throws Exception {
+        BDDMockito.given(request.getMethod()).willReturn("GET");
+        boolean verified = csrfHandlerInterceptor.preHandle(request, response, null);
+        Assert.assertEquals(true, verified);
 
-	@Test
-	public void shouldNotCheckWithNonPostRequest() throws Exception
-	{
-		BDDMockito.given(request.getMethod()).willReturn("GET");
-		boolean verified = csrfHandlerInterceptor.preHandle(request, response, null);
-		Assert.assertEquals(true, verified);
+        BDDMockito.given(request.getMethod()).willReturn("PUT");
+        verified = csrfHandlerInterceptor.preHandle(request, response, null);
+        Assert.assertEquals(true, verified);
 
-		BDDMockito.given(request.getMethod()).willReturn("PUT");
-		verified = csrfHandlerInterceptor.preHandle(request, response, null);
-		Assert.assertEquals(true, verified);
+        BDDMockito.given(request.getMethod()).willReturn("DELETE");
+        verified = csrfHandlerInterceptor.preHandle(request, response, null);
 
-		BDDMockito.given(request.getMethod()).willReturn("DELETE");
-		verified = csrfHandlerInterceptor.preHandle(request, response, null);
+        Assert.assertEquals(true, verified);
+    }
 
-		Assert.assertEquals(true, verified);
-	}
+    @Test
+    public void shouldCheckWithPostRequest() throws Exception {
+        final HttpSession session = Mockito.mock(HttpSession.class);
+        BDDMockito.given(session.getAttribute(SESSION_CSRF_ATTRIBUTE)).willReturn("123");
+        BDDMockito.given(request.getMethod()).willReturn("POST");
+        BDDMockito.given(request.getSession()).willReturn(session);
+        BDDMockito.given(request.getParameter(CSRFTokenManager.CSRF_PARAM_NAME)).willReturn("123");
+        final boolean verified = csrfHandlerInterceptor.preHandle(request, response, null);
 
-	@Test
-	public void shouldCheckWithPostRequest() throws Exception
-	{
-		final HttpSession session = Mockito.mock(HttpSession.class);
-		BDDMockito.given(session.getAttribute(SESSION_CSRF_ATTRIBUTE)).willReturn("123");
-		BDDMockito.given(request.getMethod()).willReturn("POST");
-		BDDMockito.given(request.getSession()).willReturn(session);
-		BDDMockito.given(request.getParameter(CSRFTokenManager.CSRF_PARAM_NAME)).willReturn("123");
-		final boolean verified = csrfHandlerInterceptor.preHandle(request, response, null);
+        Assert.assertEquals(true, verified);
+    }
 
-		Assert.assertEquals(true, verified);
-	}
+    @Test
+    public void shouldErrorOnMismatchTokens() throws Exception {
+        final HttpSession session = Mockito.mock(HttpSession.class);
+        BDDMockito.given(session.getAttribute(SESSION_CSRF_ATTRIBUTE)).willReturn("1234");
+        BDDMockito.given(request.getMethod()).willReturn("POST");
+        BDDMockito.given(request.getSession()).willReturn(session);
+        BDDMockito.given(request.getParameter(CSRFTokenManager.CSRF_PARAM_NAME)).willReturn("123");
+        final boolean verified = csrfHandlerInterceptor.preHandle(request, response, null);
 
-	@Test
-	public void shouldErrorOnMismatchTokens() throws Exception
-	{
-		final HttpSession session = Mockito.mock(HttpSession.class);
-		BDDMockito.given(session.getAttribute(SESSION_CSRF_ATTRIBUTE)).willReturn("1234");
-		BDDMockito.given(request.getMethod()).willReturn("POST");
-		BDDMockito.given(request.getSession()).willReturn(session);
-		BDDMockito.given(request.getParameter(CSRFTokenManager.CSRF_PARAM_NAME)).willReturn("123");
-		final boolean verified = csrfHandlerInterceptor.preHandle(request, response, null);
+        verify(response, times(1)).sendError(HttpServletResponse.SC_FORBIDDEN, "Bad or missing CSRF value");
+        Assert.assertEquals(false, verified);
+    }
 
-		verify(response, times(1)).sendError(HttpServletResponse.SC_FORBIDDEN, "Bad or missing CSRF value");
-		Assert.assertEquals(false, verified);
-	}
+    @Test
+    public void shouldPassOnExemptUrl() throws Exception {
+        final String originalValues = Config.getParameter(CSRF_URL_PROPERTY);
 
-	@Test
-	public void shouldPassOnExemptUrl() throws Exception
-	{
-		final String originalValues = Config.getParameter(CSRF_URL_PROPERTY);
+        try {
+            Config.setParameter(CSRF_URL_PROPERTY, "/[^/]+(/[^?]*)+(sop-response)$");
+            final HttpSession session = Mockito.mock(HttpSession.class);
+            BDDMockito.given(session.getAttribute(SESSION_CSRF_ATTRIBUTE)).willReturn("1234");
+            // Mismatch tokens
+            BDDMockito.given(request.getParameter(CSRFTokenManager.CSRF_PARAM_NAME)).willReturn("123");
+            BDDMockito.given(request.getMethod()).willReturn("POST");
+            BDDMockito.given(request.getSession()).willReturn(session);
 
-		try
-		{
-			Config.setParameter(CSRF_URL_PROPERTY, "/[^/]+(/[^?]*)+(sop-response)$");
-			final HttpSession session = Mockito.mock(HttpSession.class);
-			BDDMockito.given(session.getAttribute(SESSION_CSRF_ATTRIBUTE)).willReturn("1234");
-			// Mismatch tokens
-			BDDMockito.given(request.getParameter(CSRFTokenManager.CSRF_PARAM_NAME)).willReturn("123");
-			BDDMockito.given(request.getMethod()).willReturn("POST");
-			BDDMockito.given(request.getSession()).willReturn(session);
+            BDDMockito.given(request.getServletPath()).willReturn("/checkout/multi/sop-response");
+            final boolean verified = csrfHandlerInterceptor.preHandle(request, response, null);
 
-			BDDMockito.given(request.getServletPath()).willReturn("/checkout/multi/sop-response");
-			final boolean verified = csrfHandlerInterceptor.preHandle(request, response, null);
-
-			Assert.assertEquals(true, verified);
-		}
-		finally
-		{
-			Config.setParameter(CSRF_URL_PROPERTY, originalValues);
-		}
-	}
+            Assert.assertEquals(true, verified);
+        } finally {
+            Config.setParameter(CSRF_URL_PROPERTY, originalValues);
+        }
+    }
 
 }

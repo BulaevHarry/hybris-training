@@ -17,43 +17,34 @@ import com.epam.cme.storefront.controllers.ControllerConstants;
 import com.epam.cme.core.model.ProductReferencesAndClassificationsComponentModel;
 import com.epam.cme.core.model.ProductReferencesAndClassificationsForDevicesComponentModel;
 
+public interface TelcoControllerConstants extends ControllerConstants {
 
-public interface TelcoControllerConstants extends ControllerConstants
-{
+    /**
+     * Class with action name constants
+     */
+    interface Actions {
+        interface Cms {
+            String _Prefix = "/view/";
+            String _Suffix = "Controller";
 
-	/**
-	 * Class with action name constants
-	 */
-	interface Actions
-	{
-		interface Cms
-		{
-			String _Prefix = "/view/";
-			String _Suffix = "Controller";
+            /**
+             * CMS components that have specific handlers
+             */
 
+            String ProductReferencesAndClassificationsComponent = _Prefix
+                    + ProductReferencesAndClassificationsComponentModel._TYPECODE + _Suffix;
+            String ProductReferencesAndClassificationsForDevicesComponent = _Prefix
+                    + ProductReferencesAndClassificationsForDevicesComponentModel._TYPECODE + _Suffix;
+        }
+    }
 
-
-			/**
-			 * CMS components that have specific handlers
-			 */
-
-			String ProductReferencesAndClassificationsComponent = _Prefix
-					+ ProductReferencesAndClassificationsComponentModel._TYPECODE + _Suffix;
-			String ProductReferencesAndClassificationsForDevicesComponent = _Prefix
-					+ ProductReferencesAndClassificationsForDevicesComponentModel._TYPECODE + _Suffix;
-		}
-	}
-
-	interface Views
-	{
-		interface Pages
-		{
-			interface GuidedSelling
-			{
-				String editComponentSolrStylePage = "pages/telco/guidedselling/editComponentSolrStylePage";
-				String editComponentAccordeonStylePage = "pages/telco/guidedselling/editComponentAccordeonStylePage";
-				String viewAllServicePlansPage = "pages/telco/guidedselling/viewAllServicePlansPage";
-			}
-		}
-	}
+    interface Views {
+        interface Pages {
+            interface GuidedSelling {
+                String editComponentSolrStylePage = "pages/telco/guidedselling/editComponentSolrStylePage";
+                String editComponentAccordeonStylePage = "pages/telco/guidedselling/editComponentAccordeonStylePage";
+                String viewAllServicePlansPage = "pages/telco/guidedselling/viewAllServicePlansPage";
+            }
+        }
+    }
 }

@@ -15,14 +15,14 @@ package com.epam.cme.storefront.history;
 
 /**
  */
-public interface BrowseHistory
-{
-	/**
-	 * Adds the url to the browsing history.
-	 *
-	 * @param browseHistoryEntry the {@link BrowseHistoryEntry} that will be added to the history
-	 */
-	void addBrowseHistoryEntry(BrowseHistoryEntry browseHistoryEntry);
-	
-	BrowseHistoryEntry findEntryMatchUrlEndsWith(String match);
+public interface BrowseHistory {
+    /**
+     * Adds the url to the browsing history.
+     * 
+     * @param browseHistoryEntry
+     *            the {@link BrowseHistoryEntry} that will be added to the history
+     */
+    void addBrowseHistoryEntry(BrowseHistoryEntry browseHistoryEntry);
+
+    BrowseHistoryEntry findEntryMatchUrlEndsWith(String match);
 }

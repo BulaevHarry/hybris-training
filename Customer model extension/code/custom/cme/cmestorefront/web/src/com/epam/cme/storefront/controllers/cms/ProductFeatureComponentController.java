@@ -30,28 +30,25 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-
 /**
  * Controller for CMS ProductFeatureComponent
  */
 @Controller("ProductFeatureComponentController")
 @RequestMapping(value = ControllerConstants.Actions.Cms.ProductFeatureComponent)
-public class ProductFeatureComponentController extends AbstractCMSComponentController<ProductFeatureComponentModel>
-{
-	protected static final List<ProductOption> PRODUCT_OPTIONS = Arrays.asList(ProductOption.BASIC, ProductOption.PRICE,
-			ProductOption.SUMMARY);
+public class ProductFeatureComponentController extends AbstractCMSComponentController<ProductFeatureComponentModel> {
+    protected static final List<ProductOption> PRODUCT_OPTIONS = Arrays.asList(ProductOption.BASIC,
+            ProductOption.PRICE, ProductOption.SUMMARY);
 
-	@Resource(name = "productFacade")
-	private ProductFacade productFacade;
+    @Resource(name = "productFacade")
+    private ProductFacade productFacade;
 
-	@Override
-	protected void fillModel(final HttpServletRequest request, final Model model, final ProductFeatureComponentModel component)
-	{
-		final ProductModel product = component.getProduct();
-		if (product != null)
-		{
-			final ProductData productData = productFacade.getProductForOptions(product, PRODUCT_OPTIONS);
-			model.addAttribute("product", productData);
-		}
-	}
+    @Override
+    protected void fillModel(final HttpServletRequest request, final Model model,
+            final ProductFeatureComponentModel component) {
+        final ProductModel product = component.getProduct();
+        if (product != null) {
+            final ProductData productData = productFacade.getProductForOptions(product, PRODUCT_OPTIONS);
+            model.addAttribute("product", productData);
+        }
+    }
 }

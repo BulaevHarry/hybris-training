@@ -26,25 +26,22 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-
 /**
  * Controller for CMS ProductFeatureComponent.
  */
 @Controller("CategoryFeatureComponentController")
 @RequestMapping(value = ControllerConstants.Actions.Cms.CategoryFeatureComponent)
-public class CategoryFeatureComponentController extends AbstractCMSComponentController<CategoryFeatureComponentModel>
-{
-	@Resource(name = "categoryUrlConverter")
-	private Converter<CategoryModel, CategoryData> categoryUrlConverter;
+public class CategoryFeatureComponentController extends AbstractCMSComponentController<CategoryFeatureComponentModel> {
+    @Resource(name = "categoryUrlConverter")
+    private Converter<CategoryModel, CategoryData> categoryUrlConverter;
 
-	@Override
-	protected void fillModel(final HttpServletRequest request, final Model model, final CategoryFeatureComponentModel component)
-	{
-		final CategoryModel category = component.getCategory();
-		if (category != null)
-		{
-			final String url = categoryUrlConverter.convert(category).getUrl();
-			model.addAttribute("url", url);
-		}
-	}
+    @Override
+    protected void fillModel(final HttpServletRequest request, final Model model,
+            final CategoryFeatureComponentModel component) {
+        final CategoryModel category = component.getCategory();
+        if (category != null) {
+            final String url = categoryUrlConverter.convert(category).getUrl();
+            model.addAttribute("url", url);
+        }
+    }
 }

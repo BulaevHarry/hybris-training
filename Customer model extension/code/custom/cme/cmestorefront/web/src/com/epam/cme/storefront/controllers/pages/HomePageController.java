@@ -27,34 +27,29 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-
 /**
  * Controller for home page
  */
 @Controller
 @RequestMapping("/")
-public class HomePageController extends AbstractPageController
-{
-	@RequestMapping(method = RequestMethod.GET)
-	public String home(@RequestParam(value = "logout", defaultValue = "false") final boolean logout, final Model model,
-			final RedirectAttributes redirectModel) throws CMSItemNotFoundException
-	{
-		if (logout)
-		{
-			redirectModel.addFlashAttribute(GlobalMessages.INFO_MESSAGES_HOLDER,
-					Collections.singletonList("account.confirmation.signout.title"));
-			return REDIRECT_PREFIX + ROOT;
-		}
+public class HomePageController extends AbstractPageController {
+    @RequestMapping(method = RequestMethod.GET)
+    public String home(@RequestParam(value = "logout", defaultValue = "false") final boolean logout, final Model model,
+            final RedirectAttributes redirectModel) throws CMSItemNotFoundException {
+        if (logout) {
+            redirectModel.addFlashAttribute(GlobalMessages.INFO_MESSAGES_HOLDER,
+                    Collections.singletonList("account.confirmation.signout.title"));
+            return REDIRECT_PREFIX + ROOT;
+        }
 
-		storeCmsPageInModel(model, getContentPageForLabelOrId(null));
-		setUpMetaDataForContentPage(model, getContentPageForLabelOrId(null));
-		updatePageTitle(model, getContentPageForLabelOrId(null));
+        storeCmsPageInModel(model, getContentPageForLabelOrId(null));
+        setUpMetaDataForContentPage(model, getContentPageForLabelOrId(null));
+        updatePageTitle(model, getContentPageForLabelOrId(null));
 
-		return getViewForPage(model);
-	}
+        return getViewForPage(model);
+    }
 
-	protected void updatePageTitle(final Model model, final AbstractPageModel cmsPage)
-	{
-		storeContentPageTitleInModel(model, getPageTitleResolver().resolveHomePageTitle(cmsPage.getTitle()));
-	}
+    protected void updatePageTitle(final Model model, final AbstractPageModel cmsPage) {
+        storeContentPageTitleInModel(model, getPageTitleResolver().resolveHomePageTitle(cmsPage.getTitle()));
+    }
 }

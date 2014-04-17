@@ -19,23 +19,17 @@ import com.epam.cme.facades.data.FrequencyTabData;
 
 import org.apache.commons.lang.StringUtils;
 
-
-public class FrequencyTabDataComparator extends AbstractComparator<FrequencyTabData>
-{
-	@Override
-	protected int compareInstances(final FrequencyTabData thisFrequencyData, final FrequencyTabData thatFrequencyData)
-	{
-		final TermOfServiceFrequency thisToSFrequency = TermOfServiceFrequency.valueOf(StringUtils.upperCase(thisFrequencyData
-				.getTermOfServiceFrequency().getCode()));
-		final TermOfServiceFrequency thatToSFrequency = TermOfServiceFrequency.valueOf(StringUtils.upperCase(thatFrequencyData
-				.getTermOfServiceFrequency().getCode()));
-		if (thisToSFrequency.equals(thatToSFrequency) && !thisToSFrequency.equals(TermOfServiceFrequency.NONE))
-		{
-			return thisFrequencyData.getTermOfServiceNumber() - thatFrequencyData.getTermOfServiceNumber();
-		}
-		else
-		{
-			return thisToSFrequency.compareTo(thatToSFrequency);
-		}
-	}
+public class FrequencyTabDataComparator extends AbstractComparator<FrequencyTabData> {
+    @Override
+    protected int compareInstances(final FrequencyTabData thisFrequencyData, final FrequencyTabData thatFrequencyData) {
+        final TermOfServiceFrequency thisToSFrequency = TermOfServiceFrequency.valueOf(StringUtils
+                .upperCase(thisFrequencyData.getTermOfServiceFrequency().getCode()));
+        final TermOfServiceFrequency thatToSFrequency = TermOfServiceFrequency.valueOf(StringUtils
+                .upperCase(thatFrequencyData.getTermOfServiceFrequency().getCode()));
+        if (thisToSFrequency.equals(thatToSFrequency) && !thisToSFrequency.equals(TermOfServiceFrequency.NONE)) {
+            return thisFrequencyData.getTermOfServiceNumber() - thatFrequencyData.getTermOfServiceNumber();
+        } else {
+            return thisToSFrequency.compareTo(thatToSFrequency);
+        }
+    }
 }

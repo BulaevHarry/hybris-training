@@ -52,149 +52,145 @@ import org.mockito.MockitoAnnotations;
  * Unit test for {@link CMSLinkComponentControllerTest}
  */
 @UnitTest
-public class CMSLinkComponentControllerTest
-{
+public class CMSLinkComponentControllerTest {
 
-	private static final String COMPONENT_UID = "componentUid";
-	private static final String TEST_COMPONENT_UID = "componentUID";
-	private static final String TEST_TYPE_CODE = "myTypeCode";
-	private static final String TEST_TYPE_VIEW = ControllerConstants.Views.Cms.ComponentPrefix + StringUtils.lowerCase(TEST_TYPE_CODE);
-	private static final String COMPONENT = "component";
-	private static final String TEST_COMPONENT_URL = "TestComponentUrl";
-	private static final String TEST_CONTENT_PAGE_LABEL = "TestContentPageLabel";
-	private static final String TEST_PRODUCT_URL = "TestProductUrl";
-	private static final String TEST_CATEGORY_URL = "TestCategoryUrl";
-	private static final String URL = "url";
+    private static final String COMPONENT_UID = "componentUid";
+    private static final String TEST_COMPONENT_UID = "componentUID";
+    private static final String TEST_TYPE_CODE = "myTypeCode";
+    private static final String TEST_TYPE_VIEW = ControllerConstants.Views.Cms.ComponentPrefix
+            + StringUtils.lowerCase(TEST_TYPE_CODE);
+    private static final String COMPONENT = "component";
+    private static final String TEST_COMPONENT_URL = "TestComponentUrl";
+    private static final String TEST_CONTENT_PAGE_LABEL = "TestContentPageLabel";
+    private static final String TEST_PRODUCT_URL = "TestProductUrl";
+    private static final String TEST_CATEGORY_URL = "TestCategoryUrl";
+    private static final String URL = "url";
 
-	private CMSLinkComponentController cmsLinkComponentController;
+    private CMSLinkComponentController cmsLinkComponentController;
 
-	@Mock
-	private Model model;
-	@Mock
-	private DefaultCMSComponentService cmsComponentService;
-	@Mock
-	private HttpServletRequest request;
-	@Mock
-	private HttpServletResponse response;
-	@Mock
-	private ComposedTypeModel composedTypeModel;
-	@Mock
-	private CMSLinkComponentModel cmsLinkComponentModel;
-	@Mock
-	private Converter<ProductModel, ProductData> productUrlConverter;
-	@Mock
-	private ProductModel productModel;
-	@Mock
-	private ProductData productData;
-	@Mock
-	private Converter<CategoryModel, CategoryData> categoryUrlConverter;
-	@Mock
-	private CategoryModel categoryModel;
-	@Mock
-	private CategoryData categoryData;
-	@Mock
-	private ContentPageModel contentPageModel;
+    @Mock
+    private Model model;
+    @Mock
+    private DefaultCMSComponentService cmsComponentService;
+    @Mock
+    private HttpServletRequest request;
+    @Mock
+    private HttpServletResponse response;
+    @Mock
+    private ComposedTypeModel composedTypeModel;
+    @Mock
+    private CMSLinkComponentModel cmsLinkComponentModel;
+    @Mock
+    private Converter<ProductModel, ProductData> productUrlConverter;
+    @Mock
+    private ProductModel productModel;
+    @Mock
+    private ProductData productData;
+    @Mock
+    private Converter<CategoryModel, CategoryData> categoryUrlConverter;
+    @Mock
+    private CategoryModel categoryModel;
+    @Mock
+    private CategoryData categoryData;
+    @Mock
+    private ContentPageModel contentPageModel;
 
-	@Before
-	public void setUp()
-	{
-		MockitoAnnotations.initMocks(this);
+    @Before
+    public void setUp() {
+        MockitoAnnotations.initMocks(this);
 
-		cmsLinkComponentController = new CMSLinkComponentController();
-		cmsLinkComponentController.setCmsComponentService(cmsComponentService);
-		ReflectionTestUtils.setField(cmsLinkComponentController, "productUrlConverter", productUrlConverter);
-		ReflectionTestUtils.setField(cmsLinkComponentController, "categoryUrlConverter", categoryUrlConverter);
-	}
+        cmsLinkComponentController = new CMSLinkComponentController();
+        cmsLinkComponentController.setCmsComponentService(cmsComponentService);
+        ReflectionTestUtils.setField(cmsLinkComponentController, "productUrlConverter", productUrlConverter);
+        ReflectionTestUtils.setField(cmsLinkComponentController, "categoryUrlConverter", categoryUrlConverter);
+    }
 
-	@Test
-	public void testRenderComponentWithComponentUrl() throws Exception
-	{
-		given(cmsLinkComponentModel.getUrl()).willReturn(TEST_COMPONENT_URL);
-		given(cmsLinkComponentModel.getItemtype()).willReturn(TEST_TYPE_CODE);
+    @Test
+    public void testRenderComponentWithComponentUrl() throws Exception {
+        given(cmsLinkComponentModel.getUrl()).willReturn(TEST_COMPONENT_URL);
+        given(cmsLinkComponentModel.getItemtype()).willReturn(TEST_TYPE_CODE);
 
-		final String viewName = cmsLinkComponentController.handleComponent(request, response, model, cmsLinkComponentModel);
-		verify(model, Mockito.times(1)).addAttribute(URL, TEST_COMPONENT_URL);
-		Assert.assertEquals(TEST_TYPE_VIEW, viewName);
-	}
+        final String viewName = cmsLinkComponentController.handleComponent(request, response, model,
+                cmsLinkComponentModel);
+        verify(model, Mockito.times(1)).addAttribute(URL, TEST_COMPONENT_URL);
+        Assert.assertEquals(TEST_TYPE_VIEW, viewName);
+    }
 
-	@Test
-	public void testRenderComponentWithContentPage() throws Exception
-	{
-		given(cmsLinkComponentModel.getContentPage()).willReturn(contentPageModel);
-		given(contentPageModel.getLabel()).willReturn(TEST_CONTENT_PAGE_LABEL);
-		given(cmsLinkComponentModel.getItemtype()).willReturn(TEST_TYPE_CODE);
+    @Test
+    public void testRenderComponentWithContentPage() throws Exception {
+        given(cmsLinkComponentModel.getContentPage()).willReturn(contentPageModel);
+        given(contentPageModel.getLabel()).willReturn(TEST_CONTENT_PAGE_LABEL);
+        given(cmsLinkComponentModel.getItemtype()).willReturn(TEST_TYPE_CODE);
 
-		final String viewName = cmsLinkComponentController.handleComponent(request, response, model, cmsLinkComponentModel);
-		verify(model, Mockito.times(1)).addAttribute(URL, TEST_CONTENT_PAGE_LABEL);
-		Assert.assertEquals(TEST_TYPE_VIEW, viewName);
-	}
+        final String viewName = cmsLinkComponentController.handleComponent(request, response, model,
+                cmsLinkComponentModel);
+        verify(model, Mockito.times(1)).addAttribute(URL, TEST_CONTENT_PAGE_LABEL);
+        Assert.assertEquals(TEST_TYPE_VIEW, viewName);
+    }
 
-	@Test
-	public void testRenderComponentWithProduct() throws Exception
-	{
-		given(cmsLinkComponentModel.getProduct()).willReturn(productModel);
-		given(productUrlConverter.convert(productModel)).willReturn(productData);
-		given(productData.getUrl()).willReturn(TEST_PRODUCT_URL);
-		given(cmsLinkComponentModel.getItemtype()).willReturn(TEST_TYPE_CODE);
+    @Test
+    public void testRenderComponentWithProduct() throws Exception {
+        given(cmsLinkComponentModel.getProduct()).willReturn(productModel);
+        given(productUrlConverter.convert(productModel)).willReturn(productData);
+        given(productData.getUrl()).willReturn(TEST_PRODUCT_URL);
+        given(cmsLinkComponentModel.getItemtype()).willReturn(TEST_TYPE_CODE);
 
-		final String viewName = cmsLinkComponentController.handleComponent(request, response, model, cmsLinkComponentModel);
-		verify(model, Mockito.times(1)).addAttribute(URL, TEST_PRODUCT_URL);
-		Assert.assertEquals(TEST_TYPE_VIEW, viewName);
-	}
+        final String viewName = cmsLinkComponentController.handleComponent(request, response, model,
+                cmsLinkComponentModel);
+        verify(model, Mockito.times(1)).addAttribute(URL, TEST_PRODUCT_URL);
+        Assert.assertEquals(TEST_TYPE_VIEW, viewName);
+    }
 
-	@Test
-	public void testRenderComponentWithCategory() throws Exception
-	{
-		given(cmsLinkComponentModel.getCategory()).willReturn(categoryModel);
-		given(categoryUrlConverter.convert(categoryModel)).willReturn(categoryData);
-		given(categoryData.getUrl()).willReturn(TEST_CATEGORY_URL);
-		given(cmsLinkComponentModel.getItemtype()).willReturn(TEST_TYPE_CODE);
+    @Test
+    public void testRenderComponentWithCategory() throws Exception {
+        given(cmsLinkComponentModel.getCategory()).willReturn(categoryModel);
+        given(categoryUrlConverter.convert(categoryModel)).willReturn(categoryData);
+        given(categoryData.getUrl()).willReturn(TEST_CATEGORY_URL);
+        given(cmsLinkComponentModel.getItemtype()).willReturn(TEST_TYPE_CODE);
 
-		final String viewName = cmsLinkComponentController.handleComponent(request, response, model, cmsLinkComponentModel);
-		verify(model, Mockito.times(1)).addAttribute(URL, TEST_CATEGORY_URL);
-		Assert.assertEquals(TEST_TYPE_VIEW, viewName);
-	}
+        final String viewName = cmsLinkComponentController.handleComponent(request, response, model,
+                cmsLinkComponentModel);
+        verify(model, Mockito.times(1)).addAttribute(URL, TEST_CATEGORY_URL);
+        Assert.assertEquals(TEST_TYPE_VIEW, viewName);
+    }
 
-	@Test
-	public void testRenderComponentUid() throws Exception
-	{
-		given(request.getAttribute(COMPONENT_UID)).willReturn(TEST_COMPONENT_UID);
-		given(cmsComponentService.getSimpleCMSComponent(TEST_COMPONENT_UID)).willReturn(cmsLinkComponentModel);
-		given(cmsLinkComponentModel.getProduct()).willReturn(productModel);
-		given(productUrlConverter.convert(productModel)).willReturn(productData);
-		given(productData.getUrl()).willReturn(TEST_PRODUCT_URL);
-		given(cmsLinkComponentModel.getItemtype()).willReturn(TEST_TYPE_CODE);
+    @Test
+    public void testRenderComponentUid() throws Exception {
+        given(request.getAttribute(COMPONENT_UID)).willReturn(TEST_COMPONENT_UID);
+        given(cmsComponentService.getSimpleCMSComponent(TEST_COMPONENT_UID)).willReturn(cmsLinkComponentModel);
+        given(cmsLinkComponentModel.getProduct()).willReturn(productModel);
+        given(productUrlConverter.convert(productModel)).willReturn(productData);
+        given(productData.getUrl()).willReturn(TEST_PRODUCT_URL);
+        given(cmsLinkComponentModel.getItemtype()).willReturn(TEST_TYPE_CODE);
 
-		final String viewName = cmsLinkComponentController.handleGet(request, response, model);
-		verify(model, Mockito.times(1)).addAttribute(COMPONENT, cmsLinkComponentModel);
-		verify(model, Mockito.times(1)).addAttribute(URL, TEST_PRODUCT_URL);
-		Assert.assertEquals(TEST_TYPE_VIEW, viewName);
-	}
+        final String viewName = cmsLinkComponentController.handleGet(request, response, model);
+        verify(model, Mockito.times(1)).addAttribute(COMPONENT, cmsLinkComponentModel);
+        verify(model, Mockito.times(1)).addAttribute(URL, TEST_PRODUCT_URL);
+        Assert.assertEquals(TEST_TYPE_VIEW, viewName);
+    }
 
-	@Test(expected = AbstractPageController.HttpNotFoundException.class)
-	public void testRenderComponentNotFound() throws Exception
-	{
-		given(request.getAttribute(COMPONENT_UID)).willReturn(null);
-		given(request.getParameter(COMPONENT_UID)).willReturn(null);
-		cmsLinkComponentController.handleGet(request, response, model);
-	}
+    @Test(expected = AbstractPageController.HttpNotFoundException.class)
+    public void testRenderComponentNotFound() throws Exception {
+        given(request.getAttribute(COMPONENT_UID)).willReturn(null);
+        given(request.getParameter(COMPONENT_UID)).willReturn(null);
+        cmsLinkComponentController.handleGet(request, response, model);
+    }
 
-	@Test(expected = AbstractPageController.HttpNotFoundException.class)
-	public void testRenderComponentNotFound2() throws Exception
-	{
-		given(request.getAttribute(COMPONENT_UID)).willReturn(null);
-		given(request.getParameter(COMPONENT_UID)).willReturn(TEST_COMPONENT_UID);
-		given(cmsComponentService.getSimpleCMSComponent(TEST_COMPONENT_UID)).willReturn(null);
-		cmsLinkComponentController.handleGet(request, response, model);
-	}
+    @Test(expected = AbstractPageController.HttpNotFoundException.class)
+    public void testRenderComponentNotFound2() throws Exception {
+        given(request.getAttribute(COMPONENT_UID)).willReturn(null);
+        given(request.getParameter(COMPONENT_UID)).willReturn(TEST_COMPONENT_UID);
+        given(cmsComponentService.getSimpleCMSComponent(TEST_COMPONENT_UID)).willReturn(null);
+        cmsLinkComponentController.handleGet(request, response, model);
+    }
 
-	@Test(expected = AbstractPageController.HttpNotFoundException.class)
-	public void testRenderComponentNotFound3() throws Exception
-	{
-		given(request.getAttribute(COMPONENT_UID)).willReturn(TEST_COMPONENT_UID);
-		given(cmsComponentService.getSimpleCMSComponent(TEST_COMPONENT_UID)).willReturn(null);
-		given(cmsComponentService.getSimpleCMSComponent(TEST_COMPONENT_UID)).willThrow(new CMSItemNotFoundException(""));
-		cmsLinkComponentController.handleGet(request, response, model);
-	}
+    @Test(expected = AbstractPageController.HttpNotFoundException.class)
+    public void testRenderComponentNotFound3() throws Exception {
+        given(request.getAttribute(COMPONENT_UID)).willReturn(TEST_COMPONENT_UID);
+        given(cmsComponentService.getSimpleCMSComponent(TEST_COMPONENT_UID)).willReturn(null);
+        given(cmsComponentService.getSimpleCMSComponent(TEST_COMPONENT_UID))
+                .willThrow(new CMSItemNotFoundException(""));
+        cmsLinkComponentController.handleGet(request, response, model);
+    }
 
 }

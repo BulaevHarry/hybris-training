@@ -4,12 +4,10 @@ import java.util.List;
 
 import com.epam.cme.facades.organization.data.OrganizationData;
 
+public interface OrganizationFacade {
 
-public interface OrganizationFacade
-{
+    List<OrganizationData> getOrganizations();
 
-	List<OrganizationData> getOrganizations();
-
-	OrganizationData getOrganizationById(Integer id);
+    OrganizationData getOrganizationById(Integer id);
 
 }

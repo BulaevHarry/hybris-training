@@ -14,16 +14,15 @@
 package com.epam.cme.services.constants;
 
 /**
- * Global class for all Cmeservices constants. You can add global constants for your extension into this class.
+ * Global class for all Cmeservices constants. You can add global constants for your extension into
+ * this class.
  */
-public final class CmeservicesConstants extends GeneratedCmeservicesConstants
-{
-	public static final String EXTENSIONNAME = "cmeservices";
+public final class CmeservicesConstants extends GeneratedCmeservicesConstants {
+    public static final String EXTENSIONNAME = "cmeservices";
 
-	private CmeservicesConstants()
-	{
-		//empty to avoid instantiating this constant class
-	}
+    private CmeservicesConstants() {
+        // empty to avoid instantiating this constant class
+    }
 
-	// implement here constants used by this extension
+    // implement here constants used by this extension
 }

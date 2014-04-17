@@ -22,35 +22,30 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-
 /**
  * JUnit Tests for the Cmeservices extension
  */
-public class CmeservicesTest extends HybrisJUnit4TransactionalTest
-{
-	/** Edit the local|project.properties to change logging behaviour (properties log4j.*). */
-	@SuppressWarnings("unused")
-	private static final Logger LOG = Logger.getLogger(CmeservicesTest.class.getName());
+public class CmeservicesTest extends HybrisJUnit4TransactionalTest {
+    /** Edit the local|project.properties to change logging behaviour (properties log4j.*). */
+    @SuppressWarnings("unused")
+    private static final Logger LOG = Logger.getLogger(CmeservicesTest.class.getName());
 
-	@Before
-	public void setUp()
-	{
-		// implement here code executed before each test
-	}
+    @Before
+    public void setUp() {
+        // implement here code executed before each test
+    }
 
-	@After
-	public void tearDown()
-	{
-		// implement here code executed after each test
-	}
+    @After
+    public void tearDown() {
+        // implement here code executed after each test
+    }
 
-	/**
-	 * This is a sample test method.
-	 */
-	@Test
-	public void testCmeservices()
-	{
-		final boolean testTrue = true;
-		assertTrue("true is not true", testTrue);
-	}
+    /**
+     * This is a sample test method.
+     */
+    @Test
+    public void testCmeservices() {
+        final boolean testTrue = true;
+        assertTrue("true is not true", testTrue);
+    }
 }

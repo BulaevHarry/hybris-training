@@ -25,53 +25,47 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
-
 /**
- * Abstract Implementation of {@link PkResolvingStrategy} that retrieves a product pk from the request
+ * Abstract Implementation of {@link PkResolvingStrategy} that retrieves a product pk from the
+ * request
  */
-public abstract class AbstractParsingPkResolvingStrategy implements PkResolvingStrategy
-{
-	private static final Logger LOG = Logger.getLogger(AbstractParsingPkResolvingStrategy.class);
-	private UrlParsingStrategy urlParsingStrategy;
+public abstract class AbstractParsingPkResolvingStrategy implements PkResolvingStrategy {
+    private static final Logger LOG = Logger.getLogger(AbstractParsingPkResolvingStrategy.class);
+    private UrlParsingStrategy urlParsingStrategy;
 
-	/**
-	 * @param urlParsingStrategy
-	 *           the urlParsingStrategy to set
-	 */
-	public void setUrlParsingStrategy(final UrlParsingStrategy urlParsingStrategy)
-	{
-		this.urlParsingStrategy = urlParsingStrategy;
-	}
+    /**
+     * @param urlParsingStrategy
+     *            the urlParsingStrategy to set
+     */
+    public void setUrlParsingStrategy(final UrlParsingStrategy urlParsingStrategy) {
+        this.urlParsingStrategy = urlParsingStrategy;
+    }
 
-	@Override
-	public String resolvePrimaryKey(final HttpServletRequest request)
-	{
-		String result = null;
-		final String key = urlParsingStrategy.parse(request);
-		if (!StringUtils.isBlank(key))
-		{
-			try
-			{
-				final ItemModel model = retrieveModel(key);
-				result = model.getPk().getLongValueAsString();
-			}
-			catch (final SystemException e)
-			{
-				LOG.warn("Could not retrieve category for " + key + ": " + e.toString());
-			}
-		}
-		return result;
-	}
+    @Override
+    public String resolvePrimaryKey(final HttpServletRequest request) {
+        String result = null;
+        final String key = urlParsingStrategy.parse(request);
+        if (!StringUtils.isBlank(key)) {
+            try {
+                final ItemModel model = retrieveModel(key);
+                result = model.getPk().getLongValueAsString();
+            } catch (final SystemException e) {
+                LOG.warn("Could not retrieve category for " + key + ": " + e.toString());
+            }
+        }
+        return result;
+    }
 
-	/**
-	 * Retrieves the model searching by key
-	 * 
-	 * @param key the key
-	 * @return model
-	 * @throws UnknownIdentifierException
-	 *            if the model could not be found
-	 * @throws AmbiguousIdentifierException
-	 *            if the model cannot be uniquely identified
-	 */
-	protected abstract ItemModel retrieveModel(String key);
+    /**
+     * Retrieves the model searching by key
+     * 
+     * @param key
+     *            the key
+     * @return model
+     * @throws UnknownIdentifierException
+     *             if the model could not be found
+     * @throws AmbiguousIdentifierException
+     *             if the model cannot be uniquely identified
+     */
+    protected abstract ItemModel retrieveModel(String key);
 }

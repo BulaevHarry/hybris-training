@@ -25,40 +25,27 @@ import com.epam.cme.core.model.ServicePlanModel;
 
 import org.apache.commons.lang.StringUtils;
 
-
 /**
- * Populate the attribute {@link ProductData}.itemType depending on the type of the given SOURCE parameter
+ * Populate the attribute {@link ProductData}.itemType depending on the type of the given SOURCE
+ * parameter
  */
 public class TelcoProductTypePopulator<SOURCE extends ProductModel, TARGET extends ProductData> implements
-		Populator<SOURCE, TARGET>
-{
+        Populator<SOURCE, TARGET> {
 
-	@Override
-	public void populate(final SOURCE source, final TARGET target) throws ConversionException
-	{
-		if (source instanceof DeviceModel)
-		{
-			target.setItemType(DeviceModel._TYPECODE);
-		}
-		else if (source instanceof AccessoryModel)
-		{
-			target.setItemType(AccessoryModel._TYPECODE);
-		}
-		else if (source instanceof ServicePlanModel)
-		{
-			target.setItemType(ServicePlanModel._TYPECODE);
-		}
-		else if (source instanceof ServiceAddOnModel)
-		{
-			target.setItemType(ServiceAddOnModel._TYPECODE);
-		}
-		else if (source instanceof SubscriptionProductModel)
-		{
-			target.setItemType(SubscriptionProductModel._TYPECODE);
-		}
-		else if (StringUtils.isEmpty(target.getItemType()))
-		{
-			target.setItemType(ProductModel._TYPECODE);
-		}
-	}
+    @Override
+    public void populate(final SOURCE source, final TARGET target) throws ConversionException {
+        if (source instanceof DeviceModel) {
+            target.setItemType(DeviceModel._TYPECODE);
+        } else if (source instanceof AccessoryModel) {
+            target.setItemType(AccessoryModel._TYPECODE);
+        } else if (source instanceof ServicePlanModel) {
+            target.setItemType(ServicePlanModel._TYPECODE);
+        } else if (source instanceof ServiceAddOnModel) {
+            target.setItemType(ServiceAddOnModel._TYPECODE);
+        } else if (source instanceof SubscriptionProductModel) {
+            target.setItemType(SubscriptionProductModel._TYPECODE);
+        } else if (StringUtils.isEmpty(target.getItemType())) {
+            target.setItemType(ProductModel._TYPECODE);
+        }
+    }
 }

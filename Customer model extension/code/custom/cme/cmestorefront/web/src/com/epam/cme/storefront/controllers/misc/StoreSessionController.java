@@ -38,136 +38,114 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
-
 /**
- * Controller for store session.
- * Used to change the session language, currency and experience level.
+ * Controller for store session. Used to change the session language, currency and experience level.
  */
 @Controller
 @RequestMapping("/_s")
-public class StoreSessionController extends AbstractController
-{
-	private static final Logger LOG = Logger.getLogger(StoreSessionController.class);
+public class StoreSessionController extends AbstractController {
+    private static final Logger LOG = Logger.getLogger(StoreSessionController.class);
 
-	@Resource(name = "storeSessionFacade")
-	private StoreSessionFacade storeSessionFacade;
+    @Resource(name = "storeSessionFacade")
+    private StoreSessionFacade storeSessionFacade;
 
-	@Resource(name = "userFacade")
-	private UserFacade userFacade;
+    @Resource(name = "userFacade")
+    private UserFacade userFacade;
 
-	@Resource(name = "uiExperienceService")
-	private UiExperienceService uiExperienceService;
+    @Resource(name = "uiExperienceService")
+    private UiExperienceService uiExperienceService;
 
-	@Resource(name = "enumerationService")
-	private EnumerationService enumerationService;
+    @Resource(name = "enumerationService")
+    private EnumerationService enumerationService;
 
-	@RequestMapping(value = "/language", method = {RequestMethod.GET, RequestMethod.POST})
-	public String selectLanguage(@RequestParam("code") final String isoCode, final HttpServletRequest request)
-	{
-		storeSessionFacade.setCurrentLanguage(isoCode);
-		userFacade.syncSessionLanguage();
-		return getReturnRedirectUrl(request);
-	}
+    @RequestMapping(value = "/language", method = { RequestMethod.GET, RequestMethod.POST })
+    public String selectLanguage(@RequestParam("code") final String isoCode, final HttpServletRequest request) {
+        storeSessionFacade.setCurrentLanguage(isoCode);
+        userFacade.syncSessionLanguage();
+        return getReturnRedirectUrl(request);
+    }
 
-	@RequestMapping(value = "/currency", method = {RequestMethod.GET, RequestMethod.POST})
-	public String selectCurrency(@RequestParam("code") final String isoCode, final HttpServletRequest request)
-	{
-		storeSessionFacade.setCurrentCurrency(isoCode);
-		userFacade.syncSessionCurrency();
-		return getReturnRedirectUrl(request);
-	}
+    @RequestMapping(value = "/currency", method = { RequestMethod.GET, RequestMethod.POST })
+    public String selectCurrency(@RequestParam("code") final String isoCode, final HttpServletRequest request) {
+        storeSessionFacade.setCurrentCurrency(isoCode);
+        userFacade.syncSessionCurrency();
+        return getReturnRedirectUrl(request);
+    }
 
-	@RequestMapping(value = "/ui-experience", method = {RequestMethod.GET, RequestMethod.POST})
-	public String selectUiExperienceLevel(@RequestParam("level") final String uiExperienceLevelString, final HttpServletRequest request)
-	{
-		if (uiExperienceLevelString == null || uiExperienceLevelString.isEmpty())
-		{
-			// Empty value - clear the override
-			uiExperienceService.setOverrideUiExperienceLevel(null);
-		}
-		else
-		{
-			final UiExperienceLevel uiExperienceLevel = toUiExperienceLevel(uiExperienceLevelString);
-			if (uiExperienceLevel == null)
-			{
-				LOG.warn("Unknown UiExperience level [" + uiExperienceLevelString + "] available values are: " + Arrays.toString(getAvailableUiExperienceLevelsCodes()));
-			}
-			else
-			{
-				uiExperienceService.setOverrideUiExperienceLevel(uiExperienceLevel);
-			}
-		}
-		
-		// Always clear the prompt hide flag
-		setHideUiExperienceLevelOverridePrompt(request, false);
-		return getReturnRedirectUrl(request);
-	}
+    @RequestMapping(value = "/ui-experience", method = { RequestMethod.GET, RequestMethod.POST })
+    public String selectUiExperienceLevel(@RequestParam("level") final String uiExperienceLevelString,
+            final HttpServletRequest request) {
+        if (uiExperienceLevelString == null || uiExperienceLevelString.isEmpty()) {
+            // Empty value - clear the override
+            uiExperienceService.setOverrideUiExperienceLevel(null);
+        } else {
+            final UiExperienceLevel uiExperienceLevel = toUiExperienceLevel(uiExperienceLevelString);
+            if (uiExperienceLevel == null) {
+                LOG.warn("Unknown UiExperience level [" + uiExperienceLevelString + "] available values are: "
+                        + Arrays.toString(getAvailableUiExperienceLevelsCodes()));
+            } else {
+                uiExperienceService.setOverrideUiExperienceLevel(uiExperienceLevel);
+            }
+        }
 
-	protected UiExperienceLevel toUiExperienceLevel(final String code)
-	{
-		if (code != null && !code.isEmpty())
-		{
-			try
-			{
-				return enumerationService.getEnumerationValue(UiExperienceLevel.class, code);
-			}
-			catch (final UnknownIdentifierException ignore)
-			{
-				// Ignore, return null
-			}
-		}
-		return null;
-	}
+        // Always clear the prompt hide flag
+        setHideUiExperienceLevelOverridePrompt(request, false);
+        return getReturnRedirectUrl(request);
+    }
 
-	protected List<UiExperienceLevel> getAvailableUiExperienceLevels()
-	{
-		return enumerationService.getEnumerationValues(UiExperienceLevel.class);
-	}
+    protected UiExperienceLevel toUiExperienceLevel(final String code) {
+        if (code != null && !code.isEmpty()) {
+            try {
+                return enumerationService.getEnumerationValue(UiExperienceLevel.class, code);
+            } catch (final UnknownIdentifierException ignore) {
+                // Ignore, return null
+            }
+        }
+        return null;
+    }
 
-	protected String[] getAvailableUiExperienceLevelsCodes()
-	{
-		final List<UiExperienceLevel> availableUiExperienceLevels = getAvailableUiExperienceLevels();
-		if (availableUiExperienceLevels == null || availableUiExperienceLevels.isEmpty())
-		{
-			return new String[0];
-		}
+    protected List<UiExperienceLevel> getAvailableUiExperienceLevels() {
+        return enumerationService.getEnumerationValues(UiExperienceLevel.class);
+    }
 
-		final String[] codes = new String[availableUiExperienceLevels.size()];
-		for (int i = 0; i < codes.length; i++)
-		{
-			codes[i] = availableUiExperienceLevels.get(i).getCode();
-		}
+    protected String[] getAvailableUiExperienceLevelsCodes() {
+        final List<UiExperienceLevel> availableUiExperienceLevels = getAvailableUiExperienceLevels();
+        if (availableUiExperienceLevels == null || availableUiExperienceLevels.isEmpty()) {
+            return new String[0];
+        }
 
-		return codes;
-	}
+        final String[] codes = new String[availableUiExperienceLevels.size()];
+        for (int i = 0; i < codes.length; i++) {
+            codes[i] = availableUiExperienceLevels.get(i).getCode();
+        }
 
-	@RequestMapping(value = "/ui-experience-level-prompt", method = {RequestMethod.GET, RequestMethod.POST})
-	public String selectUiExperienceLevelPrompt(@RequestParam("hide") final boolean hideFlag, final HttpServletRequest request)
-	{
-		setHideUiExperienceLevelOverridePrompt(request, hideFlag);
-		return getReturnRedirectUrl(request);
-	}
+        return codes;
+    }
 
-	protected void setHideUiExperienceLevelOverridePrompt(final HttpServletRequest request, final boolean flag)
-	{
-		request.getSession().setAttribute("hideUiExperienceLevelOverridePrompt", Boolean.valueOf(flag));
-	}
+    @RequestMapping(value = "/ui-experience-level-prompt", method = { RequestMethod.GET, RequestMethod.POST })
+    public String selectUiExperienceLevelPrompt(@RequestParam("hide") final boolean hideFlag,
+            final HttpServletRequest request) {
+        setHideUiExperienceLevelOverridePrompt(request, hideFlag);
+        return getReturnRedirectUrl(request);
+    }
 
-	protected String getReturnRedirectUrl(final HttpServletRequest request)
-	{
-		final String referer = request.getHeader("Referer");
-		if (referer != null && !referer.isEmpty())
-		{
-			return REDIRECT_PREFIX + referer;
-		}
-		return REDIRECT_PREFIX + '/';
-	}
+    protected void setHideUiExperienceLevelOverridePrompt(final HttpServletRequest request, final boolean flag) {
+        request.getSession().setAttribute("hideUiExperienceLevelOverridePrompt", Boolean.valueOf(flag));
+    }
 
-	@ExceptionHandler(UnknownIdentifierException.class)
-	public String handleUnknownIdentifierException(final UnknownIdentifierException exception, final HttpServletRequest request)
-	{
-		final Map<String, Object> currentFlashScope = RequestContextUtils.getOutputFlashMap(request);
-		currentFlashScope.put(GlobalMessages.ERROR_MESSAGES_HOLDER, exception.getMessage());
-		return REDIRECT_PREFIX + "/404";
-	}
+    protected String getReturnRedirectUrl(final HttpServletRequest request) {
+        final String referer = request.getHeader("Referer");
+        if (referer != null && !referer.isEmpty()) {
+            return REDIRECT_PREFIX + referer;
+        }
+        return REDIRECT_PREFIX + '/';
+    }
+
+    @ExceptionHandler(UnknownIdentifierException.class)
+    public String handleUnknownIdentifierException(final UnknownIdentifierException exception,
+            final HttpServletRequest request) {
+        final Map<String, Object> currentFlashScope = RequestContextUtils.getOutputFlashMap(request);
+        currentFlashScope.put(GlobalMessages.ERROR_MESSAGES_HOLDER, exception.getMessage());
+        return REDIRECT_PREFIX + "/404";
+    }
 }

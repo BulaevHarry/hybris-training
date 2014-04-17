@@ -18,7 +18,6 @@ import java.util.List;
 /**
  * ResourceBreadcrumbBuilder builds a list of breadcrumbs based on a resource key
  */
-public interface ResourceBreadcrumbBuilder
-{
-	public List<Breadcrumb> getBreadcrumbs(String resourceKey) throws IllegalArgumentException;
+public interface ResourceBreadcrumbBuilder {
+    public List<Breadcrumb> getBreadcrumbs(String resourceKey) throws IllegalArgumentException;
 }

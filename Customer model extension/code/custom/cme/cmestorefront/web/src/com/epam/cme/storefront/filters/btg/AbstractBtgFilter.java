@@ -27,100 +27,82 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-
 /**
  * FilterBean to produce request scoped BTG events
  */
-public abstract class AbstractBtgFilter extends OncePerRequestFilter
-{
-	private static final Logger LOG = Logger.getLogger(AbstractBtgFilter.class);
+public abstract class AbstractBtgFilter extends OncePerRequestFilter {
+    private static final Logger LOG = Logger.getLogger(AbstractBtgFilter.class);
 
-	private EventService eventService;
+    private EventService eventService;
 
-	/**
-	 * @param eventService
-	 *           the eventService to set
-	 */
-	public void setEventService(final EventService eventService)
-	{
-		this.eventService = eventService;
-	}
+    /**
+     * @param eventService
+     *            the eventService to set
+     */
+    public void setEventService(final EventService eventService) {
+        this.eventService = eventService;
+    }
 
-	@Override
-	public void doFilterInternal(final HttpServletRequest request, final HttpServletResponse response, final FilterChain chain)
-			throws IOException, ServletException
-	{
-		final AbstractBTGRuleDataEvent<Serializable> event = getEvent(request);
-		publishEvent(event);
-		try
-		{
-			chain.doFilter(request, response);
-		}
-		finally
-		{
-			if (isRequestScoped() && event != null)
-			{
-				publishEvent(getCleanupEvent(event));
-			}
-		}
+    @Override
+    public void doFilterInternal(final HttpServletRequest request, final HttpServletResponse response,
+            final FilterChain chain) throws IOException, ServletException {
+        final AbstractBTGRuleDataEvent<Serializable> event = getEvent(request);
+        publishEvent(event);
+        try {
+            chain.doFilter(request, response);
+        } finally {
+            if (isRequestScoped() && event != null) {
+                publishEvent(getCleanupEvent(event));
+            }
+        }
 
-	}
+    }
 
-	/**
-	 * Factory method to retrieve the BTG event
-	 * 
-	 * @param request
-	 * @return event or null, if no event should be sent
-	 */
-	protected abstract AbstractBTGRuleDataEvent getEvent(final HttpServletRequest request);
+    /**
+     * Factory method to retrieve the BTG event
+     * 
+     * @param request
+     * @return event or null, if no event should be sent
+     */
+    protected abstract AbstractBTGRuleDataEvent getEvent(final HttpServletRequest request);
 
-	/**
-	 * Factory method to retrieve the inverse event for request scoped events.
-	 * 
-	 * @param event
-	 * @return inverse event or null, if no event should be sent
-	 */
-	protected AbstractBTGRuleDataEvent getCleanupEvent(final AbstractBTGRuleDataEvent event)
-	{
-		AbstractBTGRuleDataEvent result = null;
-		try
-		{
-			result = event.getClass().getConstructor(event.getClass()).newInstance(event);
-		}
-		catch (final Exception e)
-		{
-			LOG.warn("Could not create cleanup event", e);
-		}
-		return result;
-	}
+    /**
+     * Factory method to retrieve the inverse event for request scoped events.
+     * 
+     * @param event
+     * @return inverse event or null, if no event should be sent
+     */
+    protected AbstractBTGRuleDataEvent getCleanupEvent(final AbstractBTGRuleDataEvent event) {
+        AbstractBTGRuleDataEvent result = null;
+        try {
+            result = event.getClass().getConstructor(event.getClass()).newInstance(event);
+        } catch (final Exception e) {
+            LOG.warn("Could not create cleanup event", e);
+        }
+        return result;
+    }
 
-	/**
-	 * Retrieves if the generated event should be request scoped
-	 * 
-	 * @return true, if the event is request scoped
-	 */
-	protected boolean isRequestScoped()
-	{
-		return false;
-	}
+    /**
+     * Retrieves if the generated event should be request scoped
+     * 
+     * @return true, if the event is request scoped
+     */
+    protected boolean isRequestScoped() {
+        return false;
+    }
 
-	/**
-	 * Publish an BTG event failure tolerant.
-	 * 
-	 * @param event
-	 */
-	protected void publishEvent(final AbstractBTGRuleDataEvent<?> event)
-	{
-		if (event != null)
-		{
-			try
-			{
-				eventService.publishEvent(event);
-			}
-			catch (final Exception e)
-			{
-				LOG.error("Could not publish event", e);
-			}
-		}
-	}
+    /**
+     * Publish an BTG event failure tolerant.
+     * 
+     * @param event
+     */
+    protected void publishEvent(final AbstractBTGRuleDataEvent<?> event) {
+        if (event != null) {
+            try {
+                eventService.publishEvent(event);
+            } catch (final Exception e) {
+                LOG.error("Could not publish event", e);
+            }
+        }
+    }
 }

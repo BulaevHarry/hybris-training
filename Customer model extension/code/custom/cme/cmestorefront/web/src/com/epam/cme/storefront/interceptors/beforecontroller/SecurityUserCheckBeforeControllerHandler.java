@@ -26,66 +26,58 @@ import org.apache.log4j.Logger;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-
 /**
- * Spring MVC interceptor that validates that the spring security user and the hybris session user are in sync. If the
- * spring security user and the hybris session user are not in sync then the session is invalidated and the visitor is
- * redirect to the homepage.
+ * Spring MVC interceptor that validates that the spring security user and the hybris session user
+ * are in sync. If the spring security user and the hybris session user are not in sync then the
+ * session is invalidated and the visitor is redirect to the homepage.
  */
-public class SecurityUserCheckBeforeControllerHandler implements BeforeControllerHandler
-{
-	private static final Logger LOG = Logger.getLogger(SecurityUserCheckBeforeControllerHandler.class);
+public class SecurityUserCheckBeforeControllerHandler implements BeforeControllerHandler {
+    private static final Logger LOG = Logger.getLogger(SecurityUserCheckBeforeControllerHandler.class);
 
-	@Resource(name = "userService")
-	private UserService userService;
+    @Resource(name = "userService")
+    private UserService userService;
 
-	@Resource(name = "cmsPageContextService")
-	private CMSPageContextService cmsPageContextService;
+    @Resource(name = "cmsPageContextService")
+    private CMSPageContextService cmsPageContextService;
 
+    @Override
+    public boolean beforeController(final HttpServletRequest request, final HttpServletResponse response)
+            throws IOException {
+        // Skip this security check when run from within the WCMS Cockpit
+        if (isPreviewDataModelValid(request)) {
+            return true;
+        }
+        final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null) {
+            final Object principal = authentication.getPrincipal();
+            if (principal instanceof String) {
+                final String springSecurityUserId = (String) principal;
 
-	@Override
-	public boolean beforeController(final HttpServletRequest request, final HttpServletResponse response) throws IOException
-	{
-		// Skip this security check when run from within the WCMS Cockpit
-		if (isPreviewDataModelValid(request))
-		{
-			return true;
-		}
-		final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		if (authentication != null)
-		{
-			final Object principal = authentication.getPrincipal();
-			if (principal instanceof String)
-			{
-				final String springSecurityUserId = (String) principal;
+                final String hybrisUserId = userService.getCurrentUser().getUid();
+                if (!springSecurityUserId.equals(hybrisUserId)) {
+                    LOG.error("User miss-match springSecurityUserId [" + springSecurityUserId
+                            + "] hybris session user [" + hybrisUserId + "]. Invalidating session.");
 
-				final String hybrisUserId = userService.getCurrentUser().getUid();
-				if (!springSecurityUserId.equals(hybrisUserId))
-				{
-					LOG.error("User miss-match springSecurityUserId [" + springSecurityUserId + "] hybris session user ["
-							+ hybrisUserId + "]. Invalidating session.");
+                    // Invalidate session and redirect to the root page
+                    request.getSession().invalidate();
 
-					// Invalidate session and redirect to the root page
-					request.getSession().invalidate();
+                    final String encodedRedirectUrl = response.encodeRedirectURL(request.getContextPath() + "/");
+                    response.sendRedirect(encodedRedirectUrl);
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 
-					final String encodedRedirectUrl = response.encodeRedirectURL(request.getContextPath() + "/");
-					response.sendRedirect(encodedRedirectUrl);
-					return false;
-				}
-			}
-		}
-		return true;
-	}
-
-	/**
-	 * Checks whether there is a preview data setup for the current request
-	 * 
-	 * @param httpRequest
-	 *           current request
-	 * @return true whether is valid otherwise false
-	 */
-	protected boolean isPreviewDataModelValid(final HttpServletRequest httpRequest)
-	{
-		return cmsPageContextService.getCmsPageRequestContextData(httpRequest).getPreviewData() != null;
-	}
+    /**
+     * Checks whether there is a preview data setup for the current request
+     * 
+     * @param httpRequest
+     *            current request
+     * @return true whether is valid otherwise false
+     */
+    protected boolean isPreviewDataModelValid(final HttpServletRequest httpRequest) {
+        return cmsPageContextService.getCmsPageRequestContextData(httpRequest).getPreviewData() != null;
+    }
 }

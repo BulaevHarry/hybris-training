@@ -7,14 +7,12 @@ import java.util.List;
 
 import com.epam.cme.core.model.OrganizationModel;
 
+public interface OrganizationService {
 
-public interface OrganizationService
-{
+    List<OrganizationModel> getOrganizations();
 
-	List<OrganizationModel> getOrganizations();
+    OrganizationModel getOrganizationById(Integer id);
 
-	OrganizationModel getOrganizationById(Integer id);
-
-	List<OrganizationModel> getOrganizationsByIds(List<Integer> ids);
+    List<OrganizationModel> getOrganizationsByIds(List<Integer> ids);
 
 }

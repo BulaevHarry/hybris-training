@@ -25,54 +25,45 @@ import de.hybris.platform.servicelayer.dto.converter.Converter;
 
 import org.springframework.beans.factory.annotation.Required;
 
-
 /**
  * Velocity context for a order notification email.
  */
-public class OrderNotificationEmailContext extends AbstractEmailContext<OrderProcessModel>
-{
-	private Converter<OrderModel, OrderData> orderConverter;
-	private OrderData orderData;
+public class OrderNotificationEmailContext extends AbstractEmailContext<OrderProcessModel> {
+    private Converter<OrderModel, OrderData> orderConverter;
+    private OrderData orderData;
 
-	@Override
-	public void init(final OrderProcessModel orderProcessModel, final EmailPageModel emailPageModel)
-	{
-		super.init(orderProcessModel, emailPageModel);
-		orderData = getOrderConverter().convert(orderProcessModel.getOrder());
-	}
+    @Override
+    public void init(final OrderProcessModel orderProcessModel, final EmailPageModel emailPageModel) {
+        super.init(orderProcessModel, emailPageModel);
+        orderData = getOrderConverter().convert(orderProcessModel.getOrder());
+    }
 
-	@Override
-	protected BaseSiteModel getSite(final OrderProcessModel orderProcessModel)
-	{
-		return orderProcessModel.getOrder().getSite();
-	}
+    @Override
+    protected BaseSiteModel getSite(final OrderProcessModel orderProcessModel) {
+        return orderProcessModel.getOrder().getSite();
+    }
 
-	@Override
-	protected CustomerModel getCustomer(final OrderProcessModel orderProcessModel)
-	{
-		return (CustomerModel) orderProcessModel.getOrder().getUser();
-	}
+    @Override
+    protected CustomerModel getCustomer(final OrderProcessModel orderProcessModel) {
+        return (CustomerModel) orderProcessModel.getOrder().getUser();
+    }
 
-	protected Converter<OrderModel, OrderData> getOrderConverter()
-	{
-		return orderConverter;
-	}
+    protected Converter<OrderModel, OrderData> getOrderConverter() {
+        return orderConverter;
+    }
 
-	@Required
-	public void setOrderConverter(final Converter<OrderModel, OrderData> orderConverter)
-	{
-		this.orderConverter = orderConverter;
-	}
+    @Required
+    public void setOrderConverter(final Converter<OrderModel, OrderData> orderConverter) {
+        this.orderConverter = orderConverter;
+    }
 
-	public OrderData getOrder()
-	{
-		return orderData;
-	}
+    public OrderData getOrder() {
+        return orderData;
+    }
 
-	@Override
-	protected LanguageModel getEmailLanguage(final OrderProcessModel orderProcessModel)
-	{
-		return orderProcessModel.getOrder().getLanguage();
-	}
+    @Override
+    protected LanguageModel getEmailLanguage(final OrderProcessModel orderProcessModel) {
+        return orderProcessModel.getOrder().getLanguage();
+    }
 
 }

@@ -37,72 +37,64 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-
 /**
  * Controller for CMS ProductReferencesComponent.
  */
 @Controller("ProductCarouselComponentController")
 @RequestMapping(value = ControllerConstants.Actions.Cms.ProductCarouselComponent)
-public class ProductCarouselComponentController extends AbstractCMSComponentController<ProductCarouselComponentModel>
-{
-	protected static final List<ProductOption> PRODUCT_OPTIONS = Arrays.asList(ProductOption.BASIC, ProductOption.PRICE);
+public class ProductCarouselComponentController extends AbstractCMSComponentController<ProductCarouselComponentModel> {
+    protected static final List<ProductOption> PRODUCT_OPTIONS = Arrays
+            .asList(ProductOption.BASIC, ProductOption.PRICE);
 
-	@Resource(name = "accProductFacade")
-	private ProductFacade productFacade;
+    @Resource(name = "accProductFacade")
+    private ProductFacade productFacade;
 
-	@Resource(name = "productSearchFacade")
-	private ProductSearchFacade<ProductData> productSearchFacade;
+    @Resource(name = "productSearchFacade")
+    private ProductSearchFacade<ProductData> productSearchFacade;
 
+    @Override
+    protected void fillModel(final HttpServletRequest request, final Model model,
+            final ProductCarouselComponentModel component) {
+        final List<ProductData> products = new ArrayList<ProductData>();
 
-	@Override
-	protected void fillModel(final HttpServletRequest request, final Model model, final ProductCarouselComponentModel component)
-	{
-		final List<ProductData> products = new ArrayList<ProductData>();
+        products.addAll(collectLinkedProducts(component));
+        products.addAll(collectSearchProducts(component));
 
-		products.addAll(collectLinkedProducts(component));
-		products.addAll(collectSearchProducts(component));
+        model.addAttribute("title", component.getTitle());
+        model.addAttribute("productData", products);
+    }
 
-		model.addAttribute("title", component.getTitle());
-		model.addAttribute("productData", products);
-	}
+    protected List<ProductData> collectLinkedProducts(final ProductCarouselComponentModel component) {
+        final List<ProductData> products = new ArrayList<ProductData>();
 
-	protected List<ProductData> collectLinkedProducts(final ProductCarouselComponentModel component)
-	{
-		final List<ProductData> products = new ArrayList<ProductData>();
+        for (final ProductModel productModel : component.getProducts()) {
+            products.add(productFacade.getProductForOptions(productModel, PRODUCT_OPTIONS));
+        }
 
-		for (final ProductModel productModel : component.getProducts())
-		{
-			products.add(productFacade.getProductForOptions(productModel, PRODUCT_OPTIONS));
-		}
+        for (final CategoryModel categoryModel : component.getCategories()) {
+            for (final ProductModel productModel : categoryModel.getProducts()) {
+                products.add(productFacade.getProductForOptions(productModel, PRODUCT_OPTIONS));
+            }
+        }
 
-		for (final CategoryModel categoryModel : component.getCategories())
-		{
-			for (final ProductModel productModel : categoryModel.getProducts())
-			{
-				products.add(productFacade.getProductForOptions(productModel, PRODUCT_OPTIONS));
-			}
-		}
+        return products;
+    }
 
-		return products;
-	}
+    protected List<ProductData> collectSearchProducts(final ProductCarouselComponentModel component) {
+        final SearchQueryData searchQueryData = new SearchQueryData();
+        searchQueryData.setValue(component.getSearchQuery());
+        final String categoryCode = component.getCategoryCode();
 
-	protected List<ProductData> collectSearchProducts(final ProductCarouselComponentModel component)
-	{
-		final SearchQueryData searchQueryData = new SearchQueryData();
-		searchQueryData.setValue(component.getSearchQuery());
-		final String categoryCode = component.getCategoryCode();
+        if (searchQueryData.getValue() != null && categoryCode != null) {
+            final SearchStateData searchState = new SearchStateData();
+            searchState.setQuery(searchQueryData);
 
-		if (searchQueryData.getValue() != null && categoryCode != null)
-		{
-			final SearchStateData searchState = new SearchStateData();
-			searchState.setQuery(searchQueryData);
+            final PageableData pageableData = new PageableData();
+            pageableData.setPageSize(100); // Limit to 100 matching results
 
-			final PageableData pageableData = new PageableData();
-			pageableData.setPageSize(100); // Limit to 100 matching results
+            return productSearchFacade.categorySearch(categoryCode, searchState, pageableData).getResults();
+        }
 
-			return productSearchFacade.categorySearch(categoryCode, searchState, pageableData).getResults();
-		}
-
-		return Collections.emptyList();
-	}
+        return Collections.emptyList();
+    }
 }

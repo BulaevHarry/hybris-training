@@ -14,14 +14,11 @@
 package com.epam.cme.core.constants;
 
 @SuppressWarnings("PMD")
-public class CmeCoreConstants extends GeneratedCmeCoreConstants
-{
-	public static final String EXTENSIONNAME = "cmecore";
-	
-	private CmeCoreConstants()
-	{
-		//empty
-	}
-	
-	
+public class CmeCoreConstants extends GeneratedCmeCoreConstants {
+    public static final String EXTENSIONNAME = "cmecore";
+
+    private CmeCoreConstants() {
+        // empty
+    }
+
 }

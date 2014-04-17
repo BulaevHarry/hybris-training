@@ -25,29 +25,24 @@ import org.apache.commons.lang.StringUtils;
 
 import com.thoughtworks.xstream.converters.ConversionException;
 
-
 /*
  * Adds the search fields to the search query
  */
 public class GuidedSellingSearchSolrQueryPopulator implements
-		Populator<SearchQueryPageableData<SolrSearchQueryData>, SolrSearchRequest>
-{
-	@Override
-	public void populate(final SearchQueryPageableData<SolrSearchQueryData> source, final SolrSearchRequest target)
-			throws ConversionException
-	{
-		if (StringUtils.isEmpty(source.getSearchQueryData().getCategoryCode())
-				&& StringUtils.isEmpty(source.getSearchQueryData().getFreeTextSearch()))
-		{
-			final SearchQuery searchQuery = (SearchQuery) target.getSearchQuery();
+        Populator<SearchQueryPageableData<SolrSearchQueryData>, SolrSearchRequest> {
+    @Override
+    public void populate(final SearchQueryPageableData<SolrSearchQueryData> source, final SolrSearchRequest target)
+            throws ConversionException {
+        if (StringUtils.isEmpty(source.getSearchQueryData().getCategoryCode())
+                && StringUtils.isEmpty(source.getSearchQueryData().getFreeTextSearch())) {
+            final SearchQuery searchQuery = (SearchQuery) target.getSearchQuery();
 
-			if (searchQuery != null && CollectionUtils.isNotEmpty(source.getSearchQueryData().getFilterTerms()))
-			{
-				for (final SolrSearchQueryTermData solrSearchQueryTermData : source.getSearchQueryData().getFilterTerms())
-				{
-					searchQuery.searchInField(solrSearchQueryTermData.getKey(), solrSearchQueryTermData.getValue());
-				}
-			}
-		}
-	}
+            if (searchQuery != null && CollectionUtils.isNotEmpty(source.getSearchQueryData().getFilterTerms())) {
+                for (final SolrSearchQueryTermData solrSearchQueryTermData : source.getSearchQueryData()
+                        .getFilterTerms()) {
+                    searchQuery.searchInField(solrSearchQueryTermData.getKey(), solrSearchQueryTermData.getValue());
+                }
+            }
+        }
+    }
 }

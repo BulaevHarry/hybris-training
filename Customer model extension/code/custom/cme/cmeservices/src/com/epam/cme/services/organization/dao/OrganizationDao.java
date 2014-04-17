@@ -7,14 +7,12 @@ import java.util.List;
 
 import com.epam.cme.core.model.OrganizationModel;
 
+public interface OrganizationDao {
 
-public interface OrganizationDao
-{
+    List<OrganizationModel> findOrganizations();
 
-	List<OrganizationModel> findOrganizations();
+    List<OrganizationModel> findOrganizationById(Integer id);
 
-	List<OrganizationModel> findOrganizationById(Integer id);
-
-	List<OrganizationModel> findOrganizationsByIds(List<Integer> ids);
+    List<OrganizationModel> findOrganizationsByIds(List<Integer> ids);
 
 }

@@ -17,25 +17,21 @@ import javax.validation.constraints.Digits;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
-
 /**
  * Validation form for Deleting a bundle
  */
-public class DeleteBundleForm
-{
-	@NotNull(message = "{basket.error.bundleno.notNull}")
-	@Min(value = 1, message = "{basket.error.bundleno.invalid}")
-	@Digits(fraction = 0, integer = 10, message = "{basket.error.bundleno.invalid}")
-	private int bundleNo;
+public class DeleteBundleForm {
+    @NotNull(message = "{basket.error.bundleno.notNull}")
+    @Min(value = 1, message = "{basket.error.bundleno.invalid}")
+    @Digits(fraction = 0, integer = 10, message = "{basket.error.bundleno.invalid}")
+    private int bundleNo;
 
-	public int getBundleNo()
-	{
-		return bundleNo;
-	}
+    public int getBundleNo() {
+        return bundleNo;
+    }
 
-	public void setBundleNo(final int bundleNo)
-	{
-		this.bundleNo = bundleNo;
-	}
+    public void setBundleNo(final int bundleNo) {
+        this.bundleNo = bundleNo;
+    }
 
 }

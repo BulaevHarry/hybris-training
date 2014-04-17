@@ -23,21 +23,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-
 /**
- * Simple CMS Content Page controller. Used only to preview CMS Pages. The DefaultPageController is used to serve
- * generic content pages.
+ * Simple CMS Content Page controller. Used only to preview CMS Pages. The DefaultPageController is
+ * used to serve generic content pages.
  */
 @Controller
 @RequestMapping(value = "/preview-content")
-public class PreviewContentPageController extends AbstractPageController
-{
-	@RequestMapping(method = RequestMethod.GET, params = { "uid" })
-	public String get(@RequestParam(value = "uid") final String cmsPageUid, final Model model) throws CMSItemNotFoundException
-	{
-		final AbstractPageModel pageForRequest = getCmsPageService().getPageForId(cmsPageUid);
-		storeCmsPageInModel(model, getCmsPageService().getPageForId(cmsPageUid));
-		setUpMetaDataForContentPage(model, getContentPageForLabelOrId(cmsPageUid));
-		return getViewForPage(pageForRequest);
-	}
+public class PreviewContentPageController extends AbstractPageController {
+    @RequestMapping(method = RequestMethod.GET, params = { "uid" })
+    public String get(@RequestParam(value = "uid") final String cmsPageUid, final Model model)
+            throws CMSItemNotFoundException {
+        final AbstractPageModel pageForRequest = getCmsPageService().getPageForId(cmsPageUid);
+        storeCmsPageInModel(model, getCmsPageService().getPageForId(cmsPageUid));
+        setUpMetaDataForContentPage(model, getContentPageForLabelOrId(cmsPageUid));
+        return getViewForPage(pageForRequest);
+    }
 }

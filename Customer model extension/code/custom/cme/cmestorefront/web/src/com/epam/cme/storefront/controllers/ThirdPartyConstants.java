@@ -13,21 +13,18 @@
  */
 package com.epam.cme.storefront.controllers;
 
-public interface ThirdPartyConstants
-{
-	interface Google
-	{
-		String API_KEY_ID = "googleApiKey";
-		String ANALYTICS_TRACKING_ID = "google.analytics.tracking.id";
-	}
+public interface ThirdPartyConstants {
+    interface Google {
+        String API_KEY_ID = "googleApiKey";
+        String ANALYTICS_TRACKING_ID = "google.analytics.tracking.id";
+    }
 
-	interface Jirafe
-	{
-		String API_URL = "jirafe.api.url";
-		String API_TOKEN = "jirafe.api.token";
-		String APPLICATION_ID = "jirafe.app.id";
-		String VERSION = "jirafe.version";
-		String DATA_URL = "jirafe.data.url";
-		String SITE_ID = "jirafe.site.id";
-	}
+    interface Jirafe {
+        String API_URL = "jirafe.api.url";
+        String API_TOKEN = "jirafe.api.token";
+        String APPLICATION_ID = "jirafe.app.id";
+        String VERSION = "jirafe.version";
+        String DATA_URL = "jirafe.data.url";
+        String SITE_ID = "jirafe.site.id";
+    }
 }

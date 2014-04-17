@@ -18,71 +18,60 @@ import com.epam.cme.storefront.forms.validation.EqualAttributes;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-
-
 /**
  * Form object for updating the password.
  */
-@EqualAttributes(message = "{validation.checkPwd.equals}", value =
-{ "pwd", "checkPwd" })
-public class UpdatePwdForm
-{
-	private String pwd;
-	private String checkPwd;
-	private String token;
+@EqualAttributes(message = "{validation.checkPwd.equals}", value = { "pwd", "checkPwd" })
+public class UpdatePwdForm {
+    private String pwd;
+    private String checkPwd;
+    private String token;
 
+    /**
+     * @return the pwd
+     */
+    @NotNull(message = "{updatePwd.pwd.invalid}")
+    @Size(min = 6, max = 255, message = "{updatePwd.pwd.invalid}")
+    public String getPwd() {
+        return pwd;
+    }
 
-	/**
-	 * @return the pwd
-	 */
-	@NotNull(message = "{updatePwd.pwd.invalid}")
-	@Size(min = 6, max = 255, message = "{updatePwd.pwd.invalid}")
-	public String getPwd()
-	{
-		return pwd;
-	}
+    /**
+     * @param pwd
+     *            the pwd to set
+     */
+    public void setPwd(final String pwd) {
+        this.pwd = pwd;
+    }
 
-	/**
-	 * @param pwd
-	 *           the pwd to set
-	 */
-	public void setPwd(final String pwd)
-	{
-		this.pwd = pwd;
-	}
+    /**
+     * @return the checkPwd
+     */
+    @NotNull(message = "{updatePwd.checkPwd.invalid}")
+    public String getCheckPwd() {
+        return checkPwd;
+    }
 
-	/**
-	 * @return the checkPwd
-	 */
-	@NotNull(message = "{updatePwd.checkPwd.invalid}")
-	public String getCheckPwd()
-	{
-		return checkPwd;
-	}
+    /**
+     * @param checkPwd
+     *            the checkPwd to set
+     */
+    public void setCheckPwd(final String checkPwd) {
+        this.checkPwd = checkPwd;
+    }
 
-	/**
-	 * @param checkPwd
-	 *           the checkPwd to set
-	 */
-	public void setCheckPwd(final String checkPwd)
-	{
-		this.checkPwd = checkPwd;
-	}
+    /**
+     * @return the token
+     */
+    public String getToken() {
+        return token;
+    }
 
-	/**
-	 * @return the token
-	 */
-	public String getToken()
-	{
-		return token;
-	}
-
-	/**
-	 * @param token
-	 *           the token to set
-	 */
-	public void setToken(final String token)
-	{
-		this.token = token;
-	}
+    /**
+     * @param token
+     *            the token to set
+     */
+    public void setToken(final String token) {
+        this.token = token;
+    }
 }

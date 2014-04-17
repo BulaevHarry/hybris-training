@@ -16,35 +16,28 @@ package com.epam.cme.storefront.history;
 /**
  * Browse history entry data object
  */
-public class BrowseHistoryEntry
-{
-	private String url;
-	private String pageTitle;
+public class BrowseHistoryEntry {
+    private String url;
+    private String pageTitle;
 
+    public BrowseHistoryEntry(final String url, final String pageTitle) {
+        this.url = url;
+        this.pageTitle = pageTitle;
+    }
 
-	public BrowseHistoryEntry(final String url, final String pageTitle)
-	{
-		this.url = url;
-		this.pageTitle = pageTitle;
-	}
+    public String getUrl() {
+        return url;
+    }
 
-	public String getUrl()
-	{
-		return url;
-	}
+    public void setUrl(final String url) {
+        this.url = url;
+    }
 
-	public void setUrl(final String url)
-	{
-		this.url = url;
-	}
+    public String getPageTitle() {
+        return pageTitle;
+    }
 
-	public String getPageTitle()
-	{
-		return pageTitle;
-	}
-
-	public void setPageTitle(final String pageTitle)
-	{
-		this.pageTitle = pageTitle;
-	}
+    public void setPageTitle(final String pageTitle) {
+        this.pageTitle = pageTitle;
+    }
 }

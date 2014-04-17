@@ -30,27 +30,27 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-
 /**
  * Controller for CMS ProductReferencesComponent
  */
 @Controller("ProductReferencesComponentController")
 @RequestMapping(value = ControllerConstants.Actions.Cms.ProductReferencesComponent)
-public class ProductReferencesComponentController extends AbstractCMSComponentController<ProductReferencesComponentModel>
-{
-	protected static final List<ProductOption> PRODUCT_OPTIONS = Arrays.asList(ProductOption.BASIC, ProductOption.PRICE);
+public class ProductReferencesComponentController extends
+        AbstractCMSComponentController<ProductReferencesComponentModel> {
+    protected static final List<ProductOption> PRODUCT_OPTIONS = Arrays
+            .asList(ProductOption.BASIC, ProductOption.PRICE);
 
-	@Resource(name = "productFacade")
-	private ProductFacade productFacade;
+    @Resource(name = "productFacade")
+    private ProductFacade productFacade;
 
-	@Override
-	protected void fillModel(final HttpServletRequest request, final Model model, final ProductReferencesComponentModel component)
-	{
-		final List<ProductReferenceData> productReferences = productFacade.getProductReferencesForCode(
-				ProductDataHelper.getCurrentProduct(request), component.getProductReferenceTypes(), PRODUCT_OPTIONS,
-				component.getMaximumNumberProducts());
+    @Override
+    protected void fillModel(final HttpServletRequest request, final Model model,
+            final ProductReferencesComponentModel component) {
+        final List<ProductReferenceData> productReferences = productFacade.getProductReferencesForCode(
+                ProductDataHelper.getCurrentProduct(request), component.getProductReferenceTypes(), PRODUCT_OPTIONS,
+                component.getMaximumNumberProducts());
 
-		model.addAttribute("title", component.getTitle());
-		model.addAttribute("productReferences", productReferences);
-	}
+        model.addAttribute("title", component.getTitle());
+        model.addAttribute("productReferences", productReferences);
+    }
 }

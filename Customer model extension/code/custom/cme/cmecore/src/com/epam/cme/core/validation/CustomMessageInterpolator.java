@@ -13,34 +13,29 @@
  */
 package com.epam.cme.core.validation;
 
-
-
 import com.epam.cme.core.jalo.ClassificationNotBlankConstraint;
 
 import java.util.Locale;
 
 import org.hibernate.validator.messageinterpolation.ResourceBundleMessageInterpolator;
 
-
 /**
- * Customized MessageInterpolator (referenced in {@link CustomValidationService}) that resolves the issues that only the
- * very first {@link ClassificationNotBlankConstraint} violation is displayed in the product cockpit's inspector
- * coverage. The standard ResourceBundleMessageInterpolator uses a hash value that is not unique for
- * {@link ClassificationNotBlankConstraint}s, therefore several {@link ClassificationNotBlankConstraint} violations look
- * the same and only the first one appears in the coverage.
+ * Customized MessageInterpolator (referenced in {@link CustomValidationService}) that resolves the
+ * issues that only the very first {@link ClassificationNotBlankConstraint} violation is displayed
+ * in the product cockpit's inspector coverage. The standard ResourceBundleMessageInterpolator uses
+ * a hash value that is not unique for {@link ClassificationNotBlankConstraint}s, therefore several
+ * {@link ClassificationNotBlankConstraint} violations look the same and only the first one appears
+ * in the coverage.
  **/
-public class CustomMessageInterpolator extends ResourceBundleMessageInterpolator
-{
+public class CustomMessageInterpolator extends ResourceBundleMessageInterpolator {
 
-	@Override
-	public String interpolate(final String message, final Context context)
-	{
-		return Integer.toString(System.identityHashCode(context.getConstraintDescriptor()));
-	}
+    @Override
+    public String interpolate(final String message, final Context context) {
+        return Integer.toString(System.identityHashCode(context.getConstraintDescriptor()));
+    }
 
-	@Override
-	public String interpolate(final String message, final Context context, final Locale locale)
-	{
-		return Integer.toString(System.identityHashCode(context.getConstraintDescriptor()));
-	}
+    @Override
+    public String interpolate(final String message, final Context context, final Locale locale) {
+        return Integer.toString(System.identityHashCode(context.getConstraintDescriptor()));
+    }
 }

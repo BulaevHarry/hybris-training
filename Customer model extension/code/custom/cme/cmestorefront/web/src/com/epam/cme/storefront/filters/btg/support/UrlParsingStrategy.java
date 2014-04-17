@@ -15,17 +15,16 @@ package com.epam.cme.storefront.filters.btg.support;
 
 import javax.servlet.http.HttpServletRequest;
 
-
 /**
  * Retrieve a key by parsing the URL
  */
-public interface UrlParsingStrategy
-{
-	/**
-	 * Parse the request url to retrieve a key
-	 *
-	 * @param request the request
-	 * @return key or null, if no key could be parsed
-	 */
-	String parse(HttpServletRequest request);
+public interface UrlParsingStrategy {
+    /**
+     * Parse the request url to retrieve a key
+     * 
+     * @param request
+     *            the request
+     * @return key or null, if no key could be parsed
+     */
+    String parse(HttpServletRequest request);
 }

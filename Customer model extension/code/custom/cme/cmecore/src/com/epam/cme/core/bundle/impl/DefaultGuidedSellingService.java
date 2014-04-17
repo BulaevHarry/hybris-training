@@ -27,83 +27,72 @@ import com.epam.cme.core.model.ServiceAddOnModel;
 
 import org.springframework.beans.factory.annotation.Required;
 
-
 /**
  * Default implementation for {@link GuidedSellingService}
  */
-public class DefaultGuidedSellingService implements GuidedSellingService
-{
-	private BundleTemplateService bundleTemplateService;
-	private AbstractBundleComponentEditableChecker<CartModel> bundleComponentEditableChecker;
+public class DefaultGuidedSellingService implements GuidedSellingService {
+    private BundleTemplateService bundleTemplateService;
+    private AbstractBundleComponentEditableChecker<CartModel> bundleComponentEditableChecker;
 
-	@Override
-	public BundleTemplateModel getRelativeSelectionComponent(final AbstractOrderModel masterAbstractOrder,
-			final BundleTemplateModel bundleTemplate, final int bundleNo, final int relativeposition)
-	{
-		validateParameterNotNullStandardMessage("masterAbstractOrder", masterAbstractOrder);
-		validateParameterNotNullStandardMessage("bundleTemplate", bundleTemplate);
+    @Override
+    public BundleTemplateModel getRelativeSelectionComponent(final AbstractOrderModel masterAbstractOrder,
+            final BundleTemplateModel bundleTemplate, final int bundleNo, final int relativeposition) {
+        validateParameterNotNullStandardMessage("masterAbstractOrder", masterAbstractOrder);
+        validateParameterNotNullStandardMessage("bundleTemplate", bundleTemplate);
 
-		BundleTemplateModel subsequentBundleModel = getBundleTemplateService().getRelativeBundleTemplate(bundleTemplate,
-				relativeposition);
+        BundleTemplateModel subsequentBundleModel = getBundleTemplateService().getRelativeBundleTemplate(
+                bundleTemplate, relativeposition);
 
-		// if there is no previous one, choose the next existing one
-		if (subsequentBundleModel == null && relativeposition < 0)
-		{
-			int currentPos = relativeposition;
-			do
-			{
-				subsequentBundleModel = getBundleTemplateService().getRelativeBundleTemplate(bundleTemplate, ++currentPos);
-			}
-			while (subsequentBundleModel == null && currentPos < 0);
-		}
+        // if there is no previous one, choose the next existing one
+        if (subsequentBundleModel == null && relativeposition < 0) {
+            int currentPos = relativeposition;
+            do {
+                subsequentBundleModel = getBundleTemplateService().getRelativeBundleTemplate(bundleTemplate,
+                        ++currentPos);
+            } while (subsequentBundleModel == null && currentPos < 0);
+        }
 
-		// now check that if is a valid one, otherwise go to the next one
-		while (subsequentBundleModel != null
-				&& !isComponentToBeDisplayedOnGuidedSellingSelectPage(masterAbstractOrder, subsequentBundleModel, bundleNo,
-						DeviceModel.class, ServiceAddOnModel.class))
-		{
-			subsequentBundleModel = getBundleTemplateService().getSubsequentBundleTemplate(subsequentBundleModel);
-		}
-		return subsequentBundleModel;
-	}
+        // now check that if is a valid one, otherwise go to the next one
+        while (subsequentBundleModel != null
+                && !isComponentToBeDisplayedOnGuidedSellingSelectPage(masterAbstractOrder, subsequentBundleModel,
+                        bundleNo, DeviceModel.class, ServiceAddOnModel.class)) {
+            subsequentBundleModel = getBundleTemplateService().getSubsequentBundleTemplate(subsequentBundleModel);
+        }
+        return subsequentBundleModel;
+    }
 
-	@Override
-	public boolean isComponentToBeDisplayedOnGuidedSellingSelectPage(final AbstractOrderModel masterAbstractOrder,
-			final BundleTemplateModel bundleTemplate, final int bundleNo, final Class<? extends ProductModel>... clazzes)
-	{
-		validateParameterNotNullStandardMessage("masterAbstractOrder", masterAbstractOrder);
-		validateParameterNotNullStandardMessage("bundleTemplate", bundleTemplate);
+    @Override
+    public boolean isComponentToBeDisplayedOnGuidedSellingSelectPage(final AbstractOrderModel masterAbstractOrder,
+            final BundleTemplateModel bundleTemplate, final int bundleNo,
+            final Class<? extends ProductModel>... clazzes) {
+        validateParameterNotNullStandardMessage("masterAbstractOrder", masterAbstractOrder);
+        validateParameterNotNullStandardMessage("bundleTemplate", bundleTemplate);
 
-		if (!getBundleTemplateService().isAutoPickComponent(bundleTemplate)
-				&& getBundleTemplateService().containsComponenentProductsOfType(bundleTemplate, clazzes)
-				&& getBundleComponentEditableChecker().canEdit((CartModel) masterAbstractOrder, bundleTemplate, bundleNo))
-		{
-			return true;
-		}
-		return false;
-	}
+        if (!getBundleTemplateService().isAutoPickComponent(bundleTemplate)
+                && getBundleTemplateService().containsComponenentProductsOfType(bundleTemplate, clazzes)
+                && getBundleComponentEditableChecker().canEdit((CartModel) masterAbstractOrder, bundleTemplate,
+                        bundleNo)) {
+            return true;
+        }
+        return false;
+    }
 
-	protected BundleTemplateService getBundleTemplateService()
-	{
-		return bundleTemplateService;
-	}
+    protected BundleTemplateService getBundleTemplateService() {
+        return bundleTemplateService;
+    }
 
-	@Required
-	public void setBundleTemplateService(final BundleTemplateService bundleTemplateService)
-	{
-		this.bundleTemplateService = bundleTemplateService;
-	}
+    @Required
+    public void setBundleTemplateService(final BundleTemplateService bundleTemplateService) {
+        this.bundleTemplateService = bundleTemplateService;
+    }
 
+    protected AbstractBundleComponentEditableChecker<CartModel> getBundleComponentEditableChecker() {
+        return bundleComponentEditableChecker;
+    }
 
-	protected AbstractBundleComponentEditableChecker<CartModel> getBundleComponentEditableChecker()
-	{
-		return bundleComponentEditableChecker;
-	}
-
-	@Required
-	public void setBundleComponentEditableChecker(
-			final AbstractBundleComponentEditableChecker<CartModel> bundleComponentEditableChecker)
-	{
-		this.bundleComponentEditableChecker = bundleComponentEditableChecker;
-	}
+    @Required
+    public void setBundleComponentEditableChecker(
+            final AbstractBundleComponentEditableChecker<CartModel> bundleComponentEditableChecker) {
+        this.bundleComponentEditableChecker = bundleComponentEditableChecker;
+    }
 }

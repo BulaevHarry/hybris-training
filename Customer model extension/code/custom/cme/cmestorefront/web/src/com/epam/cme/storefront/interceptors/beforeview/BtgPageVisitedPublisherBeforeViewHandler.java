@@ -25,32 +25,27 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 import org.springframework.web.servlet.ModelAndView;
 
-
 /**
- * Interceptor to create BTG events for visited content pages. Using a filter is not appropriate since pages are
- * retrieved by controllers and populated in the model.
+ * Interceptor to create BTG events for visited content pages. Using a filter is not appropriate
+ * since pages are retrieved by controllers and populated in the model.
  */
-public class BtgPageVisitedPublisherBeforeViewHandler implements BeforeViewHandler
-{
-	private static final Logger LOG = Logger.getLogger(BtgPageVisitedPublisherBeforeViewHandler.class);
+public class BtgPageVisitedPublisherBeforeViewHandler implements BeforeViewHandler {
+    private static final Logger LOG = Logger.getLogger(BtgPageVisitedPublisherBeforeViewHandler.class);
 
-	@Resource(name = "eventService")
-	private EventService eventService;
+    @Resource(name = "eventService")
+    private EventService eventService;
 
-	@Override
-	public void beforeView(final HttpServletRequest request, final HttpServletResponse response, final ModelAndView modelAndView)
-	{
-		final AbstractPageModel page = (AbstractPageModel) modelAndView.getModel().get(AbstractPageController.CMS_PAGE_MODEL);
-		if (page != null && page.getPk() != null)
-		{
-			try
-			{
-				eventService.publishEvent(new ContentPageVisitedBTGRuleDataEvent(page.getPk().getLongValueAsString()));
-			}
-			catch (final Exception e)
-			{
-				LOG.error("Could not publish event", e);
-			}
-		}
-	}
+    @Override
+    public void beforeView(final HttpServletRequest request, final HttpServletResponse response,
+            final ModelAndView modelAndView) {
+        final AbstractPageModel page = (AbstractPageModel) modelAndView.getModel().get(
+                AbstractPageController.CMS_PAGE_MODEL);
+        if (page != null && page.getPk() != null) {
+            try {
+                eventService.publishEvent(new ContentPageVisitedBTGRuleDataEvent(page.getPk().getLongValueAsString()));
+            } catch (final Exception e) {
+                LOG.error("Could not publish event", e);
+            }
+        }
+    }
 }

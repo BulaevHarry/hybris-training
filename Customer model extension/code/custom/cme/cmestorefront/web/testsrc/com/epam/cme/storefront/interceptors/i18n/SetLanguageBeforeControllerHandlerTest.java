@@ -28,80 +28,75 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
-
 /**
  *
  */
-public class SetLanguageBeforeControllerHandlerTest
-{
-	@InjectMocks
-	private final SetLanguageBeforeControllerHandler beforeControllerHandler = new SetLanguageBeforeControllerHandler();
+public class SetLanguageBeforeControllerHandlerTest {
+    @InjectMocks
+    private final SetLanguageBeforeControllerHandler beforeControllerHandler = new SetLanguageBeforeControllerHandler();
 
-	@Mock
-	private LanguageResolver languageResolver;
+    @Mock
+    private LanguageResolver languageResolver;
 
-	@Mock
-	private CommonI18NService commonI18NService;
+    @Mock
+    private CommonI18NService commonI18NService;
 
-	@Mock
-	private HttpServletRequest request;
+    @Mock
+    private HttpServletRequest request;
 
-	@Before
-	public void prepare()
-	{
-		MockitoAnnotations.initMocks(this);
-	}
+    @Before
+    public void prepare() {
+        MockitoAnnotations.initMocks(this);
+    }
 
-	@Test
-	public void testCallForNonGetRequest() throws Exception
-	{
-		testCallForNonGetRequest("PUT");
-		testCallForNonGetRequest("Put");
-		testCallForNonGetRequest("put");
+    @Test
+    public void testCallForNonGetRequest() throws Exception {
+        testCallForNonGetRequest("PUT");
+        testCallForNonGetRequest("Put");
+        testCallForNonGetRequest("put");
 
-		testCallForNonGetRequest("POST");
-		testCallForNonGetRequest("Post");
-		testCallForNonGetRequest("post");
+        testCallForNonGetRequest("POST");
+        testCallForNonGetRequest("Post");
+        testCallForNonGetRequest("post");
 
-		testCallForNonGetRequest("DELETE");
-		testCallForNonGetRequest("Delete");
-		testCallForNonGetRequest("delete");
-	}
+        testCallForNonGetRequest("DELETE");
+        testCallForNonGetRequest("Delete");
+        testCallForNonGetRequest("delete");
+    }
 
-	@Test
-	public void testCallForAnyGetRequest() throws Exception
-	{
-		testCallForGetRequest("GET");
-		testCallForGetRequest("Get");
-		testCallForGetRequest("get");
-	}
+    @Test
+    public void testCallForAnyGetRequest() throws Exception {
+        testCallForGetRequest("GET");
+        testCallForGetRequest("Get");
+        testCallForGetRequest("get");
+    }
 
-	private void testCallForNonGetRequest(final String nonGet) throws Exception
-	{
-		BDDMockito.given(request.getMethod()).willReturn(nonGet);
-		BDDMockito.given(request.getParameter(SetLanguageBeforeControllerHandler.DEFAULT_LANG_PARAM)).willReturn("dummy");
+    private void testCallForNonGetRequest(final String nonGet) throws Exception {
+        BDDMockito.given(request.getMethod()).willReturn(nonGet);
+        BDDMockito.given(request.getParameter(SetLanguageBeforeControllerHandler.DEFAULT_LANG_PARAM)).willReturn(
+                "dummy");
 
-		beforeControllerHandler.beforeController(request, null);
+        beforeControllerHandler.beforeController(request, null);
 
-		Mockito.verifyZeroInteractions(commonI18NService);
-		Mockito.verifyZeroInteractions(languageResolver);
+        Mockito.verifyZeroInteractions(commonI18NService);
+        Mockito.verifyZeroInteractions(languageResolver);
 
-		Mockito.reset(languageResolver, request, commonI18NService);
-	}
+        Mockito.reset(languageResolver, request, commonI18NService);
+    }
 
-	private void testCallForGetRequest(final String getMethod) throws Exception
-	{
-		final LanguageModel lang = Mockito.mock(LanguageModel.class);
+    private void testCallForGetRequest(final String getMethod) throws Exception {
+        final LanguageModel lang = Mockito.mock(LanguageModel.class);
 
-		BDDMockito.given(languageResolver.getLanguage(Mockito.anyString())).willReturn(lang);
-		BDDMockito.given(request.getMethod()).willReturn(getMethod);
-		BDDMockito.given(request.getParameter(SetLanguageBeforeControllerHandler.DEFAULT_LANG_PARAM)).willReturn("dummy");
+        BDDMockito.given(languageResolver.getLanguage(Mockito.anyString())).willReturn(lang);
+        BDDMockito.given(request.getMethod()).willReturn(getMethod);
+        BDDMockito.given(request.getParameter(SetLanguageBeforeControllerHandler.DEFAULT_LANG_PARAM)).willReturn(
+                "dummy");
 
-		beforeControllerHandler.beforeController(request, null);
+        beforeControllerHandler.beforeController(request, null);
 
-		Mockito.verify(languageResolver).getLanguage("dummy");
-		Mockito.verify(commonI18NService).setCurrentLanguage(lang);
+        Mockito.verify(languageResolver).getLanguage("dummy");
+        Mockito.verify(commonI18NService).setCurrentLanguage(lang);
 
-		Mockito.reset(languageResolver, request, commonI18NService);
-	}
+        Mockito.reset(languageResolver, request, commonI18NService);
+    }
 }

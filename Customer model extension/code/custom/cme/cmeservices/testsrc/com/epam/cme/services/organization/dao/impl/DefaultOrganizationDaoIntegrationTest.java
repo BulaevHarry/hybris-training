@@ -20,74 +20,67 @@ import org.junit.Test;
 import com.epam.cme.core.model.OrganizationModel;
 import com.epam.cme.services.organization.dao.OrganizationDao;
 
+public class DefaultOrganizationDaoIntegrationTest extends ServicelayerTransactionalTest {
 
-public class DefaultOrganizationDaoIntegrationTest extends ServicelayerTransactionalTest
-{
+    @Resource
+    private OrganizationDao organizationDao;
 
-	@Resource
-	private OrganizationDao organizationDao;
+    @Resource
+    private ModelService modelService;
 
-	@Resource
-	private ModelService modelService;
+    private final OrganizationModel organizationModel1 = new OrganizationModel();
+    private final OrganizationModel organizationModel2 = new OrganizationModel();
+    private static final Integer organizationModel1Id = Integer.valueOf(1);
+    private static final Integer organizationModel2Id = Integer.valueOf(2);
+    private static final String organizationModel1Name = "Apple";
+    private static final String organizationModel2Name = "Samsung";
+    private static final String organizationModel1Phone = "111-222-333";
+    private static final String organizationModel2Phone = "222-333-444";
 
-	private final OrganizationModel organizationModel1 = new OrganizationModel();
-	private final OrganizationModel organizationModel2 = new OrganizationModel();
-	private static final Integer organizationModel1Id = Integer.valueOf(1);
-	private static final Integer organizationModel2Id = Integer.valueOf(2);
-	private static final String organizationModel1Name = "Apple";
-	private static final String organizationModel2Name = "Samsung";
-	private static final String organizationModel1Phone = "111-222-333";
-	private static final String organizationModel2Phone = "222-333-444";
+    @Before
+    public void setUp() {
+        organizationModel1.setId(organizationModel1Id);
+        organizationModel2.setId(organizationModel2Id);
+        organizationModel1.setName(organizationModel1Name);
+        organizationModel2.setName(organizationModel2Name);
+        organizationModel1.setPhone(organizationModel1Phone);
+        organizationModel2.setPhone(organizationModel2Phone);
+        modelService.save(organizationModel1);
+    }
 
-	@Before
-	public void setUp()
-	{
-		organizationModel1.setId(organizationModel1Id);
-		organizationModel2.setId(organizationModel2Id);
-		organizationModel1.setName(organizationModel1Name);
-		organizationModel2.setName(organizationModel2Name);
-		organizationModel1.setPhone(organizationModel1Phone);
-		organizationModel2.setPhone(organizationModel2Phone);
-		modelService.save(organizationModel1);
-	}
+    @Test
+    public void testFindOrganizationsReturnCorrectOrganizationCount() {
+        List<OrganizationModel> organizations = organizationDao.findOrganizations();
+        final int size = organizations.size();
+        modelService.save(organizationModel2);
+        organizations = organizationDao.findOrganizations();
+        assertEquals(size + 1, organizations.size());
+    }
 
-	@Test
-	public void testFindOrganizationsReturnCorrectOrganizationCount()
-	{
-		List<OrganizationModel> organizations = organizationDao.findOrganizations();
-		final int size = organizations.size();
-		modelService.save(organizationModel2);
-		organizations = organizationDao.findOrganizations();
-		assertEquals(size + 1, organizations.size());
-	}
+    @Test
+    public void testFindOrganizationByIdNotExistingIdEmptyResult() {
+        final List<OrganizationModel> organizations = organizationDao.findOrganizationById(organizationModel2Id);
+        assertTrue(organizations.isEmpty());
+    }
 
-	@Test
-	public void testFindOrganizationByIdNotExistingIdEmptyResult()
-	{
-		final List<OrganizationModel> organizations = organizationDao.findOrganizationById(organizationModel2Id);
-		assertTrue(organizations.isEmpty());
-	}
+    @Test
+    public void testFindOrganizationByIdCorrectObjectReturned() {
+        final OrganizationModel organization = organizationDao.findOrganizationById(organizationModel1Id).get(0);
+        assertEquals(organizationModel1Id, organization.getId());
+        assertEquals(organizationModel1Name, organization.getName());
+        assertEquals(organizationModel1Phone, organization.getPhone());
+    }
 
-	@Test
-	public void testFindOrganizationByIdCorrectObjectReturned()
-	{
-		final OrganizationModel organization = organizationDao.findOrganizationById(organizationModel1Id).get(0);
-		assertEquals(organizationModel1Id, organization.getId());
-		assertEquals(organizationModel1Name, organization.getName());
-		assertEquals(organizationModel1Phone, organization.getPhone());
-	}
-
-	@Test
-	public void testFindOrganizationsByIdsReturnCorrectOrganizationCount()
-	{
-		modelService.save(organizationModel2);
-		final List<Integer> organizationsIds = new ArrayList<Integer>();
-		organizationsIds.add(organizationModel1Id);
-		List<OrganizationModel> organizations = organizationDao.findOrganizationsByIds(organizationsIds);
-		final int size = organizations.size();
-		organizationsIds.add(organizationModel2Id);
-		organizations = organizationDao.findOrganizationsByIds(organizationsIds);
-		assertEquals(size + 1, organizations.size());
-	}
+    @Test
+    public void testFindOrganizationsByIdsReturnCorrectOrganizationCount() {
+        modelService.save(organizationModel2);
+        final List<Integer> organizationsIds = new ArrayList<Integer>();
+        organizationsIds.add(organizationModel1Id);
+        List<OrganizationModel> organizations = organizationDao.findOrganizationsByIds(organizationsIds);
+        final int size = organizations.size();
+        organizationsIds.add(organizationModel2Id);
+        organizations = organizationDao.findOrganizationsByIds(organizationsIds);
+        assertEquals(size + 1, organizations.size());
+    }
 
 }

@@ -26,42 +26,36 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.ui.Model;
 
-
 /**
  * Abstract base class for login page controllers
  */
-public abstract class AbstractLoginPageController extends AbstractRegisterPageController
-{
-	protected static final String SPRING_SECURITY_LAST_USERNAME = "SPRING_SECURITY_LAST_USERNAME";
+public abstract class AbstractLoginPageController extends AbstractRegisterPageController {
+    protected static final String SPRING_SECURITY_LAST_USERNAME = "SPRING_SECURITY_LAST_USERNAME";
 
-	protected String getDefaultLoginPage(final boolean loginError, final HttpSession session, final Model model)
-			throws CMSItemNotFoundException
-	{
-		final LoginForm loginForm = new LoginForm();
-		model.addAttribute(loginForm);
-		model.addAttribute(new RegisterForm());
+    protected String getDefaultLoginPage(final boolean loginError, final HttpSession session, final Model model)
+            throws CMSItemNotFoundException {
+        final LoginForm loginForm = new LoginForm();
+        model.addAttribute(loginForm);
+        model.addAttribute(new RegisterForm());
 
-		final String username = (String) session.getAttribute(SPRING_SECURITY_LAST_USERNAME);
-		if (username != null)
-		{
-			session.removeAttribute(SPRING_SECURITY_LAST_USERNAME);
-		}
+        final String username = (String) session.getAttribute(SPRING_SECURITY_LAST_USERNAME);
+        if (username != null) {
+            session.removeAttribute(SPRING_SECURITY_LAST_USERNAME);
+        }
 
-		loginForm.setJ_username(username);
-		storeCmsPageInModel(model, getCmsPage());
-		setUpMetaDataForContentPage(model, (ContentPageModel) getCmsPage());
-		model.addAttribute("metaRobots", "index,no-follow");
+        loginForm.setJ_username(username);
+        storeCmsPageInModel(model, getCmsPage());
+        setUpMetaDataForContentPage(model, (ContentPageModel) getCmsPage());
+        model.addAttribute("metaRobots", "index,no-follow");
 
+        final Breadcrumb loginBreadcrumbEntry = new Breadcrumb("#", getMessageSource().getMessage("header.link.login",
+                null, getI18nService().getCurrentLocale()), null);
+        model.addAttribute("breadcrumbs", Collections.singletonList(loginBreadcrumbEntry));
 
-		final Breadcrumb loginBreadcrumbEntry = new Breadcrumb("#", getMessageSource().getMessage("header.link.login", null,
-				getI18nService().getCurrentLocale()), null);
-		model.addAttribute("breadcrumbs", Collections.singletonList(loginBreadcrumbEntry));
+        if (loginError) {
+            GlobalMessages.addErrorMessage(model, "login.error.account.not.found.title");
+        }
 
-		if (loginError)
-		{
-			GlobalMessages.addErrorMessage(model, "login.error.account.not.found.title");
-		}
-
-		return getView();
-	}
+        return getView();
+    }
 }

@@ -22,20 +22,17 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-
 /**
  * 
  */
 @Controller("NavigationBarComponentController")
 @RequestMapping(value = ControllerConstants.Actions.Cms.NavigationBarComponent)
-public class NavigationBarComponentController extends AbstractCMSComponentController<NavigationBarComponentModel>
-{
-	@Override
-	protected void fillModel(final HttpServletRequest request, final Model model, final NavigationBarComponentModel component)
-	{
-		if (component.getDropDownLayout() != null)
-		{
-			model.addAttribute("dropDownLayout", component.getDropDownLayout().getCode().toLowerCase());
-		}
-	}
+public class NavigationBarComponentController extends AbstractCMSComponentController<NavigationBarComponentModel> {
+    @Override
+    protected void fillModel(final HttpServletRequest request, final Model model,
+            final NavigationBarComponentModel component) {
+        if (component.getDropDownLayout() != null) {
+            model.addAttribute("dropDownLayout", component.getDropDownLayout().getCode().toLowerCase());
+        }
+    }
 }

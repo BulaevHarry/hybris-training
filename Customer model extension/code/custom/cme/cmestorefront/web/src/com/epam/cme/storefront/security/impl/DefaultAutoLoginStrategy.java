@@ -28,72 +28,60 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
 
-
 /**
  * Default implementation of {@link AutoLoginStrategy}
  */
-public class DefaultAutoLoginStrategy implements AutoLoginStrategy
-{
-	private static final Logger LOG = Logger.getLogger(DefaultAutoLoginStrategy.class);
+public class DefaultAutoLoginStrategy implements AutoLoginStrategy {
+    private static final Logger LOG = Logger.getLogger(DefaultAutoLoginStrategy.class);
 
-	private AuthenticationManager authenticationManager;
-	private CustomerFacade customerFacade;
-	private GUIDCookieStrategy guidCookieStrategy;
+    private AuthenticationManager authenticationManager;
+    private CustomerFacade customerFacade;
+    private GUIDCookieStrategy guidCookieStrategy;
 
-	@Override
-	public void login(final String username, final String password, final HttpServletRequest request,
-			final HttpServletResponse response)
-	{
-		final UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(username, password);
-		token.setDetails(new WebAuthenticationDetails(request));
-		try
-		{
-			final Authentication authentication = getAuthenticationManager().authenticate(token);
-			SecurityContextHolder.getContext().setAuthentication(authentication);
-			getCustomerFacade().loginSuccess();
-			getGuidCookieStrategy().setCookie(request, response);
-		}
-		catch (final Exception e)
-		{
-			SecurityContextHolder.getContext().setAuthentication(null);
-			LOG.error("Failure during autoLogin", e);
-		}
-	}
+    @Override
+    public void login(final String username, final String password, final HttpServletRequest request,
+            final HttpServletResponse response) {
+        final UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(username, password);
+        token.setDetails(new WebAuthenticationDetails(request));
+        try {
+            final Authentication authentication = getAuthenticationManager().authenticate(token);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            getCustomerFacade().loginSuccess();
+            getGuidCookieStrategy().setCookie(request, response);
+        } catch (final Exception e) {
+            SecurityContextHolder.getContext().setAuthentication(null);
+            LOG.error("Failure during autoLogin", e);
+        }
+    }
 
-	protected AuthenticationManager getAuthenticationManager()
-	{
-		return authenticationManager;
-	}
+    protected AuthenticationManager getAuthenticationManager() {
+        return authenticationManager;
+    }
 
-	@Required
-	public void setAuthenticationManager(final AuthenticationManager authenticationManager)
-	{
-		this.authenticationManager = authenticationManager;
-	}
+    @Required
+    public void setAuthenticationManager(final AuthenticationManager authenticationManager) {
+        this.authenticationManager = authenticationManager;
+    }
 
-	protected CustomerFacade getCustomerFacade()
-	{
-		return customerFacade;
-	}
+    protected CustomerFacade getCustomerFacade() {
+        return customerFacade;
+    }
 
-	@Required
-	public void setCustomerFacade(final CustomerFacade customerFacade)
-	{
-		this.customerFacade = customerFacade;
-	}
+    @Required
+    public void setCustomerFacade(final CustomerFacade customerFacade) {
+        this.customerFacade = customerFacade;
+    }
 
-	protected GUIDCookieStrategy getGuidCookieStrategy()
-	{
-		return guidCookieStrategy;
-	}
+    protected GUIDCookieStrategy getGuidCookieStrategy() {
+        return guidCookieStrategy;
+    }
 
-	/**
-	 * @param guidCookieStrategy
-	 *           the guidCookieStrategy to set
-	 */
-	@Required
-	public void setGuidCookieStrategy(final GUIDCookieStrategy guidCookieStrategy)
-	{
-		this.guidCookieStrategy = guidCookieStrategy;
-	}
+    /**
+     * @param guidCookieStrategy
+     *            the guidCookieStrategy to set
+     */
+    @Required
+    public void setGuidCookieStrategy(final GUIDCookieStrategy guidCookieStrategy) {
+        this.guidCookieStrategy = guidCookieStrategy;
+    }
 }

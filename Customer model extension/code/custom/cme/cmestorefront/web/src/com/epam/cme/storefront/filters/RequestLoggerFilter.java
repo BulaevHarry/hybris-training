@@ -25,127 +25,103 @@ import javax.servlet.http.HttpServletResponseWrapper;
 import org.apache.log4j.Logger;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-
 /**
- * A filter that logs each request.
- * This is a spring configured filter that is executed by the PlatformFilterChain.
+ * A filter that logs each request. This is a spring configured filter that is executed by the
+ * PlatformFilterChain.
  */
-public class RequestLoggerFilter extends OncePerRequestFilter
-{
-	private static final Logger LOG = Logger.getLogger(RequestLoggerFilter.class.getName());
+public class RequestLoggerFilter extends OncePerRequestFilter {
+    private static final Logger LOG = Logger.getLogger(RequestLoggerFilter.class.getName());
 
-	@Override
-	public void doFilterInternal(final HttpServletRequest request, final HttpServletResponse response, final FilterChain filterChain)
-			throws IOException, ServletException
-	{
-		if (LOG.isDebugEnabled())
-		{
-			final String requestDetails = buildRequestDetails(request);
+    @Override
+    public void doFilterInternal(final HttpServletRequest request, final HttpServletResponse response,
+            final FilterChain filterChain) throws IOException, ServletException {
+        if (LOG.isDebugEnabled()) {
+            final String requestDetails = buildRequestDetails(request);
 
-			if (LOG.isDebugEnabled())
-			{
-				LOG.debug(requestDetails + "Begin");
-			}
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(requestDetails + "Begin");
+            }
 
-			logCookies(request);
+            logCookies(request);
 
-			final ResponseWrapper wrappedResponse = new ResponseWrapper(response);
+            final ResponseWrapper wrappedResponse = new ResponseWrapper(response);
 
-			final long startTime = System.currentTimeMillis();
-			try
-			{
-				filterChain.doFilter(request, wrappedResponse);
-			}
-			finally
-			{
-				final long endTime = System.currentTimeMillis();
-				final long duration = endTime - startTime;
-				final int status = wrappedResponse.getStatus();
+            final long startTime = System.currentTimeMillis();
+            try {
+                filterChain.doFilter(request, wrappedResponse);
+            } finally {
+                final long endTime = System.currentTimeMillis();
+                final long duration = endTime - startTime;
+                final int status = wrappedResponse.getStatus();
 
-				if (status != 0)
-				{
-					LOG.debug(requestDetails + duration + " ms (" + status + ")");
-				}
-				else
-				{
-					LOG.debug(requestDetails + duration + " ms");
-				}
-			}
+                if (status != 0) {
+                    LOG.debug(requestDetails + duration + " ms (" + status + ")");
+                } else {
+                    LOG.debug(requestDetails + duration + " ms");
+                }
+            }
 
-			return;
-		}
+            return;
+        }
 
-		filterChain.doFilter(request, response);
-	}
+        filterChain.doFilter(request, response);
+    }
 
-	protected void logCookies(final HttpServletRequest httpRequest)
-	{
-		if (LOG.isDebugEnabled())
-		{
-			final Cookie[] cookies = httpRequest.getCookies();
-			if (cookies != null)
-			{
-				for (final Cookie cookie : cookies)
-				{
-					if (LOG.isDebugEnabled())
-					{
-						LOG.debug("COOKIE Name: [" + cookie.getName() + "] Path: [" + cookie.getPath() + "] Value: ["
-								+ cookie.getValue() + "]");
-					}
-				}
-			}
-		}
-	}
+    protected void logCookies(final HttpServletRequest httpRequest) {
+        if (LOG.isDebugEnabled()) {
+            final Cookie[] cookies = httpRequest.getCookies();
+            if (cookies != null) {
+                for (final Cookie cookie : cookies) {
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug("COOKIE Name: [" + cookie.getName() + "] Path: [" + cookie.getPath() + "] Value: ["
+                                + cookie.getValue() + "]");
+                    }
+                }
+            }
+        }
+    }
 
-	protected String buildRequestDetails(final HttpServletRequest request)
-	{
-		String queryString = request.getQueryString();
-		if (queryString == null)
-		{
-			queryString = "";
-		}
+    protected String buildRequestDetails(final HttpServletRequest request) {
+        String queryString = request.getQueryString();
+        if (queryString == null) {
+            queryString = "";
+        }
 
-		final String requestUri = request.getRequestURI();
+        final String requestUri = request.getRequestURI();
 
-		final String securePrefix = request.isSecure() ? "s" : " ";
-		final String methodPrefix = request.getMethod().substring(0, 1);
+        final String securePrefix = request.isSecure() ? "s" : " ";
+        final String methodPrefix = request.getMethod().substring(0, 1);
 
-		return securePrefix + methodPrefix + " [" + requestUri + "] [" + queryString + "] ";
-	}
+        return securePrefix + methodPrefix + " [" + requestUri + "] [" + queryString + "] ";
+    }
 
-	protected static class ResponseWrapper extends HttpServletResponseWrapper
-	{
-		private int status;
+    protected static class ResponseWrapper extends HttpServletResponseWrapper {
+        private int status;
 
-		public ResponseWrapper(final HttpServletResponse response)
-		{
-			super(response);
-		}
+        public ResponseWrapper(final HttpServletResponse response) {
+            super(response);
+        }
 
-		@Override
-		public void setStatus(final int status)
-		{
-			super.setStatus(status);
-			this.status = status;
-		}
+        @Override
+        public void setStatus(final int status) {
+            super.setStatus(status);
+            this.status = status;
+        }
 
-		public int getStatus()
-		{
-			return status;
-		}
+        public int getStatus() {
+            return status;
+        }
 
-		@Override
-		public void sendError(final int status, final String msg) throws IOException
-		{
-			super.sendError(status, msg);
-			this.status = status;
-		}
+        @Override
+        public void sendError(final int status, final String msg) throws IOException {
+            super.sendError(status, msg);
+            this.status = status;
+        }
 
-		@Override
-		public void sendError(final int status) throws IOException
-		{
-			super.sendError(status);
-			this.status = status;
-		}
-	}
+        @Override
+        public void sendError(final int status) throws IOException {
+            super.sendError(status);
+            this.status = status;
+        }
+    }
 }

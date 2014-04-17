@@ -29,185 +29,157 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
-
 /**
  * 
  */
-public class EnhancedCookieGeneratorTest
-{
+public class EnhancedCookieGeneratorTest {
 
-	private static final String JSESSIONID = "JSESSIONID";
-	private static final int NEVER_EXPIRES = -1;
+    private static final String JSESSIONID = "JSESSIONID";
+    private static final int NEVER_EXPIRES = -1;
 
-	private final EnhancedCookieGenerator cookieGenerator = new EnhancedCookieGenerator();
+    private final EnhancedCookieGenerator cookieGenerator = new EnhancedCookieGenerator();
 
-	@Mock
-	private HttpServletRequest request;
+    @Mock
+    private HttpServletRequest request;
 
-	@Mock
-	private HttpServletResponse response;
+    @Mock
+    private HttpServletResponse response;
 
+    @Before
+    public void prepare() {
+        MockitoAnnotations.initMocks(this);
+        cookieGenerator.setCookieDomain("what a domain");
+        cookieGenerator.setCookieMaxAge(Integer.valueOf(NEVER_EXPIRES));
 
-	@Before
-	public void prepare()
-	{
-		MockitoAnnotations.initMocks(this);
-		cookieGenerator.setCookieDomain("what a domain");
-		cookieGenerator.setCookieMaxAge(Integer.valueOf(NEVER_EXPIRES));
+    }
 
+    @Test
+    public void testClientSideCookieDefaultPath() {
+        cookieGenerator.setCookieName(JSESSIONID);
+        cookieGenerator.setHttpOnly(false);// client side
 
-	}
+        cookieGenerator.addCookie(request, response, "cookie_monster");
 
-	@Test
-	public void testClientSideCookieDefaultPath()
-	{
-		cookieGenerator.setCookieName(JSESSIONID);
-		cookieGenerator.setHttpOnly(false);//client side
+        final Cookie expectedCookie = new Cookie(JSESSIONID, "cookie_monster");
+        expectedCookie.setPath("/");
+        expectedCookie.setSecure(false);
+        expectedCookie.setMaxAge(NEVER_EXPIRES);
+        expectedCookie.setDomain("what a domain");
 
+        Mockito.verify(response).addCookie(Mockito.argThat(new CookieArgumentMatcher(expectedCookie)));
+        assertNoHeaderAdjustments();
 
-		cookieGenerator.addCookie(request, response, "cookie_monster");
+    }
 
-		final Cookie expectedCookie = new Cookie(JSESSIONID, "cookie_monster");
-		expectedCookie.setPath("/");
-		expectedCookie.setSecure(false);
-		expectedCookie.setMaxAge(NEVER_EXPIRES);
-		expectedCookie.setDomain("what a domain");
+    @Test
+    public void testClientSideCookieDynamicPath() {
+        cookieGenerator.setCookieName(JSESSIONID);
+        cookieGenerator.setHttpOnly(false);// client side
+        cookieGenerator.setCookieSecure(true);
+        cookieGenerator.setUseDefaultPath(false);
 
-		Mockito.verify(response).addCookie(Mockito.argThat(new CookieArgumentMatcher(expectedCookie)));
-		assertNoHeaderAdjustments();
+        BDDMockito.given(request.getContextPath()).willReturn("/some_path");
 
-	}
+        cookieGenerator.addCookie(request, response, "cookie_monster");
 
+        final Cookie expectedCookie = new Cookie(JSESSIONID, "cookie_monster");
+        expectedCookie.setPath("/some_path");
+        expectedCookie.setSecure(true);
+        expectedCookie.setMaxAge(NEVER_EXPIRES);
+        expectedCookie.setDomain("what a domain");
 
+        Mockito.verify(response).addCookie(Mockito.argThat(new CookieArgumentMatcher(expectedCookie)));
+        assertNoHeaderAdjustments();
 
-	@Test
-	public void testClientSideCookieDynamicPath()
-	{
-		cookieGenerator.setCookieName(JSESSIONID);
-		cookieGenerator.setHttpOnly(false);//client side
-		cookieGenerator.setCookieSecure(true);
-		cookieGenerator.setUseDefaultPath(false);
+    }
 
-		BDDMockito.given(request.getContextPath()).willReturn("/some_path");
+    @Test
+    public void testServerSideCookieDefaultPath() {
+        cookieGenerator.setCookieName("guid");
+        cookieGenerator.setHttpOnly(true);// server side
 
-		cookieGenerator.addCookie(request, response, "cookie_monster");
+        BDDMockito.given(request.getContextPath()).willReturn("/some_path");
 
-		final Cookie expectedCookie = new Cookie(JSESSIONID, "cookie_monster");
-		expectedCookie.setPath("/some_path");
-		expectedCookie.setSecure(true);
-		expectedCookie.setMaxAge(NEVER_EXPIRES);
-		expectedCookie.setDomain("what a domain");
+        cookieGenerator.addCookie(request, response, "cookie_monster");
 
-		Mockito.verify(response).addCookie(Mockito.argThat(new CookieArgumentMatcher(expectedCookie)));
-		assertNoHeaderAdjustments();
+        final Cookie expectedCookie = new Cookie("guid", "cookie_monster");
+        expectedCookie.setPath("/");
+        expectedCookie.setSecure(false);
+        expectedCookie.setMaxAge(NEVER_EXPIRES);
+        expectedCookie.setDomain("what a domain");
 
-	}
+        Mockito.verify(response).addCookie(Mockito.argThat(new CookieArgumentMatcher(expectedCookie)));
+        Mockito.verify(response).addHeader(EnhancedCookieGenerator.HEADER_COOKIE,
+                "guid=cookie_monster; Domain=\"what a domain\"; Path=/; HttpOnly");
 
-	@Test
-	public void testServerSideCookieDefaultPath()
-	{
-		cookieGenerator.setCookieName("guid");
-		cookieGenerator.setHttpOnly(true);//server side
+    }
 
-		BDDMockito.given(request.getContextPath()).willReturn("/some_path");
+    @Test
+    public void testServerSideCookieDynamicPath() {
+        cookieGenerator.setCookieName(JSESSIONID);
+        cookieGenerator.setHttpOnly(true);// server side
+        cookieGenerator.setUseDefaultPath(false);
 
+        BDDMockito.given(request.getContextPath()).willReturn("/some_path");
 
-		cookieGenerator.addCookie(request, response, "cookie_monster");
+        cookieGenerator.addCookie(request, response, "cookie_monster");
 
-		final Cookie expectedCookie = new Cookie("guid", "cookie_monster");
-		expectedCookie.setPath("/");
-		expectedCookie.setSecure(false);
-		expectedCookie.setMaxAge(NEVER_EXPIRES);
-		expectedCookie.setDomain("what a domain");
+        final Cookie expectedCookie = new Cookie(JSESSIONID, "cookie_monster");
+        expectedCookie.setPath("/some_path");
+        expectedCookie.setSecure(false);
+        expectedCookie.setMaxAge(NEVER_EXPIRES);
+        expectedCookie.setDomain("what a domain");
 
-		Mockito.verify(response).addCookie(Mockito.argThat(new CookieArgumentMatcher(expectedCookie)));
-		Mockito.verify(response).addHeader(EnhancedCookieGenerator.HEADER_COOKIE,
-				"guid=cookie_monster; Domain=\"what a domain\"; Path=/; HttpOnly");
+        Mockito.verify(response).addCookie(Mockito.argThat(new CookieArgumentMatcher(expectedCookie)));
+        Mockito.verify(response).addHeader(EnhancedCookieGenerator.HEADER_COOKIE,
+                "JSESSIONID=cookie_monster; Domain=\"what a domain\"; Path=/; HttpOnly");
 
-	}
+    }
 
-
-	@Test
-	public void testServerSideCookieDynamicPath()
-	{
-		cookieGenerator.setCookieName(JSESSIONID);
-		cookieGenerator.setHttpOnly(true);//server side
-		cookieGenerator.setUseDefaultPath(false);
-
-		BDDMockito.given(request.getContextPath()).willReturn("/some_path");
-
-
-		cookieGenerator.addCookie(request, response, "cookie_monster");
-
-		final Cookie expectedCookie = new Cookie(JSESSIONID, "cookie_monster");
-		expectedCookie.setPath("/some_path");
-		expectedCookie.setSecure(false);
-		expectedCookie.setMaxAge(NEVER_EXPIRES);
-		expectedCookie.setDomain("what a domain");
-
-
-		Mockito.verify(response).addCookie(Mockito.argThat(new CookieArgumentMatcher(expectedCookie)));
-		Mockito.verify(response).addHeader(EnhancedCookieGenerator.HEADER_COOKIE,
-				"JSESSIONID=cookie_monster; Domain=\"what a domain\"; Path=/; HttpOnly");
-
-	}
-
-
-	/**
+    /**
 	 * 
 	 */
-	private void assertNoHeaderAdjustments()
-	{
-		Mockito.verify(response, Mockito.times(0)).addHeader(Mockito.anyString(), Mockito.anyString());
-	}
+    private void assertNoHeaderAdjustments() {
+        Mockito.verify(response, Mockito.times(0)).addHeader(Mockito.anyString(), Mockito.anyString());
+    }
 
-	private class CookieArgumentMatcher extends ArgumentMatcher<Cookie>
-	{
-		private final Cookie expectedCookie;
+    private class CookieArgumentMatcher extends ArgumentMatcher<Cookie> {
+        private final Cookie expectedCookie;
 
-		CookieArgumentMatcher(final Cookie cookie)
-		{
-			this.expectedCookie = cookie;
-		}
+        CookieArgumentMatcher(final Cookie cookie) {
+            this.expectedCookie = cookie;
+        }
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see org.mockito.ArgumentMatcher#matches(java.lang.Object)
-		 */
-		@Override
-		public boolean matches(final Object argument)
-		{
-			if (argument instanceof Cookie)
-			{
-				final Cookie givenCookie = (Cookie) argument;
-				if (givenCookie.getSecure() == expectedCookie.getSecure())
-				{
-					if (givenCookie.getMaxAge() == expectedCookie.getMaxAge())
-					{
-						if (givenCookie.getName().equals(expectedCookie.getName()))
-						{
-							if (givenCookie.getPath() == expectedCookie.getPath()
-									|| givenCookie.getPath().equals(expectedCookie.getPath()))
-							{
-								if (givenCookie.getValue().equals(expectedCookie.getValue()))
-								{
-									if (givenCookie.getDomain() == expectedCookie.getDomain()
-											|| givenCookie.getDomain().equals(expectedCookie.getDomain()))
-									{
-										return true;
-									}
-								}
+        /*
+         * (non-Javadoc)
+         * 
+         * @see org.mockito.ArgumentMatcher#matches(java.lang.Object)
+         */
+        @Override
+        public boolean matches(final Object argument) {
+            if (argument instanceof Cookie) {
+                final Cookie givenCookie = (Cookie) argument;
+                if (givenCookie.getSecure() == expectedCookie.getSecure()) {
+                    if (givenCookie.getMaxAge() == expectedCookie.getMaxAge()) {
+                        if (givenCookie.getName().equals(expectedCookie.getName())) {
+                            if (givenCookie.getPath() == expectedCookie.getPath()
+                                    || givenCookie.getPath().equals(expectedCookie.getPath())) {
+                                if (givenCookie.getValue().equals(expectedCookie.getValue())) {
+                                    if (givenCookie.getDomain() == expectedCookie.getDomain()
+                                            || givenCookie.getDomain().equals(expectedCookie.getDomain())) {
+                                        return true;
+                                    }
+                                }
 
-							}
-						}
-					}
-				}
-				Assert.fail("Expected \n[" + ToStringBuilder.reflectionToString(expectedCookie) + "]\n but got \n["
-						+ ToStringBuilder.reflectionToString(argument) + "]");
-			}
-			return false;
-		}
+                            }
+                        }
+                    }
+                }
+                Assert.fail("Expected \n[" + ToStringBuilder.reflectionToString(expectedCookie) + "]\n but got \n["
+                        + ToStringBuilder.reflectionToString(argument) + "]");
+            }
+            return false;
+        }
 
-	}
+    }
 }

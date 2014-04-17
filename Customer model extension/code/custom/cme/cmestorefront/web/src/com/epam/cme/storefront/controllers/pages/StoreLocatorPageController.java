@@ -52,225 +52,205 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-
 /**
  * Controller for store locator search and detail pages.
  */
 
 @Controller
 @RequestMapping(value = "/store-finder")
-public class StoreLocatorPageController extends AbstractSearchPageController
-{
-	protected static final Logger LOG = Logger.getLogger(StoreLocatorPageController.class);
+public class StoreLocatorPageController extends AbstractSearchPageController {
+    protected static final Logger LOG = Logger.getLogger(StoreLocatorPageController.class);
 
-	private static final String STORE_FINDER_CMS_PAGE_LABEL = "storefinder";
-	private static final String GOOGLE_API_KEY_ID = "googleApiKey";
-	private static final String GOOGLE_API_VERSION = "googleApiVersion";
+    private static final String STORE_FINDER_CMS_PAGE_LABEL = "storefinder";
+    private static final String GOOGLE_API_KEY_ID = "googleApiKey";
+    private static final String GOOGLE_API_VERSION = "googleApiVersion";
 
-	@Resource(name = "configurationService")
-	private ConfigurationService configurationService;
+    @Resource(name = "configurationService")
+    private ConfigurationService configurationService;
 
-	@Resource(name = "storefinderBreadcrumbBuilder")
-	private StorefinderBreadcrumbBuilder storefinderBreadcrumbBuilder;
+    @Resource(name = "storefinderBreadcrumbBuilder")
+    private StorefinderBreadcrumbBuilder storefinderBreadcrumbBuilder;
 
-	@Resource(name = "storeFinderFacade")
-	private StoreFinderFacade storeFinderFacade;
+    @Resource(name = "storeFinderFacade")
+    private StoreFinderFacade storeFinderFacade;
 
-	@Resource(name = "customerLocationService")
-	private CustomerLocationService customerLocationService;
+    @Resource(name = "customerLocationService")
+    private CustomerLocationService customerLocationService;
 
+    @ModelAttribute("googleApiVersion")
+    public String getGoogleApiVersion() {
+        return configurationService.getConfiguration().getString(GOOGLE_API_VERSION);
+    }
 
-	@ModelAttribute("googleApiVersion")
-	public String getGoogleApiVersion()
-	{
-		return configurationService.getConfiguration().getString(GOOGLE_API_VERSION);
-	}
+    @ModelAttribute("googleApiKey")
+    public String getGoogleApiKey(final HttpServletRequest request) {
+        final String googleApiKey = getHostConfigService().getProperty(GOOGLE_API_KEY_ID, request.getServerName());
+        if (StringUtils.isEmpty(googleApiKey)) {
+            LOG.warn("No Google API key found for server: " + request.getServerName());
+        }
+        return googleApiKey;
+    }
 
-	@ModelAttribute("googleApiKey")
-	public String getGoogleApiKey(final HttpServletRequest request)
-	{
-		final String googleApiKey = getHostConfigService().getProperty(GOOGLE_API_KEY_ID, request.getServerName());
-		if (StringUtils.isEmpty(googleApiKey))
-		{
-			LOG.warn("No Google API key found for server: " + request.getServerName());
-		}
-		return googleApiKey;
-	}
+    // Method to get the empty search form
+    @RequestMapping(method = RequestMethod.GET)
+    public String getStoreFinderPage(final Model model) throws CMSItemNotFoundException {
+        setUpPageForms(model);
+        model.addAttribute(WebConstants.BREADCRUMBS_KEY, storefinderBreadcrumbBuilder.getBreadcrumbs());
+        storeCmsPageInModel(model, getStoreFinderPage());
+        setUpMetaDataForContentPage(model, (ContentPageModel) getStoreFinderPage());
+        return ControllerConstants.Views.Pages.StoreFinder.StoreFinderSearchPage;
+    }
 
-	// Method to get the empty search form
-	@RequestMapping(method = RequestMethod.GET)
-	public String getStoreFinderPage(final Model model) throws CMSItemNotFoundException
-	{
-		setUpPageForms(model);
-		model.addAttribute(WebConstants.BREADCRUMBS_KEY, storefinderBreadcrumbBuilder.getBreadcrumbs());
-		storeCmsPageInModel(model, getStoreFinderPage());
-		setUpMetaDataForContentPage(model, (ContentPageModel) getStoreFinderPage());
-		return ControllerConstants.Views.Pages.StoreFinder.StoreFinderSearchPage;
-	}
+    @RequestMapping(method = RequestMethod.GET, params = "q")
+    public String findStores(@RequestParam(value = "page", defaultValue = "0") final int page,
+            @RequestParam(value = "show", defaultValue = "Page") final AbstractSearchPageController.ShowMode showMode,
+            @RequestParam(value = "sort", required = false) final String sortCode,
+            @RequestParam(value = "q") final String locationQuery,
+            @RequestParam(value = "latitude", required = false) final Double latitude,
+            @RequestParam(value = "longitude", required = false) final Double longitude,
+            final StoreFinderForm storeFinderForm, final Model model, final BindingResult bindingResult)
+            throws GeoLocatorException, MapServiceException, CMSItemNotFoundException {
+        final String sanitizedSearchQuery = XSSFilterUtil.filter(locationQuery);
 
-	@RequestMapping(method = RequestMethod.GET, params = "q")
-	public String findStores(@RequestParam(value = "page", defaultValue = "0") final int page,
-			@RequestParam(value = "show", defaultValue = "Page") final AbstractSearchPageController.ShowMode showMode,
-			@RequestParam(value = "sort", required = false) final String sortCode,
-			@RequestParam(value = "q") final String locationQuery,
-			@RequestParam(value = "latitude", required = false) final Double latitude,
-			@RequestParam(value = "longitude", required = false) final Double longitude, final StoreFinderForm storeFinderForm,
-			final Model model, final BindingResult bindingResult) throws GeoLocatorException, MapServiceException,
-			CMSItemNotFoundException
-	{
-		final String sanitizedSearchQuery = XSSFilterUtil.filter(locationQuery);
+        if (latitude != null && longitude != null) {
+            final GeoPoint geoPoint = new GeoPoint();
+            geoPoint.setLatitude(latitude.doubleValue());
+            geoPoint.setLongitude(longitude.doubleValue());
 
-		if (latitude != null && longitude != null)
-		{
-			final GeoPoint geoPoint = new GeoPoint();
-			geoPoint.setLatitude(latitude.doubleValue());
-			geoPoint.setLongitude(longitude.doubleValue());
+            setUpSearchResultsForPosition(geoPoint,
+                    createPageableData(page, getStoreLocatorPageSize(), sortCode, showMode), model);
+        } else if (StringUtils.isNotBlank(sanitizedSearchQuery)) {
 
-			setUpSearchResultsForPosition(geoPoint, createPageableData(page, getStoreLocatorPageSize(), sortCode, showMode), model);
-		}
-		else if (StringUtils.isNotBlank(sanitizedSearchQuery))
-		{
+            setUpSearchResultsForLocationQuery(sanitizedSearchQuery,
+                    createPageableData(page, getStoreLocatorPageSize(), sortCode, showMode), model);
+            setUpMetaData(sanitizedSearchQuery, model);
+            setUpPageForms(model);
+            setUpPageTitle(sanitizedSearchQuery, model);
 
-			setUpSearchResultsForLocationQuery(sanitizedSearchQuery,
-					createPageableData(page, getStoreLocatorPageSize(), sortCode, showMode), model);
-			setUpMetaData(sanitizedSearchQuery, model);
-			setUpPageForms(model);
-			setUpPageTitle(sanitizedSearchQuery, model);
+        } else {
 
-		}
-		else
-		{
+            GlobalMessages.addErrorMessage(model, "storelocator.error.no.results.subtitle");
+            model.addAttribute(WebConstants.BREADCRUMBS_KEY,
+                    storefinderBreadcrumbBuilder.getBreadcrumbsForLocationSearch(sanitizedSearchQuery));
 
-			GlobalMessages.addErrorMessage(model, "storelocator.error.no.results.subtitle");
-			model.addAttribute(WebConstants.BREADCRUMBS_KEY,
-					storefinderBreadcrumbBuilder.getBreadcrumbsForLocationSearch(sanitizedSearchQuery));
+        }
 
-		}
+        storeCmsPageInModel(model, getStoreFinderPage());
 
-		storeCmsPageInModel(model, getStoreFinderPage());
+        return ControllerConstants.Views.Pages.StoreFinder.StoreFinderSearchPage;
+    }
 
-		return ControllerConstants.Views.Pages.StoreFinder.StoreFinderSearchPage;
-	}
+    @RequestMapping(value = "/position", method = { RequestMethod.GET, RequestMethod.POST })
+    public String searchByCurrentPosition(@RequestParam(value = "page", defaultValue = "0") final int page,
+            @RequestParam(value = "show", defaultValue = "Page") final AbstractSearchPageController.ShowMode showMode,
+            @RequestParam(value = "sort", required = false) final String sortCode,
+            final StorePositionForm storePositionForm, final Model model) throws GeoLocatorException,
+            MapServiceException, CMSItemNotFoundException {
+        final GeoPoint geoPoint = new GeoPoint();
+        geoPoint.setLatitude(storePositionForm.getLatitude());
+        geoPoint.setLongitude(storePositionForm.getLongitude());
 
-	@RequestMapping(value = "/position", method =
-	{ RequestMethod.GET, RequestMethod.POST })
-	public String searchByCurrentPosition(@RequestParam(value = "page", defaultValue = "0") final int page,
-			@RequestParam(value = "show", defaultValue = "Page") final AbstractSearchPageController.ShowMode showMode,
-			@RequestParam(value = "sort", required = false) final String sortCode, final StorePositionForm storePositionForm,
-			final Model model) throws GeoLocatorException, MapServiceException, CMSItemNotFoundException
-	{
-		final GeoPoint geoPoint = new GeoPoint();
-		geoPoint.setLatitude(storePositionForm.getLatitude());
-		geoPoint.setLongitude(storePositionForm.getLongitude());
+        setUpSearchResultsForPosition(geoPoint,
+                createPageableData(page, getStoreLocatorPageSize(), sortCode, showMode), model);
+        setUpPageForms(model);
+        storeCmsPageInModel(model, getStoreFinderPage());
 
-		setUpSearchResultsForPosition(geoPoint, createPageableData(page, getStoreLocatorPageSize(), sortCode, showMode), model);
-		setUpPageForms(model);
-		storeCmsPageInModel(model, getStoreFinderPage());
+        return ControllerConstants.Views.Pages.StoreFinder.StoreFinderSearchPage;
+    }
 
-		return ControllerConstants.Views.Pages.StoreFinder.StoreFinderSearchPage;
-	}
+    // setup methods to populate the model
+    protected void setUpMetaData(final String locationQuery, final Model model) {
+        model.addAttribute("metaRobots", "no-index,follow");
+        final String metaKeywords = MetaSanitizerUtil.sanitizeKeywords(locationQuery);
+        final String metaDescription = MetaSanitizerUtil.sanitizeDescription(getSiteName()
+                + " "
+                + getMessageSource().getMessage("storeFinder.meta.description.results", null,
+                        getI18nService().getCurrentLocale()) + " " + locationQuery);
+        super.setUpMetaData(model, metaKeywords, metaDescription);
+    }
 
-	// setup methods to populate the model
-	protected void setUpMetaData(final String locationQuery, final Model model)
-	{
-		model.addAttribute("metaRobots", "no-index,follow");
-		final String metaKeywords = MetaSanitizerUtil.sanitizeKeywords(locationQuery);
-		final String metaDescription = MetaSanitizerUtil.sanitizeDescription(getSiteName() + " "
-				+ getMessageSource().getMessage("storeFinder.meta.description.results", null, getI18nService().getCurrentLocale())
-				+ " " + locationQuery);
-		super.setUpMetaData(model, metaKeywords, metaDescription);
-	}
+    protected void setUpNoResultsErrorMessage(final Model model,
+            final StoreFinderSearchPageData<PointOfServiceData> searchResult) {
+        if (searchResult.getResults().isEmpty()) {
+            GlobalMessages.addErrorMessage(model, "storelocator.error.no.results.subtitle");
+        }
+    }
 
-	protected void setUpNoResultsErrorMessage(final Model model, final StoreFinderSearchPageData<PointOfServiceData> searchResult)
-	{
-		if (searchResult.getResults().isEmpty())
-		{
-			GlobalMessages.addErrorMessage(model, "storelocator.error.no.results.subtitle");
-		}
-	}
+    protected void setUpPageData(final Model model, final StoreFinderSearchPageData<PointOfServiceData> searchResult,
+            final List<Breadcrumb> breadCrumbsList) {
+        model.addAttribute("storeSearchPageData", searchResult);
+        model.addAttribute("locationQuery", StringEscapeUtils.escapeHtml(searchResult.getLocationText()));
+        model.addAttribute(WebConstants.BREADCRUMBS_KEY, breadCrumbsList);
+    }
 
-	protected void setUpPageData(final Model model, final StoreFinderSearchPageData<PointOfServiceData> searchResult,
-			final List<Breadcrumb> breadCrumbsList)
-	{
-		model.addAttribute("storeSearchPageData", searchResult);
-		model.addAttribute("locationQuery", StringEscapeUtils.escapeHtml(searchResult.getLocationText()));
-		model.addAttribute(WebConstants.BREADCRUMBS_KEY, breadCrumbsList);
-	}
+    protected void setUpSearchResultsForPosition(final GeoPoint geoPoint, final PageableData pageableData,
+            final Model model) {
+        // Run the location search & populate the model
+        final StoreFinderSearchPageData<PointOfServiceData> searchResult = storeFinderFacade.positionSearch(geoPoint,
+                pageableData);
 
-	protected void setUpSearchResultsForPosition(final GeoPoint geoPoint, final PageableData pageableData, final Model model)
-	{
-		// Run the location search & populate the model
-		final StoreFinderSearchPageData<PointOfServiceData> searchResult = storeFinderFacade.positionSearch(geoPoint, pageableData);
+        final GeoPoint newGeoPoint = new GeoPoint();
+        newGeoPoint.setLatitude(searchResult.getSourceLatitude());
+        newGeoPoint.setLongitude(searchResult.getSourceLongitude());
 
-		final GeoPoint newGeoPoint = new GeoPoint();
-		newGeoPoint.setLatitude(searchResult.getSourceLatitude());
-		newGeoPoint.setLongitude(searchResult.getSourceLongitude());
+        updateLocalUserPreferences(newGeoPoint, searchResult.getLocationText());
+        setUpPageData(model, searchResult, storefinderBreadcrumbBuilder.getBreadcrumbsForCurrentPositionSearch());
+        setUpPosition(model, newGeoPoint);
+        setUpNoResultsErrorMessage(model, searchResult);
+    }
 
-		updateLocalUserPreferences(newGeoPoint, searchResult.getLocationText());
-		setUpPageData(model, searchResult, storefinderBreadcrumbBuilder.getBreadcrumbsForCurrentPositionSearch());
-		setUpPosition(model, newGeoPoint);
-		setUpNoResultsErrorMessage(model, searchResult);
-	}
+    protected void setUpPosition(final Model model, final GeoPoint geoPoint) {
+        model.addAttribute("geoPoint", geoPoint);
+    }
 
-	protected void setUpPosition(final Model model, final GeoPoint geoPoint)
-	{
-		model.addAttribute("geoPoint", geoPoint);
-	}
+    protected void setUpSearchResultsForLocationQuery(final String locationQuery, final PageableData pageableData,
+            final Model model) {
+        // Run the location search & populate the model
+        final StoreFinderSearchPageData<PointOfServiceData> searchResult = storeFinderFacade.locationSearch(
+                locationQuery, pageableData);
+        final GeoPoint geoPoint = new GeoPoint();
+        geoPoint.setLatitude(searchResult.getSourceLatitude());
+        geoPoint.setLongitude(searchResult.getSourceLongitude());
 
-	protected void setUpSearchResultsForLocationQuery(final String locationQuery, final PageableData pageableData,
-			final Model model)
-	{
-		// Run the location search & populate the model
-		final StoreFinderSearchPageData<PointOfServiceData> searchResult = storeFinderFacade.locationSearch(locationQuery,
-				pageableData);
-		final GeoPoint geoPoint = new GeoPoint();
-		geoPoint.setLatitude(searchResult.getSourceLatitude());
-		geoPoint.setLongitude(searchResult.getSourceLongitude());
+        updateLocalUserPreferences(geoPoint, searchResult.getLocationText());
+        setUpPageData(model, searchResult, storefinderBreadcrumbBuilder.getBreadcrumbsForLocationSearch(locationQuery));
+        setUpNoResultsErrorMessage(model, searchResult);
+    }
 
-		updateLocalUserPreferences(geoPoint, searchResult.getLocationText());
-		setUpPageData(model, searchResult, storefinderBreadcrumbBuilder.getBreadcrumbsForLocationSearch(locationQuery));
-		setUpNoResultsErrorMessage(model, searchResult);
-	}
+    protected void updateLocalUserPreferences(final GeoPoint geoPoint, final String location) {
+        final UserLocationData userLocationData = new UserLocationData();
+        userLocationData.setSearchTerm(location);
+        userLocationData.setPoint(geoPoint);
+        customerLocationService.setUserLocation(userLocationData);
+    }
 
+    protected void setUpPageForms(final Model model) {
+        final StoreFinderForm storeFinderForm = new StoreFinderForm();
+        final StorePositionForm storePositionForm = new StorePositionForm();
+        model.addAttribute("storeFinderForm", storeFinderForm);
+        model.addAttribute("storePositionForm", storePositionForm);
+    }
 
-	protected void updateLocalUserPreferences(final GeoPoint geoPoint, final String location)
-	{
-		final UserLocationData userLocationData = new UserLocationData();
-		userLocationData.setSearchTerm(location);
-		userLocationData.setPoint(geoPoint);
-		customerLocationService.setUserLocation(userLocationData);
-	}
+    protected void setUpPageTitle(final String searchText, final Model model) {
+        storeContentPageTitleInModel(
+                model,
+                getPageTitleResolver().resolveContentPageTitle(
+                        getMessageSource().getMessage("storeFinder.meta.title", null,
+                                getI18nService().getCurrentLocale())
+                                + " " + searchText));
+    }
 
+    protected AbstractPageModel getStoreFinderPage() throws CMSItemNotFoundException {
+        return getContentPageForLabelOrId(STORE_FINDER_CMS_PAGE_LABEL);
+    }
 
-	protected void setUpPageForms(final Model model)
-	{
-		final StoreFinderForm storeFinderForm = new StoreFinderForm();
-		final StorePositionForm storePositionForm = new StorePositionForm();
-		model.addAttribute("storeFinderForm", storeFinderForm);
-		model.addAttribute("storePositionForm", storePositionForm);
-	}
-
-	protected void setUpPageTitle(final String searchText, final Model model)
-	{
-		storeContentPageTitleInModel(
-				model,
-				getPageTitleResolver().resolveContentPageTitle(
-						getMessageSource().getMessage("storeFinder.meta.title", null, getI18nService().getCurrentLocale()) + " "
-								+ searchText));
-	}
-
-	protected AbstractPageModel getStoreFinderPage() throws CMSItemNotFoundException
-	{
-		return getContentPageForLabelOrId(STORE_FINDER_CMS_PAGE_LABEL);
-	}
-
-	/**
-	 * Get the default search page size.
-	 * 
-	 * @return the number of results per page, <tt>0</tt> (zero) indicated 'default' size should be used
-	 */
-	protected int getStoreLocatorPageSize()
-	{
-		return getSiteConfigService().getInt("storefront.storelocator.pageSize", 0);
-	}
+    /**
+     * Get the default search page size.
+     * 
+     * @return the number of results per page, <tt>0</tt> (zero) indicated 'default' size should be
+     *         used
+     */
+    protected int getStoreLocatorPageSize() {
+        return getSiteConfigService().getInt("storefront.storelocator.pageSize", 0);
+    }
 }

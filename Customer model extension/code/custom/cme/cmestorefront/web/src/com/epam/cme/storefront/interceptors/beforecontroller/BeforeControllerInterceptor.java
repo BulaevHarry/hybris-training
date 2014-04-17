@@ -22,44 +22,39 @@ import org.springframework.beans.factory.annotation.Required;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 /**
- * A postHandle HandlerInterceptor that runs a number of BeforeViewHandlers before the view is rendered.
+ * A postHandle HandlerInterceptor that runs a number of BeforeViewHandlers before the view is
+ * rendered.
  */
-public class BeforeControllerInterceptor extends HandlerInterceptorAdapter
-{
-	public final String INTERCEPTOR_ONCE_KEY = BeforeControllerInterceptor.class.getName();
+public class BeforeControllerInterceptor extends HandlerInterceptorAdapter {
+    public final String INTERCEPTOR_ONCE_KEY = BeforeControllerInterceptor.class.getName();
 
-	private List<BeforeControllerHandler> beforeControllerHandlers;
+    private List<BeforeControllerHandler> beforeControllerHandlers;
 
-	protected List<BeforeControllerHandler> getBeforeControllerHandlers()
-	{
-		return beforeControllerHandlers;
-	}
+    protected List<BeforeControllerHandler> getBeforeControllerHandlers() {
+        return beforeControllerHandlers;
+    }
 
-	@Required
-	public void setBeforeControllerHandlers(final List<BeforeControllerHandler> beforeControllerHandlers)
-	{
-		this.beforeControllerHandlers = beforeControllerHandlers;
-	}
+    @Required
+    public void setBeforeControllerHandlers(final List<BeforeControllerHandler> beforeControllerHandlers) {
+        this.beforeControllerHandlers = beforeControllerHandlers;
+    }
 
-	@Override
-	public boolean preHandle(final HttpServletRequest request, final HttpServletResponse response, final Object handler) throws Exception
-	{
-		if (request.getAttribute(INTERCEPTOR_ONCE_KEY) == null)
-		{
-			// Set the flag so that we are not executed multiple times
-			request.setAttribute(INTERCEPTOR_ONCE_KEY, Boolean.TRUE);
+    @Override
+    public boolean preHandle(final HttpServletRequest request, final HttpServletResponse response, final Object handler)
+            throws Exception {
+        if (request.getAttribute(INTERCEPTOR_ONCE_KEY) == null) {
+            // Set the flag so that we are not executed multiple times
+            request.setAttribute(INTERCEPTOR_ONCE_KEY, Boolean.TRUE);
 
-			// Call the pre handler once for the request
-			for (final BeforeControllerHandler beforeControllerHandler : getBeforeControllerHandlers())
-			{
-				if (!beforeControllerHandler.beforeController(request, response))
-				{
-					// Return false immediately if a handler returns false
-					return false;
-				}
-			}
-		}
+            // Call the pre handler once for the request
+            for (final BeforeControllerHandler beforeControllerHandler : getBeforeControllerHandlers()) {
+                if (!beforeControllerHandler.beforeController(request, response)) {
+                    // Return false immediately if a handler returns false
+                    return false;
+                }
+            }
+        }
 
-		return true;
-	}
+        return true;
+    }
 }

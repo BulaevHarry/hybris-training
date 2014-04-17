@@ -25,57 +25,49 @@ import de.hybris.platform.servicelayer.util.ServicesUtil;
 
 import org.springframework.beans.factory.annotation.Required;
 
-
 /**
  * Listener for order confirmation events.
  */
-public class OrderConfirmationEventListener extends AbstractSiteEventListener<OrderPlacedEvent>
-{
+public class OrderConfirmationEventListener extends AbstractSiteEventListener<OrderPlacedEvent> {
 
-	private ModelService modelService;
-	private BusinessProcessService businessProcessService;
+    private ModelService modelService;
+    private BusinessProcessService businessProcessService;
 
-	protected BusinessProcessService getBusinessProcessService()
-	{
-		return businessProcessService;
-	}
+    protected BusinessProcessService getBusinessProcessService() {
+        return businessProcessService;
+    }
 
-	@Required
-	public void setBusinessProcessService(final BusinessProcessService businessProcessService)
-	{
-		this.businessProcessService = businessProcessService;
-	}
+    @Required
+    public void setBusinessProcessService(final BusinessProcessService businessProcessService) {
+        this.businessProcessService = businessProcessService;
+    }
 
-	protected ModelService getModelService()
-	{
-		return modelService;
-	}
+    protected ModelService getModelService() {
+        return modelService;
+    }
 
-	@Required
-	public void setModelService(final ModelService modelService)
-	{
-		this.modelService = modelService;
-	}
+    @Required
+    public void setModelService(final ModelService modelService) {
+        this.modelService = modelService;
+    }
 
-	@Override
-	protected void onSiteEvent(final OrderPlacedEvent orderPlacedEvent)
-	{
-		final OrderModel orderModel = orderPlacedEvent.getProcess().getOrder();
-		final OrderProcessModel orderProcessModel = (OrderProcessModel) getBusinessProcessService().createProcess(
-				"telcoOrderConfirmationEmailProcess-" + orderModel.getCode() + "-" + System.currentTimeMillis(),
-				"telcoOrderConfirmationEmailProcess");
-		orderProcessModel.setOrder(orderModel);
-		getModelService().save(orderProcessModel);
-		getBusinessProcessService().startProcess(orderProcessModel);
-	}
+    @Override
+    protected void onSiteEvent(final OrderPlacedEvent orderPlacedEvent) {
+        final OrderModel orderModel = orderPlacedEvent.getProcess().getOrder();
+        final OrderProcessModel orderProcessModel = (OrderProcessModel) getBusinessProcessService().createProcess(
+                "telcoOrderConfirmationEmailProcess-" + orderModel.getCode() + "-" + System.currentTimeMillis(),
+                "telcoOrderConfirmationEmailProcess");
+        orderProcessModel.setOrder(orderModel);
+        getModelService().save(orderProcessModel);
+        getBusinessProcessService().startProcess(orderProcessModel);
+    }
 
-	@Override
-	protected boolean shouldHandleEvent(final OrderPlacedEvent event)
-	{
-		final OrderModel order = event.getProcess().getOrder();
-		ServicesUtil.validateParameterNotNullStandardMessage("event.order", order);
-		final BaseSiteModel site = order.getSite();
-		ServicesUtil.validateParameterNotNullStandardMessage("event.order.site", site);
-		return SiteChannel.TELCO.equals(site.getChannel());
-	}
+    @Override
+    protected boolean shouldHandleEvent(final OrderPlacedEvent event) {
+        final OrderModel order = event.getProcess().getOrder();
+        ServicesUtil.validateParameterNotNullStandardMessage("event.order", order);
+        final BaseSiteModel site = order.getSite();
+        ServicesUtil.validateParameterNotNullStandardMessage("event.order.site", site);
+        return SiteChannel.TELCO.equals(site.getChannel());
+    }
 }

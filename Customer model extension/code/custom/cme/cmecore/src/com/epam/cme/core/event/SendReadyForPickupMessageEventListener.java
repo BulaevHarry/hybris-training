@@ -26,70 +26,62 @@ import de.hybris.platform.servicelayer.util.ServicesUtil;
 
 import org.springframework.beans.factory.annotation.Required;
 
-
 /**
  * Listener for SendReadyForPickupMessageEvent events.
  */
-public class SendReadyForPickupMessageEventListener extends AbstractSiteEventListener<SendReadyForPickupMessageEvent>
-{
-	private ModelService modelService;
-	private BusinessProcessService businessProcessService;
+public class SendReadyForPickupMessageEventListener extends AbstractSiteEventListener<SendReadyForPickupMessageEvent> {
+    private ModelService modelService;
+    private BusinessProcessService businessProcessService;
 
-	/**
-	 * @return the businessProcessService
-	 */
-	protected BusinessProcessService getBusinessProcessService()
-	{
-		return businessProcessService;
-	}
+    /**
+     * @return the businessProcessService
+     */
+    protected BusinessProcessService getBusinessProcessService() {
+        return businessProcessService;
+    }
 
-	/**
-	 * @param businessProcessService
-	 *           the businessProcessService to set
-	 */
-	@Required
-	public void setBusinessProcessService(final BusinessProcessService businessProcessService)
-	{
-		this.businessProcessService = businessProcessService;
-	}
+    /**
+     * @param businessProcessService
+     *            the businessProcessService to set
+     */
+    @Required
+    public void setBusinessProcessService(final BusinessProcessService businessProcessService) {
+        this.businessProcessService = businessProcessService;
+    }
 
-	/**
-	 * @return the modelService
-	 */
-	protected ModelService getModelService()
-	{
-		return modelService;
-	}
+    /**
+     * @return the modelService
+     */
+    protected ModelService getModelService() {
+        return modelService;
+    }
 
-	/**
-	 * @param modelService
-	 *           the modelService to set
-	 */
-	@Required
-	public void setModelService(final ModelService modelService)
-	{
-		this.modelService = modelService;
-	}
+    /**
+     * @param modelService
+     *            the modelService to set
+     */
+    @Required
+    public void setModelService(final ModelService modelService) {
+        this.modelService = modelService;
+    }
 
-	@Override
-	protected void onSiteEvent(final SendReadyForPickupMessageEvent sendReadyForPickupMessageEvent)
-	{
-		final ConsignmentModel consignmentModel = sendReadyForPickupMessageEvent.getProcess().getConsignment();
-		final ConsignmentProcessModel consignmentProcessModel = getBusinessProcessService().createProcess(
-				"telcoSendReadyForPickupEmailProcess-" + consignmentModel.getCode() + "-" + System.currentTimeMillis(),
-				"telcoSendReadyForPickupEmailProcess");
-		consignmentProcessModel.setConsignment(consignmentModel);
-		getModelService().save(consignmentProcessModel);
-		getBusinessProcessService().startProcess(consignmentProcessModel);
-	}
+    @Override
+    protected void onSiteEvent(final SendReadyForPickupMessageEvent sendReadyForPickupMessageEvent) {
+        final ConsignmentModel consignmentModel = sendReadyForPickupMessageEvent.getProcess().getConsignment();
+        final ConsignmentProcessModel consignmentProcessModel = getBusinessProcessService().createProcess(
+                "telcoSendReadyForPickupEmailProcess-" + consignmentModel.getCode() + "-" + System.currentTimeMillis(),
+                "telcoSendReadyForPickupEmailProcess");
+        consignmentProcessModel.setConsignment(consignmentModel);
+        getModelService().save(consignmentProcessModel);
+        getBusinessProcessService().startProcess(consignmentProcessModel);
+    }
 
-	@Override
-	protected boolean shouldHandleEvent(final SendReadyForPickupMessageEvent event)
-	{
-		final AbstractOrderModel order = event.getProcess().getConsignment().getOrder();
-		ServicesUtil.validateParameterNotNullStandardMessage("event.order", order);
-		final BaseSiteModel site = order.getSite();
-		ServicesUtil.validateParameterNotNullStandardMessage("event.order.site", site);
-		return SiteChannel.TELCO.equals(site.getChannel());
-	}
+    @Override
+    protected boolean shouldHandleEvent(final SendReadyForPickupMessageEvent event) {
+        final AbstractOrderModel order = event.getProcess().getConsignment().getOrder();
+        ServicesUtil.validateParameterNotNullStandardMessage("event.order", order);
+        final BaseSiteModel site = order.getSite();
+        ServicesUtil.validateParameterNotNullStandardMessage("event.order.site", site);
+        return SiteChannel.TELCO.equals(site.getChannel());
+    }
 }

@@ -51,239 +51,223 @@ import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 
-
 /**
- * Integration test suite for testing the synchronization of {@link BundleTemplateModel}s and dependent objects
+ * Integration test suite for testing the synchronization of {@link BundleTemplateModel}s and
+ * dependent objects
  * 
  */
-public class BundleTemplateSynchronizationIntegrationTest extends ServicelayerTest
-{
-	private static final Logger LOG = Logger.getLogger(BundleTemplateSynchronizationIntegrationTest.class);
+public class BundleTemplateSynchronizationIntegrationTest extends ServicelayerTest {
+    private static final Logger LOG = Logger.getLogger(BundleTemplateSynchronizationIntegrationTest.class);
 
-	private static final String CATALOG_ID = "testCatalog";
-	private static final String SYNC_ROOT_TEMPLATE = "SyncPackage";
+    private static final String CATALOG_ID = "testCatalog";
+    private static final String SYNC_ROOT_TEMPLATE = "SyncPackage";
 
-	@Resource
-	private UserService userService;
+    @Resource
+    private UserService userService;
 
-	@Resource
-	private CatalogVersionService catalogVersionService;
+    @Resource
+    private CatalogVersionService catalogVersionService;
 
-	@Resource
-	private TypeService typeService;
+    @Resource
+    private TypeService typeService;
 
-	@Resource
-	private SetupSyncJobService setupSyncJobService;
+    @Resource
+    private SetupSyncJobService setupSyncJobService;
 
-	@Resource
-	private ModelService modelService;
+    @Resource
+    private ModelService modelService;
 
-	@Resource
-	private FlexibleSearchService flexibleSearchService;
+    @Resource
+    private FlexibleSearchService flexibleSearchService;
 
-	private CatalogVersionModel onlineCatalogVersion;
-	private CatalogVersionModel stagedCatalogVersion;
+    private CatalogVersionModel onlineCatalogVersion;
+    private CatalogVersionModel stagedCatalogVersion;
 
-	@Before
-	public void setUp() throws Exception
-	{
-		// final Create data for tests
-		LOG.info("Creating data for BundleTemplateSynchronizationIntegrationTest ..");
-		userService.setCurrentUser(userService.getAdminUser());
-		final long startTime = System.currentTimeMillis();
-		new CoreBasicDataCreator().createEssentialData(Collections.EMPTY_MAP, null);
+    @Before
+    public void setUp() throws Exception {
+        // final Create data for tests
+        LOG.info("Creating data for BundleTemplateSynchronizationIntegrationTest ..");
+        userService.setCurrentUser(userService.getAdminUser());
+        final long startTime = System.currentTimeMillis();
+        new CoreBasicDataCreator().createEssentialData(Collections.EMPTY_MAP, null);
 
-		// importing test csv
-		final String legacyModeBackup = Config.getParameter(ImpExConstants.Params.LEGACY_MODE_KEY);
-		LOG.info("Existing value for " + ImpExConstants.Params.LEGACY_MODE_KEY + " :" + legacyModeBackup);
-		Config.setParameter(ImpExConstants.Params.LEGACY_MODE_KEY, "true");
-		importCsv("/commerceservices/test/testCommerceCart.csv", "utf-8");
-		Config.setParameter(ImpExConstants.Params.LEGACY_MODE_KEY, "false");
-		importCsv("/subscriptionservices/test/testSubscriptionCommerceCartService.impex", "utf-8");
-		importCsv("/configurablebundleservices/test/testBundleCommerceCartService.impex", "utf-8");
-		Config.setParameter(ImpExConstants.Params.LEGACY_MODE_KEY, legacyModeBackup);
+        // importing test csv
+        final String legacyModeBackup = Config.getParameter(ImpExConstants.Params.LEGACY_MODE_KEY);
+        LOG.info("Existing value for " + ImpExConstants.Params.LEGACY_MODE_KEY + " :" + legacyModeBackup);
+        Config.setParameter(ImpExConstants.Params.LEGACY_MODE_KEY, "true");
+        importCsv("/commerceservices/test/testCommerceCart.csv", "utf-8");
+        Config.setParameter(ImpExConstants.Params.LEGACY_MODE_KEY, "false");
+        importCsv("/subscriptionservices/test/testSubscriptionCommerceCartService.impex", "utf-8");
+        importCsv("/configurablebundleservices/test/testBundleCommerceCartService.impex", "utf-8");
+        Config.setParameter(ImpExConstants.Params.LEGACY_MODE_KEY, legacyModeBackup);
 
-		onlineCatalogVersion = catalogVersionService.getCatalogVersion(CATALOG_ID, CatalogManager.ONLINE_VERSION);
-		stagedCatalogVersion = catalogVersionService.getCatalogVersion(CATALOG_ID, CatalogManager.OFFLINE_VERSION);
+        onlineCatalogVersion = catalogVersionService.getCatalogVersion(CATALOG_ID, CatalogManager.ONLINE_VERSION);
+        stagedCatalogVersion = catalogVersionService.getCatalogVersion(CATALOG_ID, CatalogManager.OFFLINE_VERSION);
 
-		LOG.info("Finished data for BundleTemplateSynchronizationIntegrationTest " + (System.currentTimeMillis() - startTime)
-				+ "ms");
-		modelService.detachAll();
-	}
+        LOG.info("Finished data for BundleTemplateSynchronizationIntegrationTest "
+                + (System.currentTimeMillis() - startTime) + "ms");
+        modelService.detachAll();
+    }
 
-	@Test
-	public void testInitSyncBundleTemplate()
-	{
-		// check data before synchronization
-		List<BundleTemplateModel> templates = getBundleTemplatesByIdAndCatalogVersion(SYNC_ROOT_TEMPLATE, null);
-		assertEquals("", 1, templates.size());
-		assertEquals("", stagedCatalogVersion, templates.iterator().next().getCatalogVersion());
-		checkSyncTemplate(templates.iterator().next(), stagedCatalogVersion);
+    @Test
+    public void testInitSyncBundleTemplate() {
+        // check data before synchronization
+        List<BundleTemplateModel> templates = getBundleTemplatesByIdAndCatalogVersion(SYNC_ROOT_TEMPLATE, null);
+        assertEquals("", 1, templates.size());
+        assertEquals("", stagedCatalogVersion, templates.iterator().next().getCatalogVersion());
+        checkSyncTemplate(templates.iterator().next(), stagedCatalogVersion);
 
-		// create/run synchronization job
-		createSyncJob(CATALOG_ID);
-		runSyncJob(CATALOG_ID);
+        // create/run synchronization job
+        createSyncJob(CATALOG_ID);
+        runSyncJob(CATALOG_ID);
 
-		templates = getBundleTemplatesByIdAndCatalogVersion(SYNC_ROOT_TEMPLATE, null);
-		assertEquals("", 2, templates.size());
+        templates = getBundleTemplatesByIdAndCatalogVersion(SYNC_ROOT_TEMPLATE, null);
+        assertEquals("", 2, templates.size());
 
-		// check staged data
-		templates = getBundleTemplatesByIdAndCatalogVersion(SYNC_ROOT_TEMPLATE, stagedCatalogVersion);
-		assertEquals("", 1, templates.size());
-		checkSyncTemplate(templates.iterator().next(), stagedCatalogVersion);
+        // check staged data
+        templates = getBundleTemplatesByIdAndCatalogVersion(SYNC_ROOT_TEMPLATE, stagedCatalogVersion);
+        assertEquals("", 1, templates.size());
+        checkSyncTemplate(templates.iterator().next(), stagedCatalogVersion);
 
-		// check online data
-		templates = getBundleTemplatesByIdAndCatalogVersion(SYNC_ROOT_TEMPLATE, onlineCatalogVersion);
-		assertEquals("", 1, templates.size());
-		checkSyncTemplate(templates.iterator().next(), onlineCatalogVersion);
-	}
+        // check online data
+        templates = getBundleTemplatesByIdAndCatalogVersion(SYNC_ROOT_TEMPLATE, onlineCatalogVersion);
+        assertEquals("", 1, templates.size());
+        checkSyncTemplate(templates.iterator().next(), onlineCatalogVersion);
+    }
 
-	@Test
-	public void testSyncBundleTemplateAfterUpdates()
-	{
-		// create/run synchronization job
-		createSyncJob(CATALOG_ID);
-		runSyncJob(CATALOG_ID);
+    @Test
+    public void testSyncBundleTemplateAfterUpdates() {
+        // create/run synchronization job
+        createSyncJob(CATALOG_ID);
+        runSyncJob(CATALOG_ID);
 
-		List<BundleTemplateModel> templates = getBundleTemplatesByIdAndCatalogVersion("SyncDeviceSelection", stagedCatalogVersion);
-		assertEquals("", 1, templates.size());
-		final BundleTemplateModel bundleTemplate = templates.iterator().next();
-		final BundleTemplateModel rootTemplateStaged = bundleTemplate.getParentTemplate();
+        List<BundleTemplateModel> templates = getBundleTemplatesByIdAndCatalogVersion("SyncDeviceSelection",
+                stagedCatalogVersion);
+        assertEquals("", 1, templates.size());
+        final BundleTemplateModel bundleTemplate = templates.iterator().next();
+        final BundleTemplateModel rootTemplateStaged = bundleTemplate.getParentTemplate();
 
-		// update status
-		rootTemplateStaged.getStatus().setStatus(BundleTemplateStatusEnum.APPROVED);
-		modelService.save(bundleTemplate.getStatus());
-		modelService.refresh(bundleTemplate);
+        // update status
+        rootTemplateStaged.getStatus().setStatus(BundleTemplateStatusEnum.APPROVED);
+        modelService.save(bundleTemplate.getStatus());
+        modelService.refresh(bundleTemplate);
 
-		for (final BundleTemplateModel childTemplate : rootTemplateStaged.getChildTemplates())
-		{
-			assertEquals("", BundleTemplateStatusEnum.APPROVED, childTemplate.getStatus().getStatus());
-		}
+        for (final BundleTemplateModel childTemplate : rootTemplateStaged.getChildTemplates()) {
+            assertEquals("", BundleTemplateStatusEnum.APPROVED, childTemplate.getStatus().getStatus());
+        }
 
-		// update price
-		for (final ChangeProductPriceBundleRuleModel priceRule : bundleTemplate.getChangeProductPriceBundleRules())
-		{
-			assertEquals("", 59, priceRule.getPrice().intValue());
-			priceRule.setPrice(BigDecimal.valueOf(69));
-			modelService.save(priceRule);
-			assertEquals("", 69, priceRule.getPrice().intValue());
-		}
+        // update price
+        for (final ChangeProductPriceBundleRuleModel priceRule : bundleTemplate.getChangeProductPriceBundleRules()) {
+            assertEquals("", 59, priceRule.getPrice().intValue());
+            priceRule.setPrice(BigDecimal.valueOf(69));
+            modelService.save(priceRule);
+            assertEquals("", 69, priceRule.getPrice().intValue());
+        }
 
-		templates = getBundleTemplatesByIdAndCatalogVersion("SyncDeviceSelection", onlineCatalogVersion);
-		assertEquals("", 1, templates.size());
-		BundleTemplateModel rootTemplateOnline = templates.iterator().next().getParentTemplate();
-		assertEquals("", BundleTemplateStatusEnum.UNAPPROVED, rootTemplateOnline.getStatus().getStatus());
+        templates = getBundleTemplatesByIdAndCatalogVersion("SyncDeviceSelection", onlineCatalogVersion);
+        assertEquals("", 1, templates.size());
+        BundleTemplateModel rootTemplateOnline = templates.iterator().next().getParentTemplate();
+        assertEquals("", BundleTemplateStatusEnum.UNAPPROVED, rootTemplateOnline.getStatus().getStatus());
 
-		for (final BundleTemplateModel childTemplate : rootTemplateOnline.getChildTemplates())
-		{
-			assertEquals("", BundleTemplateStatusEnum.UNAPPROVED, childTemplate.getStatus().getStatus());
-		}
+        for (final BundleTemplateModel childTemplate : rootTemplateOnline.getChildTemplates()) {
+            assertEquals("", BundleTemplateStatusEnum.UNAPPROVED, childTemplate.getStatus().getStatus());
+        }
 
-		for (final ChangeProductPriceBundleRuleModel priceRule : templates.iterator().next().getChangeProductPriceBundleRules())
-		{
-			assertEquals("", 59, priceRule.getPrice().intValue());
-		}
+        for (final ChangeProductPriceBundleRuleModel priceRule : templates.iterator().next()
+                .getChangeProductPriceBundleRules()) {
+            assertEquals("", 59, priceRule.getPrice().intValue());
+        }
 
-		// run synchronization job again
-		runSyncJob(CATALOG_ID);
+        // run synchronization job again
+        runSyncJob(CATALOG_ID);
 
-		templates = getBundleTemplatesByIdAndCatalogVersion("SyncDeviceSelection", onlineCatalogVersion);
-		assertEquals("", 1, templates.size());
-		final BundleTemplateModel bundleTemplateOnline = templates.iterator().next();
-		rootTemplateOnline = bundleTemplateOnline.getParentTemplate();
-		assertEquals("", BundleTemplateStatusEnum.APPROVED, rootTemplateOnline.getStatus().getStatus());
+        templates = getBundleTemplatesByIdAndCatalogVersion("SyncDeviceSelection", onlineCatalogVersion);
+        assertEquals("", 1, templates.size());
+        final BundleTemplateModel bundleTemplateOnline = templates.iterator().next();
+        rootTemplateOnline = bundleTemplateOnline.getParentTemplate();
+        assertEquals("", BundleTemplateStatusEnum.APPROVED, rootTemplateOnline.getStatus().getStatus());
 
-		for (final BundleTemplateModel childTemplate : rootTemplateOnline.getChildTemplates())
-		{
-			assertEquals("", BundleTemplateStatusEnum.APPROVED, childTemplate.getStatus().getStatus());
-		}
+        for (final BundleTemplateModel childTemplate : rootTemplateOnline.getChildTemplates()) {
+            assertEquals("", BundleTemplateStatusEnum.APPROVED, childTemplate.getStatus().getStatus());
+        }
 
-		for (final ChangeProductPriceBundleRuleModel priceRule : bundleTemplateOnline.getChangeProductPriceBundleRules())
-		{
-			assertEquals("", 69, priceRule.getPrice().intValue());
-		}
-	}
+        for (final ChangeProductPriceBundleRuleModel priceRule : bundleTemplateOnline
+                .getChangeProductPriceBundleRules()) {
+            assertEquals("", 69, priceRule.getPrice().intValue());
+        }
+    }
 
-	private void checkSyncTemplate(final BundleTemplateModel rootTemplate, final CatalogVersionModel catalogVersion)
-	{
-		assertEquals("", 3, rootTemplate.getChildTemplates().size());
-		for (final BundleTemplateModel bundleTemplate : rootTemplate.getChildTemplates())
-		{
-			assertEquals("", catalogVersion, bundleTemplate.getCatalogVersion());
-			assertNotNull("", bundleTemplate.getBundleSelectionCriteria());
-			assertEquals("", catalogVersion, bundleTemplate.getBundleSelectionCriteria().getCatalogVersion());
-			assertNotNull("", bundleTemplate.getStatus());
-			assertEquals("", BundleTemplateStatusEnum.UNAPPROVED, bundleTemplate.getStatus().getStatus());
+    private void checkSyncTemplate(final BundleTemplateModel rootTemplate, final CatalogVersionModel catalogVersion) {
+        assertEquals("", 3, rootTemplate.getChildTemplates().size());
+        for (final BundleTemplateModel bundleTemplate : rootTemplate.getChildTemplates()) {
+            assertEquals("", catalogVersion, bundleTemplate.getCatalogVersion());
+            assertNotNull("", bundleTemplate.getBundleSelectionCriteria());
+            assertEquals("", catalogVersion, bundleTemplate.getBundleSelectionCriteria().getCatalogVersion());
+            assertNotNull("", bundleTemplate.getStatus());
+            assertEquals("", BundleTemplateStatusEnum.UNAPPROVED, bundleTemplate.getStatus().getStatus());
 
-			assertEquals("", 1, bundleTemplate.getProducts().size());
-			for (final ProductModel product : bundleTemplate.getProducts())
-			{
-				assertEquals("", catalogVersion, product.getCatalogVersion());
-			}
+            assertEquals("", 1, bundleTemplate.getProducts().size());
+            for (final ProductModel product : bundleTemplate.getProducts()) {
+                assertEquals("", catalogVersion, product.getCatalogVersion());
+            }
 
-			if ("SyncDeviceSelection".equals(bundleTemplate.getId()))
-			{
-				assertEquals("", 2, bundleTemplate.getChangeProductPriceBundleRules().size());
-				for (final ChangeProductPriceBundleRuleModel priceRule : bundleTemplate.getChangeProductPriceBundleRules())
-				{
-					assertEquals("", catalogVersion, priceRule.getCatalogVersion());
+            if ("SyncDeviceSelection".equals(bundleTemplate.getId())) {
+                assertEquals("", 2, bundleTemplate.getChangeProductPriceBundleRules().size());
+                for (final ChangeProductPriceBundleRuleModel priceRule : bundleTemplate
+                        .getChangeProductPriceBundleRules()) {
+                    assertEquals("", catalogVersion, priceRule.getCatalogVersion());
 
-					assertTrue("", priceRule.getConditionalProducts().size() > 0);
-					for (final ProductModel conditionalProduct : priceRule.getConditionalProducts())
-					{
-						assertEquals("", catalogVersion, conditionalProduct.getCatalogVersion());
-					}
+                    assertTrue("", priceRule.getConditionalProducts().size() > 0);
+                    for (final ProductModel conditionalProduct : priceRule.getConditionalProducts()) {
+                        assertEquals("", catalogVersion, conditionalProduct.getCatalogVersion());
+                    }
 
-					assertEquals("", 1, priceRule.getTargetProducts().size());
-					for (final ProductModel targetProduct : priceRule.getTargetProducts())
-					{
-						assertEquals("", catalogVersion, targetProduct.getCatalogVersion());
-					}
-				}
-			}
-		}
-	}
+                    assertEquals("", 1, priceRule.getTargetProducts().size());
+                    for (final ProductModel targetProduct : priceRule.getTargetProducts()) {
+                        assertEquals("", catalogVersion, targetProduct.getCatalogVersion());
+                    }
+                }
+            }
+        }
+    }
 
-	private void createSyncJob(final String catalogId)
-	{
-		// create a synchronization job
-		setupSyncJobService.createProductCatalogSyncJob(catalogId);
+    private void createSyncJob(final String catalogId) {
+        // create a synchronization job
+        setupSyncJobService.createProductCatalogSyncJob(catalogId);
 
-		// add types BundleTemplate and BundleTemplateStatus as root types to the synchronization job
-		final List<SyncItemJobModel> syncItemJobs = catalogVersionService.getCatalogVersion(catalogId,
-				CatalogManager.OFFLINE_VERSION).getSynchronizations();
-		for (final SyncItemJobModel syncItemJob : syncItemJobs)
-		{
-			final List<ComposedTypeModel> rootTypes = new ArrayList<ComposedTypeModel>(syncItemJob.getRootTypes());
-			final ComposedTypeModel bundleTemplate = typeService.getComposedTypeForClass(BundleTemplateModel.class);
-			final ComposedTypeModel bundleTemplateStatus = typeService.getComposedTypeForClass(BundleTemplateStatusModel.class);
-			rootTypes.add(0, bundleTemplateStatus);
-			rootTypes.add(0, bundleTemplate);
-			syncItemJob.setRootTypes(rootTypes);
-			modelService.save(syncItemJob);
-		}
-	}
+        // add types BundleTemplate and BundleTemplateStatus as root types to the synchronization
+        // job
+        final List<SyncItemJobModel> syncItemJobs = catalogVersionService.getCatalogVersion(catalogId,
+                CatalogManager.OFFLINE_VERSION).getSynchronizations();
+        for (final SyncItemJobModel syncItemJob : syncItemJobs) {
+            final List<ComposedTypeModel> rootTypes = new ArrayList<ComposedTypeModel>(syncItemJob.getRootTypes());
+            final ComposedTypeModel bundleTemplate = typeService.getComposedTypeForClass(BundleTemplateModel.class);
+            final ComposedTypeModel bundleTemplateStatus = typeService
+                    .getComposedTypeForClass(BundleTemplateStatusModel.class);
+            rootTypes.add(0, bundleTemplateStatus);
+            rootTypes.add(0, bundleTemplate);
+            syncItemJob.setRootTypes(rootTypes);
+            modelService.save(syncItemJob);
+        }
+    }
 
-	private void runSyncJob(final String catalogId)
-	{
-		// start the synchronization job
-		final PerformResult res = setupSyncJobService.executeCatalogSyncJob(catalogId);
-		final CronJobStatus cronJobStatus = res.getStatus();
-		assertEquals("", CronJobStatus.FINISHED, cronJobStatus);
-		final CronJobResult cronJobResult = res.getResult();
-		assertEquals("", CronJobResult.SUCCESS, cronJobResult);
-	}
+    private void runSyncJob(final String catalogId) {
+        // start the synchronization job
+        final PerformResult res = setupSyncJobService.executeCatalogSyncJob(catalogId);
+        final CronJobStatus cronJobStatus = res.getStatus();
+        assertEquals("", CronJobStatus.FINISHED, cronJobStatus);
+        final CronJobResult cronJobResult = res.getResult();
+        assertEquals("", CronJobResult.SUCCESS, cronJobResult);
+    }
 
-	private List<BundleTemplateModel> getBundleTemplatesByIdAndCatalogVersion(final String bundleId,
-			final CatalogVersionModel catalogVersion)
-	{
-		final BundleTemplateModel exampleModel = new BundleTemplateModel();
-		exampleModel.setId(bundleId);
-		if (catalogVersion != null)
-		{
-			exampleModel.setCatalogVersion(catalogVersion);
-		}
+    private List<BundleTemplateModel> getBundleTemplatesByIdAndCatalogVersion(final String bundleId,
+            final CatalogVersionModel catalogVersion) {
+        final BundleTemplateModel exampleModel = new BundleTemplateModel();
+        exampleModel.setId(bundleId);
+        if (catalogVersion != null) {
+            exampleModel.setCatalogVersion(catalogVersion);
+        }
 
-		return flexibleSearchService.getModelsByExample(exampleModel);
-	}
+        return flexibleSearchService.getModelsByExample(exampleModel);
+    }
 }

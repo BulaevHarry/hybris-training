@@ -19,26 +19,23 @@ import com.epam.cme.facades.data.BundleTemplateData;
 
 import org.apache.commons.collections.CollectionUtils;
 
-
 /**
  * 
- * Populator implementation for {@link BundleTemplateModel} as source and {@link BundleTemplateData} as target type.
+ * Populator implementation for {@link BundleTemplateModel} as source and {@link BundleTemplateData}
+ * as target type.
  */
 
 public class BundleTemplatePopulator<SOURCE extends BundleTemplateModel, TARGET extends BundleTemplateData> implements
-		Populator<SOURCE, TARGET>
-{
+        Populator<SOURCE, TARGET> {
 
-	@Override
-	public void populate(final SOURCE source, final TARGET target)
-	{
-		target.setId(source.getId());
-		target.setName(source.getName());
-		target.setVersion(source.getVersion());
+    @Override
+    public void populate(final SOURCE source, final TARGET target) {
+        target.setId(source.getId());
+        target.setName(source.getName());
+        target.setVersion(source.getVersion());
 
-		if (CollectionUtils.isNotEmpty(source.getProducts()))
-		{
-			target.setType(source.getProducts().iterator().next().getClass().getSimpleName());
-		}
-	}
+        if (CollectionUtils.isNotEmpty(source.getProducts())) {
+            target.setType(source.getProducts().iterator().next().getClass().getSimpleName());
+        }
+    }
 }

@@ -18,18 +18,14 @@ import de.hybris.platform.jalo.extension.ExtensionManager;
 import com.epam.cme.core.constants.CmeCoreConstants;
 import com.epam.cme.core.setup.CoreSystemSetup;
 
-
-
 /**
  * Do not use, please use {@link CoreSystemSetup} instead.
  * 
  */
 @SuppressWarnings("PMD")
-public class CmeCoreManager extends GeneratedCmeCoreManager
-{
-	public static final CmeCoreManager getInstance()
-	{
-		final ExtensionManager em = JaloSession.getCurrentSession().getExtensionManager();
-		return (CmeCoreManager) em.getExtension(CmeCoreConstants.EXTENSIONNAME);
-	}
+public class CmeCoreManager extends GeneratedCmeCoreManager {
+    public static final CmeCoreManager getInstance() {
+        final ExtensionManager em = JaloSession.getCurrentSession().getExtensionManager();
+        return (CmeCoreManager) em.getExtension(CmeCoreConstants.EXTENSIONNAME);
+    }
 }

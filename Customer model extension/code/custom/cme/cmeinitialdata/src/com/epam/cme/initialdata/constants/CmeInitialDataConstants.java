@@ -18,12 +18,10 @@ import com.epam.cme.initialdata.constants.GeneratedCmeInitialDataConstants;
 /**
  * Global class for all CmeInitialData constants.
  */
-public class CmeInitialDataConstants extends GeneratedCmeInitialDataConstants
-{
-	public static final String EXTENSIONNAME = "cmeinitialdata";
+public class CmeInitialDataConstants extends GeneratedCmeInitialDataConstants {
+    public static final String EXTENSIONNAME = "cmeinitialdata";
 
-	private CmeInitialDataConstants()
-	{
-		//empty
-	}
+    private CmeInitialDataConstants() {
+        // empty
+    }
 }

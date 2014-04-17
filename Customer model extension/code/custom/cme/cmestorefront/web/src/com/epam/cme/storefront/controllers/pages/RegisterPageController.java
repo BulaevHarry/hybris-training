@@ -31,56 +31,46 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-
 /**
  * Register Controller for mobile. Handles login and register for the account flow.
  */
 @Controller
 @RequestMapping(value = "/register")
-public class RegisterPageController extends AbstractRegisterPageController
-{
-	@Override
-	protected AbstractPageModel getCmsPage() throws CMSItemNotFoundException
-	{
-		return getContentPageForLabelOrId("register");
-	}
+public class RegisterPageController extends AbstractRegisterPageController {
+    @Override
+    protected AbstractPageModel getCmsPage() throws CMSItemNotFoundException {
+        return getContentPageForLabelOrId("register");
+    }
 
-	@Override
-	protected String getSuccessRedirect(final HttpServletRequest request, final HttpServletResponse response)
-	{
-		if (httpSessionRequestCache.getRequest(request, response) != null)
-		{
-			return httpSessionRequestCache.getRequest(request, response).getRedirectUrl();
-		}
-		return "/my-account";
-	}
+    @Override
+    protected String getSuccessRedirect(final HttpServletRequest request, final HttpServletResponse response) {
+        if (httpSessionRequestCache.getRequest(request, response) != null) {
+            return httpSessionRequestCache.getRequest(request, response).getRedirectUrl();
+        }
+        return "/my-account";
+    }
 
-	@Override
-	protected String getView()
-	{
-		return ControllerConstants.Views.Pages.Account.AccountRegisterPage;
-	}
+    @Override
+    protected String getView() {
+        return ControllerConstants.Views.Pages.Account.AccountRegisterPage;
+    }
 
-	private HttpSessionRequestCache httpSessionRequestCache;
+    private HttpSessionRequestCache httpSessionRequestCache;
 
-	@Autowired
-	@Qualifier("httpSessionRequestCache")
-	public void setHttpSessionRequestCache(final HttpSessionRequestCache accHttpSessionRequestCache)
-	{
-		this.httpSessionRequestCache = accHttpSessionRequestCache;
-	}
+    @Autowired
+    @Qualifier("httpSessionRequestCache")
+    public void setHttpSessionRequestCache(final HttpSessionRequestCache accHttpSessionRequestCache) {
+        this.httpSessionRequestCache = accHttpSessionRequestCache;
+    }
 
+    @RequestMapping(method = RequestMethod.GET)
+    public String doRegister(final Model model, final HttpServletRequest request) throws CMSItemNotFoundException {
+        return getDefaultRegistrationPage(model);
+    }
 
-	@RequestMapping(method = RequestMethod.GET)
-	public String doRegister(final Model model, final HttpServletRequest request) throws CMSItemNotFoundException
-	{
-		return getDefaultRegistrationPage(model);
-	}
-
-	@RequestMapping(value = "/newcustomer", method = RequestMethod.POST)
-	public String doRegister(@Valid final RegisterForm form, final BindingResult bindingResult, final Model model,
-			final HttpServletRequest request, final HttpServletResponse response) throws CMSItemNotFoundException
-	{
-		return processRegisterUserRequest(null, form, bindingResult, model, request, response);
-	}
+    @RequestMapping(value = "/newcustomer", method = RequestMethod.POST)
+    public String doRegister(@Valid final RegisterForm form, final BindingResult bindingResult, final Model model,
+            final HttpServletRequest request, final HttpServletResponse response) throws CMSItemNotFoundException {
+        return processRegisterUserRequest(null, form, bindingResult, model, request, response);
+    }
 }

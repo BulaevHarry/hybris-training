@@ -29,61 +29,51 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.security.web.savedrequest.DefaultSavedRequest;
 
-
 @UnitTest
-public class WebHttpSessionRequestCacheUnitTest
-{
-	//
-	private final WebHttpSessionRequestCache cache = new WebHttpSessionRequestCache();
+public class WebHttpSessionRequestCacheUnitTest {
+    //
+    private final WebHttpSessionRequestCache cache = new WebHttpSessionRequestCache();
 
-	@Mock(answer = Answers.RETURNS_DEEP_STUBS)
-	private HttpServletRequest request;
+    @Mock(answer = Answers.RETURNS_DEEP_STUBS)
+    private HttpServletRequest request;
 
-	@Mock
-	private HttpServletResponse response;
+    @Mock
+    private HttpServletResponse response;
 
-	@Before
-	public void prepare()
-	{
-		MockitoAnnotations.initMocks(this);
-	}
+    @Before
+    public void prepare() {
+        MockitoAnnotations.initMocks(this);
+    }
 
+    @Test
+    public void testSaveRequest() {
 
-	@Test
-	public void testSaveRequest()
-	{
+        BDDMockito.given(request.getRequestURL()).willReturn(new StringBuffer("dummy"));
+        BDDMockito.given(request.getScheme()).willReturn("dummy");
+        BDDMockito.given(request.getHeader("referer")).willReturn("some blah");
 
-		BDDMockito.given(request.getRequestURL()).willReturn(new StringBuffer("dummy"));
-		BDDMockito.given(request.getScheme()).willReturn("dummy");
-		BDDMockito.given(request.getHeader("referer")).willReturn("some blah");
+        cache.saveRequest(request, response);
 
-		cache.saveRequest(request, response);
+        Mockito.verify(request.getSession()).setAttribute(Mockito.eq("SPRING_SECURITY_SAVED_REQUEST"),
+                Mockito.argThat(new DefaultSavedRequestArgumentMatcher("some blah")));
+    }
 
+    class DefaultSavedRequestArgumentMatcher extends ArgumentMatcher<DefaultSavedRequest> {
 
-		Mockito.verify(request.getSession()).setAttribute(Mockito.eq("SPRING_SECURITY_SAVED_REQUEST"),
-				Mockito.argThat(new DefaultSavedRequestArgumentMatcher("some blah")));
-	}
+        private final String url;
 
-	class DefaultSavedRequestArgumentMatcher extends ArgumentMatcher<DefaultSavedRequest>
-	{
+        DefaultSavedRequestArgumentMatcher(final String url) {
+            this.url = url;
+        }
 
-		private final String url;
+        @Override
+        public boolean matches(final Object argument) {
+            if (argument instanceof DefaultSavedRequest) {
+                final DefaultSavedRequest arg = (DefaultSavedRequest) argument;
+                return url.equals(arg.getRedirectUrl());
+            }
+            return false;
+        }
 
-		DefaultSavedRequestArgumentMatcher(final String url)
-		{
-			this.url = url;
-		}
-
-		@Override
-		public boolean matches(final Object argument)
-		{
-			if (argument instanceof DefaultSavedRequest)
-			{
-				final DefaultSavedRequest arg = (DefaultSavedRequest) argument;
-				return url.equals(arg.getRedirectUrl());
-			}
-			return false;
-		}
-
-	}
+    }
 }

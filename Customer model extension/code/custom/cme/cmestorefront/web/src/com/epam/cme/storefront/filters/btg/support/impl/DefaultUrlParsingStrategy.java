@@ -25,60 +25,51 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.util.Assert;
 import org.springframework.web.util.UrlPathHelper;
 
-
 /**
  * Default implementation of {@link UrlParsingStrategy}
  */
-public class DefaultUrlParsingStrategy implements UrlParsingStrategy, InitializingBean
-{
-	private String regex;
-	private Pattern pattern;
-	private UrlPathHelper urlPathHelper;
+public class DefaultUrlParsingStrategy implements UrlParsingStrategy, InitializingBean {
+    private String regex;
+    private Pattern pattern;
+    private UrlPathHelper urlPathHelper;
 
-	/**
-	 * @param regex
-	 *           the regex to set
-	 */
-	public void setRegex(final String regex)
-	{
-		Assert.hasLength(regex);
-		this.regex = regex;
-	}
+    /**
+     * @param regex
+     *            the regex to set
+     */
+    public void setRegex(final String regex) {
+        Assert.hasLength(regex);
+        this.regex = regex;
+    }
 
-	/**
-	 * @param urlPathHelper
-	 *           the urlPathHelper to set
-	 */
-	public void setUrlPathHelper(final UrlPathHelper urlPathHelper)
-	{
-		this.urlPathHelper = urlPathHelper;
-	}
+    /**
+     * @param urlPathHelper
+     *            the urlPathHelper to set
+     */
+    public void setUrlPathHelper(final UrlPathHelper urlPathHelper) {
+        this.urlPathHelper = urlPathHelper;
+    }
 
-	@Override
-	public void afterPropertiesSet()
-	{
-		if (urlPathHelper == null)
-		{
-			urlPathHelper = new UrlPathHelper();
-		}
-		Assert.hasLength(regex);
-		pattern = Pattern.compile(regex);
-	}
+    @Override
+    public void afterPropertiesSet() {
+        if (urlPathHelper == null) {
+            urlPathHelper = new UrlPathHelper();
+        }
+        Assert.hasLength(regex);
+        pattern = Pattern.compile(regex);
+    }
 
-	@Override
-	public String parse(final HttpServletRequest request)
-	{
-		Assert.notNull(request);
-		String result = null;
-		final String path = urlPathHelper.getPathWithinApplication(request);
-		if (!StringUtils.isBlank(path))
-		{
-			final Matcher matcher = pattern.matcher(path);
-			if (matcher.find())
-			{
-				result = matcher.group(1);
-			}
-		}
-		return result;
-	}
+    @Override
+    public String parse(final HttpServletRequest request) {
+        Assert.notNull(request);
+        String result = null;
+        final String path = urlPathHelper.getPathWithinApplication(request);
+        if (!StringUtils.isBlank(path)) {
+            final Matcher matcher = pattern.matcher(path);
+            if (matcher.find()) {
+                result = matcher.group(1);
+            }
+        }
+        return result;
+    }
 }

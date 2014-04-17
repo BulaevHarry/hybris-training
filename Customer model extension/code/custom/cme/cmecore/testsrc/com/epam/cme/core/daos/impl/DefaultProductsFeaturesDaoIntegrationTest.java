@@ -30,31 +30,26 @@ import org.junit.Test;
 
 import org.apache.log4j.Logger;
 
-
 /**
  * Integration test to Data access Object DefaultProductsFeaturesDao
  */
-public class DefaultProductsFeaturesDaoIntegrationTest extends ServicelayerTest
-{
-	private static final Logger LOG = Logger.getLogger(DefaultProductsFeaturesDaoIntegrationTest.class);
+public class DefaultProductsFeaturesDaoIntegrationTest extends ServicelayerTest {
+    private static final Logger LOG = Logger.getLogger(DefaultProductsFeaturesDaoIntegrationTest.class);
 
-	@Resource
-	private ProductsFeaturesDao productsFeaturesDao;
+    @Resource
+    private ProductsFeaturesDao productsFeaturesDao;
 
+    @Before
+    public void setUp() throws Exception {
+        new CoreBasicDataCreator().createEssentialData(Collections.EMPTY_MAP, null);
+        importCsv("/test/impex/test_feature-compatibility.impex", "utf-8");
+        LOG.info("Finsihed data setup");
+    }
 
-	@Before
-	public void setUp() throws Exception
-	{
-		new CoreBasicDataCreator().createEssentialData(Collections.EMPTY_MAP, null);
-		importCsv("/test/impex/test_feature-compatibility.impex", "utf-8");
-		LOG.info("Finsihed data setup");
-	}
-
-	@Test
-	public void testVendorCompatibleCodeProducts()
-	{
-		final List<ProductModel> vendorCompatibleProducts = productsFeaturesDao.findAccessoriesByVendorCompatibility("Apple",
-				"accessoryclassification", "vendorcompatibility", "Accessory");
-		Assert.assertEquals(1, vendorCompatibleProducts.size());
-	}
+    @Test
+    public void testVendorCompatibleCodeProducts() {
+        final List<ProductModel> vendorCompatibleProducts = productsFeaturesDao.findAccessoriesByVendorCompatibility(
+                "Apple", "accessoryclassification", "vendorcompatibility", "Accessory");
+        Assert.assertEquals(1, vendorCompatibleProducts.size());
+    }
 }

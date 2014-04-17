@@ -6,11 +6,9 @@ import de.hybris.platform.servicelayer.exceptions.UnknownIdentifierException;
 
 import com.epam.cme.facades.user.data.CmeRegisterData;
 
+public interface BlockableCustomerFacade extends CustomerFacade {
 
-public interface BlockableCustomerFacade extends CustomerFacade
-{
-
-	void register(CmeRegisterData cmeRegisterData) throws DuplicateUidException, UnknownIdentifierException,
-			IllegalArgumentException;
+    void register(CmeRegisterData cmeRegisterData) throws DuplicateUidException, UnknownIdentifierException,
+            IllegalArgumentException;
 
 }

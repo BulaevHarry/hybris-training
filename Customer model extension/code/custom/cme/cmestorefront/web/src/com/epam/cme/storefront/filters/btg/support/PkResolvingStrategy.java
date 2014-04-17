@@ -15,17 +15,16 @@ package com.epam.cme.storefront.filters.btg.support;
 
 import javax.servlet.http.HttpServletRequest;
 
-
 /**
  * Strategy for retrieving a pk from the request
  */
-public interface PkResolvingStrategy
-{
-	/**
-	 * Retrieve a primary key as {@link String}
-	 *
-	 * @param request the request
-	 * @return the primary key or null, if no key can be retrieved
-	 */
-	String resolvePrimaryKey(HttpServletRequest request);
+public interface PkResolvingStrategy {
+    /**
+     * Retrieve a primary key as {@link String}
+     * 
+     * @param request
+     *            the request
+     * @return the primary key or null, if no key can be retrieved
+     */
+    String resolvePrimaryKey(HttpServletRequest request);
 }

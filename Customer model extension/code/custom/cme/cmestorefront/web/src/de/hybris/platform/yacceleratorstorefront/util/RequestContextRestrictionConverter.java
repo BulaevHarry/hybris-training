@@ -23,39 +23,34 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.core.convert.converter.Converter;
 
-
 /**
  */
-public class RequestContextRestrictionConverter implements Converter<RequestContextData, RestrictionData>
-{
-	private static final Logger LOG = Logger.getLogger(RequestContextRestrictionConverter.class);//NOPMD
+public class RequestContextRestrictionConverter implements Converter<RequestContextData, RestrictionData> {
+    private static final Logger LOG = Logger.getLogger(RequestContextRestrictionConverter.class);// NOPMD
 
-	private CMSDataFactory cmsDataFactory;
+    private CMSDataFactory cmsDataFactory;
 
-	@Override
-	public RestrictionData convert(final RequestContextData source)
-	{
-		// Basic conversion
-		final RestrictionData restrictionData = createRestrictionData(source.getCategory(), source.getProduct());
+    @Override
+    public RestrictionData convert(final RequestContextData source) {
+        // Basic conversion
+        final RestrictionData restrictionData = createRestrictionData(source.getCategory(), source.getProduct());
 
-		// Here you can add any custom data that you have added to the RequestContextData into the RestrictionData
+        // Here you can add any custom data that you have added to the RequestContextData into the
+        // RestrictionData
 
-		return restrictionData;
-	}
+        return restrictionData;
+    }
 
-	protected RestrictionData createRestrictionData(final CategoryModel category, final ProductModel product)
-	{
-		return getCmsDataFactory().createRestrictionData(category, product);
-	}
+    protected RestrictionData createRestrictionData(final CategoryModel category, final ProductModel product) {
+        return getCmsDataFactory().createRestrictionData(category, product);
+    }
 
-	private CMSDataFactory getCmsDataFactory()
-	{
-		return cmsDataFactory;
-	}
+    private CMSDataFactory getCmsDataFactory() {
+        return cmsDataFactory;
+    }
 
-	@Required
-	public void setCmsDataFactory(final CMSDataFactory cmsDataFactory)
-	{
-		this.cmsDataFactory = cmsDataFactory;
-	}
+    @Required
+    public void setCmsDataFactory(final CMSDataFactory cmsDataFactory) {
+        this.cmsDataFactory = cmsDataFactory;
+    }
 }

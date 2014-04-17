@@ -35,85 +35,77 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.epam.cme.storefront.controllers.ControllerConstants;
 
-
 /**
  * CheckoutController
  */
 @Controller
 @RequestMapping(value = "/checkout")
-public class CheckoutController extends AbstractCheckoutController
-{
-	protected static final Logger LOG = Logger.getLogger(CheckoutController.class);
-	/**
-	 * We use this suffix pattern because of an issue with Spring 3.1 where a Uri value is incorrectly extracted if it
-	 * contains on or more '.' characters. Please see https://jira.springsource.org/browse/SPR-6164 for a discussion on
-	 * the issue and future resolution.
-	 */
-	private static final String ORDER_CODE_PATH_VARIABLE_PATTERN = "{orderCode:.*}";
+public class CheckoutController extends AbstractCheckoutController {
+    protected static final Logger LOG = Logger.getLogger(CheckoutController.class);
+    /**
+     * We use this suffix pattern because of an issue with Spring 3.1 where a Uri value is
+     * incorrectly extracted if it contains on or more '.' characters. Please see
+     * https://jira.springsource.org/browse/SPR-6164 for a discussion on the issue and future
+     * resolution.
+     */
+    private static final String ORDER_CODE_PATH_VARIABLE_PATTERN = "{orderCode:.*}";
 
-	private static final String CHECKOUT_ORDER_CONFIRMATION_CMS_PAGE_LABEL = "orderConfirmation";
+    private static final String CHECKOUT_ORDER_CONFIRMATION_CMS_PAGE_LABEL = "orderConfirmation";
 
-	@Resource(name = "productFacade")
-	private ProductFacade productFacade;
+    @Resource(name = "productFacade")
+    private ProductFacade productFacade;
 
-	@Resource(name = "orderFacade")
-	private OrderFacade orderFacade;
+    @Resource(name = "orderFacade")
+    private OrderFacade orderFacade;
 
+    @RequestMapping(method = RequestMethod.GET)
+    public String checkout() {
+        if (hasItemsInCart()) {
+            return getCheckoutRedirectUrl();
+        }
+        LOG.info("Missing or empty cart");
 
-	@RequestMapping(method = RequestMethod.GET)
-	public String checkout()
-	{
-		if (hasItemsInCart())
-		{
-			return getCheckoutRedirectUrl();
-		}
-		LOG.info("Missing or empty cart");
+        // No session cart or empty session cart. Bounce back to the cart page.
+        return REDIRECT_PREFIX + "/cart";
+    }
 
-		// No session cart or empty session cart. Bounce back to the cart page.
-		return REDIRECT_PREFIX + "/cart";
-	}
+    @RequestMapping(value = "/orderConfirmation/" + ORDER_CODE_PATH_VARIABLE_PATTERN, method = RequestMethod.GET)
+    public String orderConfirmation(@PathVariable("orderCode") final String orderCode, final Model model)
+            throws CMSItemNotFoundException {
+        final OrderData orderDetails = orderFacade.getOrderDetailsForCode(orderCode);
 
-	@RequestMapping(value = "/orderConfirmation/" + ORDER_CODE_PATH_VARIABLE_PATTERN, method = RequestMethod.GET)
-	public String orderConfirmation(@PathVariable("orderCode") final String orderCode, final Model model)
-			throws CMSItemNotFoundException
-	{
-		final OrderData orderDetails = orderFacade.getOrderDetailsForCode(orderCode);
+        if (orderDetails.getEntries() != null && !orderDetails.getEntries().isEmpty()) {
+            for (final OrderEntryData entry : orderDetails.getEntries()) {
+                final String productCode = entry.getProduct().getCode();
+                final ProductData product = productFacade.getProductForCodeAndOptions(productCode,
+                        Arrays.asList(ProductOption.BASIC, ProductOption.PRICE, ProductOption.CATEGORIES));
+                entry.setProduct(product);
+            }
+        }
 
-		if (orderDetails.getEntries() != null && !orderDetails.getEntries().isEmpty())
-		{
-			for (final OrderEntryData entry : orderDetails.getEntries())
-			{
-				final String productCode = entry.getProduct().getCode();
-				final ProductData product = productFacade.getProductForCodeAndOptions(productCode,
-						Arrays.asList(ProductOption.BASIC, ProductOption.PRICE, ProductOption.CATEGORIES));
-				entry.setProduct(product);
-			}
-		}
+        model.addAttribute("orderCode", orderCode);
+        model.addAttribute("orderData", orderDetails);
+        model.addAttribute("allItems", orderDetails.getEntries());
+        model.addAttribute("deliveryAddress", orderDetails.getDeliveryAddress());
+        model.addAttribute("deliveryMode", orderDetails.getDeliveryMode());
+        model.addAttribute("paymentInfo", orderDetails.getPaymentInfo());
+        model.addAttribute("email", getBlockableCustomerFacade().getCurrentCustomer().getUid());
+        model.addAttribute("pageType", PageType.OrderConfirmation);
 
-		model.addAttribute("orderCode", orderCode);
-		model.addAttribute("orderData", orderDetails);
-		model.addAttribute("allItems", orderDetails.getEntries());
-		model.addAttribute("deliveryAddress", orderDetails.getDeliveryAddress());
-		model.addAttribute("deliveryMode", orderDetails.getDeliveryMode());
-		model.addAttribute("paymentInfo", orderDetails.getPaymentInfo());
-		model.addAttribute("email", getBlockableCustomerFacade().getCurrentCustomer().getUid());
-		model.addAttribute("pageType", PageType.OrderConfirmation);
+        final AbstractPageModel cmsPage = getContentPageForLabelOrId(CHECKOUT_ORDER_CONFIRMATION_CMS_PAGE_LABEL);
+        storeCmsPageInModel(model, cmsPage);
+        setUpMetaDataForContentPage(model, getContentPageForLabelOrId(CHECKOUT_ORDER_CONFIRMATION_CMS_PAGE_LABEL));
+        model.addAttribute("metaRobots", "no-index,no-follow");
+        return ControllerConstants.Views.Pages.Checkout.CheckoutConfirmationPage;
+    }
 
-		final AbstractPageModel cmsPage = getContentPageForLabelOrId(CHECKOUT_ORDER_CONFIRMATION_CMS_PAGE_LABEL);
-		storeCmsPageInModel(model, cmsPage);
-		setUpMetaDataForContentPage(model, getContentPageForLabelOrId(CHECKOUT_ORDER_CONFIRMATION_CMS_PAGE_LABEL));
-		model.addAttribute("metaRobots", "no-index,no-follow");
-		return ControllerConstants.Views.Pages.Checkout.CheckoutConfirmationPage;
-	}
-
-	/**
-	 * Method used to determine the checkout redirect URL that will handle the checkout process.
-	 * 
-	 * @return A <code>String</code> object of the URL to redirect to.
-	 */
-	protected String getCheckoutRedirectUrl()
-	{
-		// Default to the multi-step checkout
-		return REDIRECT_PREFIX + "/checkout/multi";
-	}
+    /**
+     * Method used to determine the checkout redirect URL that will handle the checkout process.
+     * 
+     * @return A <code>String</code> object of the URL to redirect to.
+     */
+    protected String getCheckoutRedirectUrl() {
+        // Default to the multi-step checkout
+        return REDIRECT_PREFIX + "/checkout/multi";
+    }
 }

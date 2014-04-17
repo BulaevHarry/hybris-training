@@ -24,29 +24,26 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-
 /**
  * The unit test for SwitchingViewResolver.
  */
 @UnitTest
-public class UiExperienceViewResolverTest
-{
-	/**
-	 * Tests the UiExperienceViewResolver's getViewName method.
-	 *
-	 * @throws Exception
-	 */
-	@Test
-	public void testGetViewName() throws Exception
-	{
-		final UiExperienceViewResolver viewResolver = new UiExperienceViewResolver();
+public class UiExperienceViewResolverTest {
+    /**
+     * Tests the UiExperienceViewResolver's getViewName method.
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void testGetViewName() throws Exception {
+        final UiExperienceViewResolver viewResolver = new UiExperienceViewResolver();
 
-		final Map<UiExperienceLevel, String> deviceViewPrefix = new HashMap<UiExperienceLevel, String>();
-		deviceViewPrefix.put(UiExperienceLevel.DESKTOP, "desktop/");
-		deviceViewPrefix.put(UiExperienceLevel.MOBILE, "mobile/");
-		viewResolver.setUiExperienceViewPrefix(deviceViewPrefix);
+        final Map<UiExperienceLevel, String> deviceViewPrefix = new HashMap<UiExperienceLevel, String>();
+        deviceViewPrefix.put(UiExperienceLevel.DESKTOP, "desktop/");
+        deviceViewPrefix.put(UiExperienceLevel.MOBILE, "mobile/");
+        viewResolver.setUiExperienceViewPrefix(deviceViewPrefix);
 
-		assertEquals("desktop/pages", viewResolver.getViewName(UiExperienceLevel.DESKTOP, "pages"));
-		assertEquals("mobile/pages", viewResolver.getViewName(UiExperienceLevel.MOBILE, "pages"));
-	}
+        assertEquals("desktop/pages", viewResolver.getViewName(UiExperienceLevel.DESKTOP, "pages"));
+        assertEquals("mobile/pages", viewResolver.getViewName(UiExperienceLevel.MOBILE, "pages"));
+    }
 }

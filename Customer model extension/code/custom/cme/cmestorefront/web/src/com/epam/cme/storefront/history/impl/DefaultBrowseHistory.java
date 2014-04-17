@@ -26,129 +26,105 @@ import org.springframework.beans.factory.annotation.Required;
 
 /**
  */
-public class DefaultBrowseHistory implements BrowseHistory
-{
-	private static final String SESSION_USER_BROWSE_HISTORY_KEY = "sessionUserBrowseHistory";
+public class DefaultBrowseHistory implements BrowseHistory {
+    private static final String SESSION_USER_BROWSE_HISTORY_KEY = "sessionUserBrowseHistory";
 
-	private SessionService sessionService;
-	private CMSSiteService cmsSiteService;
-	private int capacity = 10;
+    private SessionService sessionService;
+    private CMSSiteService cmsSiteService;
+    private int capacity = 10;
 
+    protected SessionService getSessionService() {
+        return sessionService;
+    }
 
-	protected SessionService getSessionService()
-	{
-		return sessionService;
-	}
+    @Required
+    public void setSessionService(final SessionService sessionService) {
+        this.sessionService = sessionService;
+    }
 
-	@Required
-	public void setSessionService(final SessionService sessionService)
-	{
-		this.sessionService = sessionService;
-	}
+    protected CMSSiteService getCmsSiteService() {
+        return cmsSiteService;
+    }
 
-	protected CMSSiteService getCmsSiteService()
-	{
-		return cmsSiteService;
-	}
+    @Required
+    public void setCmsSiteService(final CMSSiteService cmsSiteService) {
+        this.cmsSiteService = cmsSiteService;
+    }
 
-	@Required
-	public void setCmsSiteService(final CMSSiteService cmsSiteService)
-	{
-		this.cmsSiteService = cmsSiteService;
-	}
+    protected int getCapacity() {
+        return capacity;
+    }
 
-	protected int getCapacity()
-	{
-		return capacity;
-	}
+    @Required
+    public void setCapacity(final int capacity) {
+        this.capacity = capacity;
+    }
 
-	@Required
-	public void setCapacity(final int capacity)
-	{
-		this.capacity = capacity;
-	}
+    @Override
+    public void addBrowseHistoryEntry(final BrowseHistoryEntry browseHistoryEntry) {
+        // Get the actual history entry list stored in the session
+        final Deque<BrowseHistoryEntry> browseHistoryEntries = getBrowseHistoryEntries();
 
+        if (browseHistoryEntries != null) {
+            // Lock on the entries to ensure that we modify it atomically
+            synchronized (browseHistoryEntries) {
+                // Add the entry
+                browseHistoryEntries.addFirst(browseHistoryEntry);
 
-	@Override
-	public void addBrowseHistoryEntry(final BrowseHistoryEntry browseHistoryEntry)
-	{
-		// Get the actual history entry list stored in the session
-		final Deque<BrowseHistoryEntry> browseHistoryEntries = getBrowseHistoryEntries();
+                // Remove any entries that are over capacity
+                while (browseHistoryEntries.size() > getCapacity()) {
+                    browseHistoryEntries.removeLast();
+                }
+            }
+        }
+    }
 
-		if (browseHistoryEntries != null)
-		{
-			// Lock on the entries to ensure that we modify it atomically
-			synchronized (browseHistoryEntries)
-			{
-				// Add the entry
-				browseHistoryEntries.addFirst(browseHistoryEntry);
+    protected Deque<BrowseHistoryEntry> getBrowseHistoryEntries() {
+        final CMSSiteModel currentSite = getCmsSiteService().getCurrentSite();
 
-				// Remove any entries that are over capacity
-				while (browseHistoryEntries.size() > getCapacity())
-				{
-					browseHistoryEntries.removeLast();
-				}
-			}
-		}
-	}
+        if (currentSite != null) {
+            final String sessionKey = SESSION_USER_BROWSE_HISTORY_KEY + "-" + currentSite.getUid();
 
-	protected Deque<BrowseHistoryEntry> getBrowseHistoryEntries()
-	{
-		final CMSSiteModel currentSite = getCmsSiteService().getCurrentSite();
+            // Get the queue of BrowseHistoryEntries from the session
+            // We need to use the InstanceWrapper to protect the collection from the session service
+            // which will wrap it in a java.util.Collections$UnmodifiableRandomAccessList
+            return getSessionService().getOrLoadAttribute(sessionKey,
+                    new SessionService.SessionAttributeLoader<InstanceWrapper<Deque<BrowseHistoryEntry>>>() {
+                        @Override
+                        public InstanceWrapper<Deque<BrowseHistoryEntry>> load() {
+                            return new InstanceWrapper<Deque<BrowseHistoryEntry>>(new LinkedList<BrowseHistoryEntry>());
+                        }
+                    }).get();
+        }
+        return null;
+    }
 
-		if (currentSite != null)
-		{
-			final String sessionKey = SESSION_USER_BROWSE_HISTORY_KEY + "-" + currentSite.getUid();
+    @Override
+    public BrowseHistoryEntry findEntryMatchUrlEndsWith(final String match) {
+        final Deque<BrowseHistoryEntry> browseHistoryEntries = getBrowseHistoryEntries();
 
-			// Get the queue of BrowseHistoryEntries from the session
-			// We need to use the InstanceWrapper to protect the collection from the session service
-			// which will wrap it in a java.util.Collections$UnmodifiableRandomAccessList
-			return getSessionService().getOrLoadAttribute(sessionKey, new SessionService.SessionAttributeLoader<InstanceWrapper<Deque<BrowseHistoryEntry>>>()
-			{
-				@Override
-				public InstanceWrapper<Deque<BrowseHistoryEntry>> load()
-				{
-					return new InstanceWrapper<Deque<BrowseHistoryEntry>>(new LinkedList<BrowseHistoryEntry>());
-				}
-			}).get();
-		}
-		return null;
-	}
+        if (browseHistoryEntries != null) {
+            // Lock on the entries to ensure that we don't modify it while iterating
+            synchronized (browseHistoryEntries) {
+                for (final BrowseHistoryEntry entry : browseHistoryEntries) {
+                    if (entry.getUrl().endsWith("/" + match)) {
+                        return entry;
+                    }
+                }
+            }
+        }
+        return null;
+    }
 
-	@Override
-	public BrowseHistoryEntry findEntryMatchUrlEndsWith(final String match)
-	{
-		final Deque<BrowseHistoryEntry> browseHistoryEntries = getBrowseHistoryEntries();
+    public static class InstanceWrapper<T> {
+        private final T instance;
 
-		if (browseHistoryEntries != null)
-		{
-			// Lock on the entries to ensure that we don't modify it while iterating
-			synchronized (browseHistoryEntries)
-			{
-				for (final BrowseHistoryEntry entry : browseHistoryEntries)
-				{
-					if (entry.getUrl().endsWith("/" + match))
-					{
-						return entry;
-					}
-				}
-			}
-		}
-		return null;
-	}
+        public InstanceWrapper(final T instance) {
+            this.instance = instance;
+        }
 
-	public static class InstanceWrapper<T>
-	{
-		private final T instance;
-
-		public InstanceWrapper(final T instance)
-		{
-			this.instance = instance;
-		}
-
-		public T get()
-		{
-			return instance;
-		}
-	}
+        public T get() {
+            return instance;
+        }
+    }
 }

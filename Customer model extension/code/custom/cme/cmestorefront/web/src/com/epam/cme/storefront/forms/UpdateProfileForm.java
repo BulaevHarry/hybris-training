@@ -18,78 +18,66 @@ import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.NotBlank;
 
-
 /**
  * Form object for updating profile.
  */
-public class UpdateProfileForm
-{
+public class UpdateProfileForm {
 
-	private String titleCode;
-	private String firstName;
-	private String lastName;
+    private String titleCode;
+    private String firstName;
+    private String lastName;
 
+    /**
+     * @return the titleCode
+     */
+    @NotNull(message = "{profile.title.invalid}")
+    @Size(min = 1, max = 255, message = "{profile.title.invalid}")
+    public String getTitleCode() {
+        return titleCode;
+    }
 
-	/**
-	 * @return the titleCode
-	 */
-	@NotNull(message = "{profile.title.invalid}")
-	@Size(min = 1, max = 255, message = "{profile.title.invalid}")
-	public String getTitleCode()
-	{
-		return titleCode;
-	}
+    /**
+     * @param titleCode
+     *            the titleCode to set
+     */
+    public void setTitleCode(final String titleCode) {
+        this.titleCode = titleCode;
+    }
 
-	/**
-	 * @param titleCode
-	 *           the titleCode to set
-	 */
-	public void setTitleCode(final String titleCode)
-	{
-		this.titleCode = titleCode;
-	}
+    /**
+     * @return the firstName
+     */
+    @NotNull(message = "{profile.firstName.invalid}")
+    @Size(min = 1, max = 255, message = "{profile.firstName.invalid}")
+    @NotBlank(message = "{profile.firstName.invalid}")
+    public String getFirstName() {
+        return firstName;
+    }
 
-	/**
-	 * @return the firstName
-	 */
-	@NotNull(message = "{profile.firstName.invalid}")
-	@Size(min = 1, max = 255, message = "{profile.firstName.invalid}")
-	@NotBlank(message = "{profile.firstName.invalid}")
-	public String getFirstName()
-	{
-		return firstName;
-	}
+    /**
+     * @param firstName
+     *            the firstName to set
+     */
+    public void setFirstName(final String firstName) {
+        this.firstName = firstName;
+    }
 
-	/**
-	 * @param firstName
-	 *           the firstName to set
-	 */
-	public void setFirstName(final String firstName)
-	{
-		this.firstName = firstName;
-	}
+    /**
+     * @return the lastName
+     */
+    @NotNull(message = "{profile.lastName.invalid}")
+    @Size(min = 1, max = 255, message = "{profile.lastName.invalid}")
+    @NotBlank(message = "{profile.lastName.invalid}")
+    public String getLastName() {
+        return lastName;
+    }
 
-	/**
-	 * @return the lastName
-	 */
-	@NotNull(message = "{profile.lastName.invalid}")
-	@Size(min = 1, max = 255, message = "{profile.lastName.invalid}")
-	@NotBlank(message = "{profile.lastName.invalid}")
-	public String getLastName()
-	{
-		return lastName;
-	}
-
-
-	/**
-	 * @param lastName
-	 *           the lastName to set
-	 */
-	public void setLastName(final String lastName)
-	{
-		this.lastName = lastName;
-	}
-
-
+    /**
+     * @param lastName
+     *            the lastName to set
+     */
+    public void setLastName(final String lastName) {
+        this.lastName = lastName;
+    }
 
 }

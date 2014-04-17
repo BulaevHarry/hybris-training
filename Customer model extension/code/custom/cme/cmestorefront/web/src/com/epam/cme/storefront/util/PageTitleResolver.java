@@ -31,217 +31,185 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Required;
 
-
 /**
  * Resolves page title according to page, search text, current category or product
  */
 @Deprecated
-class PageTitleResolver
-{
-	protected final String SEPARATOR = " | ";
+class PageTitleResolver {
+    protected final String SEPARATOR = " | ";
 
-	private ProductService productService;
-	private CommerceCategoryService commerceCategoryService;
-	private CMSSiteService cmsSiteService;
+    private ProductService productService;
+    private CommerceCategoryService commerceCategoryService;
+    private CMSSiteService cmsSiteService;
 
-	protected CommerceCategoryService getCommerceCategoryService()
-	{
-		return commerceCategoryService;
-	}
+    protected CommerceCategoryService getCommerceCategoryService() {
+        return commerceCategoryService;
+    }
 
-	@Required
-	public void setCommerceCategoryService(final CommerceCategoryService commerceCategoryService)
-	{
-		this.commerceCategoryService = commerceCategoryService;
-	}
+    @Required
+    public void setCommerceCategoryService(final CommerceCategoryService commerceCategoryService) {
+        this.commerceCategoryService = commerceCategoryService;
+    }
 
-	protected ProductService getProductService()
-	{
-		return productService;
-	}
+    protected ProductService getProductService() {
+        return productService;
+    }
 
-	@Required
-	public void setProductService(final ProductService productService)
-	{
-		this.productService = productService;
-	}
+    @Required
+    public void setProductService(final ProductService productService) {
+        this.productService = productService;
+    }
 
-	protected CMSSiteService getCmsSiteService()
-	{
-		return cmsSiteService;
-	}
+    protected CMSSiteService getCmsSiteService() {
+        return cmsSiteService;
+    }
 
-	@Required
-	public void setCmsSiteService(final CMSSiteService cmsSiteService)
-	{
-		this.cmsSiteService = cmsSiteService;
-	}
+    @Required
+    public void setCmsSiteService(final CMSSiteService cmsSiteService) {
+        this.cmsSiteService = cmsSiteService;
+    }
 
-	public String resolveContentPageTitle(final String title)
-	{
-		final CMSSiteModel currentSite = getCmsSiteService().getCurrentSite();
+    public String resolveContentPageTitle(final String title) {
+        final CMSSiteModel currentSite = getCmsSiteService().getCurrentSite();
 
-		final StringBuilder builder = new StringBuilder();
-		if (!StringUtils.isEmpty(title))
-		{
-			builder.append(title).append(SEPARATOR);
-		}
-		builder.append(currentSite.getName());
-		return StringEscapeUtils.escapeHtml(builder.toString());
-	}
+        final StringBuilder builder = new StringBuilder();
+        if (!StringUtils.isEmpty(title)) {
+            builder.append(title).append(SEPARATOR);
+        }
+        builder.append(currentSite.getName());
+        return StringEscapeUtils.escapeHtml(builder.toString());
+    }
 
-	public String resolveHomePageTitle(final String title)
-	{
-		final CMSSiteModel currentSite = getCmsSiteService().getCurrentSite();
-		final StringBuilder builder = new StringBuilder();
-		builder.append(currentSite.getName());
+    public String resolveHomePageTitle(final String title) {
+        final CMSSiteModel currentSite = getCmsSiteService().getCurrentSite();
+        final StringBuilder builder = new StringBuilder();
+        builder.append(currentSite.getName());
 
-		if (!StringUtils.isEmpty(title))
-		{
-			builder.append(SEPARATOR).append(title);
-		}
+        if (!StringUtils.isEmpty(title)) {
+            builder.append(SEPARATOR).append(title);
+        }
 
-		return StringEscapeUtils.escapeHtml(builder.toString());
-	}
+        return StringEscapeUtils.escapeHtml(builder.toString());
+    }
 
-	public <STATE> String resolveSearchPageTitle(final String searchText, final List<BreadcrumbData<STATE>> appliedFacets)
-	{
-		final CMSSiteModel currentSite = getCmsSiteService().getCurrentSite();
+    public <STATE> String resolveSearchPageTitle(final String searchText,
+            final List<BreadcrumbData<STATE>> appliedFacets) {
+        final CMSSiteModel currentSite = getCmsSiteService().getCurrentSite();
 
-		final StringBuilder builder = new StringBuilder();
-		if (!StringUtils.isEmpty(searchText))
-		{
-			builder.append(searchText).append(SEPARATOR);
-		}
-		for (final BreadcrumbData pathElement : appliedFacets)
-		{
-			builder.append(pathElement.getFacetValueName()).append(SEPARATOR);
-		}
-		builder.append(currentSite.getName());
-		return StringEscapeUtils.escapeHtml(builder.toString());
-	}
+        final StringBuilder builder = new StringBuilder();
+        if (!StringUtils.isEmpty(searchText)) {
+            builder.append(searchText).append(SEPARATOR);
+        }
+        for (final BreadcrumbData pathElement : appliedFacets) {
+            builder.append(pathElement.getFacetValueName()).append(SEPARATOR);
+        }
+        builder.append(currentSite.getName());
+        return StringEscapeUtils.escapeHtml(builder.toString());
+    }
 
-	public String resolveCategoryPageTitle(final CategoryModel category)
-	{
-		final StringBuilder sb = new StringBuilder();
-		final List<CategoryModel> categories = this.getCategoryPath(category);
-		for (final CategoryModel c : categories)
-		{
-			sb.append(c.getName()).append(SEPARATOR);
-		}
+    public String resolveCategoryPageTitle(final CategoryModel category) {
+        final StringBuilder sb = new StringBuilder();
+        final List<CategoryModel> categories = this.getCategoryPath(category);
+        for (final CategoryModel c : categories) {
+            sb.append(c.getName()).append(SEPARATOR);
+        }
 
-		final CMSSiteModel currentSite = getCmsSiteService().getCurrentSite();
-		if (currentSite != null)
-		{
-			sb.append(currentSite.getName());
-		}
+        final CMSSiteModel currentSite = getCmsSiteService().getCurrentSite();
+        if (currentSite != null) {
+            sb.append(currentSite.getName());
+        }
 
-		return StringEscapeUtils.escapeHtml(sb.toString());
-	}
+        return StringEscapeUtils.escapeHtml(sb.toString());
+    }
 
-	/**
-	 * creates page title for given code and facets
-	 */
-	public <STATE> String resolveCategoryPageTitle(final CategoryModel category, final List<BreadcrumbData<STATE>> appliedFacets)
-	{
-		final CMSSiteModel currentSite = getCmsSiteService().getCurrentSite();
+    /**
+     * creates page title for given code and facets
+     */
+    public <STATE> String resolveCategoryPageTitle(final CategoryModel category,
+            final List<BreadcrumbData<STATE>> appliedFacets) {
+        final CMSSiteModel currentSite = getCmsSiteService().getCurrentSite();
 
-		final String name = category.getName();
-		final StringBuilder builder = new StringBuilder();
-		if (CollectionUtils.isEmpty(appliedFacets))
-		{
-			if (!StringUtils.isEmpty(name))
-			{
-				builder.append(name).append(SEPARATOR);
-			}
-			builder.append(currentSite.getName());
-		}
-		else
-		{
-			for (final BreadcrumbData pathElement : appliedFacets)
-			{
-				builder.append(pathElement.getFacetValueName()).append(SEPARATOR);
-			}
-			builder.append(currentSite.getName());
-		}
+        final String name = category.getName();
+        final StringBuilder builder = new StringBuilder();
+        if (CollectionUtils.isEmpty(appliedFacets)) {
+            if (!StringUtils.isEmpty(name)) {
+                builder.append(name).append(SEPARATOR);
+            }
+            builder.append(currentSite.getName());
+        } else {
+            for (final BreadcrumbData pathElement : appliedFacets) {
+                builder.append(pathElement.getFacetValueName()).append(SEPARATOR);
+            }
+            builder.append(currentSite.getName());
+        }
 
-		return StringEscapeUtils.escapeHtml(builder.toString());
-	}
+        return StringEscapeUtils.escapeHtml(builder.toString());
+    }
 
-	/**
-	 * creates page title for given code and facets
-	 */
-	public <STATE> String resolveCategoryPageTitle(final String categoryCode, final List<BreadcrumbData<STATE>> appliedFacets)
-	{
-		final CategoryModel category = getCommerceCategoryService().getCategoryForCode(categoryCode);
-		return resolveCategoryPageTitle(category, appliedFacets);
-	}
+    /**
+     * creates page title for given code and facets
+     */
+    public <STATE> String resolveCategoryPageTitle(final String categoryCode,
+            final List<BreadcrumbData<STATE>> appliedFacets) {
+        final CategoryModel category = getCommerceCategoryService().getCategoryForCode(categoryCode);
+        return resolveCategoryPageTitle(category, appliedFacets);
+    }
 
-	/**
-	 * creates page title for given code
-	 */
-	public String resolveProductPageTitle(final ProductModel product)
-	{
-		// Lookup categories
-		final List<CategoryModel> path = getCategoryPath(product);
-		// Lookup site (or store)
-		final CMSSiteModel currentSite = getCmsSiteService().getCurrentSite();
+    /**
+     * creates page title for given code
+     */
+    public String resolveProductPageTitle(final ProductModel product) {
+        // Lookup categories
+        final List<CategoryModel> path = getCategoryPath(product);
+        // Lookup site (or store)
+        final CMSSiteModel currentSite = getCmsSiteService().getCurrentSite();
 
-		// Construct page title
-		final String identifier = product.getName();
-		final String articleNumber = product.getCode();
-		final String productName = StringUtils.isEmpty(identifier) ? articleNumber : identifier;
-		final StringBuilder builder = new StringBuilder(productName);
+        // Construct page title
+        final String identifier = product.getName();
+        final String articleNumber = product.getCode();
+        final String productName = StringUtils.isEmpty(identifier) ? articleNumber : identifier;
+        final StringBuilder builder = new StringBuilder(productName);
 
-		for (final CategoryModel pathElement : path)
-		{
-			builder.append(SEPARATOR).append(pathElement.getName());
-		}
+        for (final CategoryModel pathElement : path) {
+            builder.append(SEPARATOR).append(pathElement.getName());
+        }
 
-		if (currentSite != null)
-		{
-			builder.append(SEPARATOR).append(currentSite.getName());
-		}
+        if (currentSite != null) {
+            builder.append(SEPARATOR).append(currentSite.getName());
+        }
 
-		return StringEscapeUtils.escapeHtml(builder.toString());
-	}
+        return StringEscapeUtils.escapeHtml(builder.toString());
+    }
 
-	public String resolveProductPageTitle(final String productCode)
-	{
-		// Lookup the product
-		final ProductModel product = getProductService().getProductForCode(productCode);
-		return resolveProductPageTitle(product);
-	}
+    public String resolveProductPageTitle(final String productCode) {
+        // Lookup the product
+        final ProductModel product = getProductService().getProductForCode(productCode);
+        return resolveProductPageTitle(product);
+    }
 
-	protected List<CategoryModel> getCategoryPath(final ProductModel product)
-	{
-		final CategoryModel category = getPrimaryCategoryForProduct(product);
-		if (category != null)
-		{
-			return getCategoryPath(category);
-		}
-		return Collections.emptyList();
-	}
+    protected List<CategoryModel> getCategoryPath(final ProductModel product) {
+        final CategoryModel category = getPrimaryCategoryForProduct(product);
+        if (category != null) {
+            return getCategoryPath(category);
+        }
+        return Collections.emptyList();
+    }
 
-	protected List<CategoryModel> getCategoryPath(final CategoryModel category)
-	{
-		final Collection<List<CategoryModel>> paths = getCommerceCategoryService().getPathsForCategory(category);
-		// Return first - there will always be at least 1
-		final List<CategoryModel> cat2ret = paths.iterator().next();
-		Collections.reverse(cat2ret);
-		return cat2ret;
-	}
+    protected List<CategoryModel> getCategoryPath(final CategoryModel category) {
+        final Collection<List<CategoryModel>> paths = getCommerceCategoryService().getPathsForCategory(category);
+        // Return first - there will always be at least 1
+        final List<CategoryModel> cat2ret = paths.iterator().next();
+        Collections.reverse(cat2ret);
+        return cat2ret;
+    }
 
-	protected CategoryModel getPrimaryCategoryForProduct(final ProductModel product)
-	{
-		// Get the first super-category from the product that isn't a classification category
-		for (final CategoryModel category : product.getSupercategories())
-		{
-			if (!(category instanceof ClassificationClassModel))
-			{
-				return category;
-			}
-		}
-		return null;
-	}
+    protected CategoryModel getPrimaryCategoryForProduct(final ProductModel product) {
+        // Get the first super-category from the product that isn't a classification category
+        for (final CategoryModel category : product.getSupercategories()) {
+            if (!(category instanceof ClassificationClassModel)) {
+                return category;
+            }
+        }
+        return null;
+    }
 }

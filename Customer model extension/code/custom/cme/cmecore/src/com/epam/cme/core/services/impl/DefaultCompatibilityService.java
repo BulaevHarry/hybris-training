@@ -41,191 +41,168 @@ import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Required;
 
-
 /**
  * Default implementation of Compatibility Service {@link CompatibilityService}
  */
-public class DefaultCompatibilityService implements CompatibilityService
-{
-	private ClassificationService classificationService;
+public class DefaultCompatibilityService implements CompatibilityService {
+    private ClassificationService classificationService;
 
-	private ProductService productService;
+    private ProductService productService;
 
-	private GenericSearchService genericSearchService;
+    private GenericSearchService genericSearchService;
 
-	private String classificationAttributeCode;
-	private String classificationClassCode;
+    private String classificationAttributeCode;
+    private String classificationClassCode;
 
-	private ModelService modelService;
+    private ModelService modelService;
 
-	private ProductsFeaturesDao productsFeaturesDao;
+    private ProductsFeaturesDao productsFeaturesDao;
 
-	@Override
-	public List<ProductModel> getFeatureCompatibleProducts(final String code,
-			final ClassAttributeAssignmentModel classificationAttributeAssignment, final ComposedTypeModel targetItemType)
-	{
-		final ProductModel product = getProductService().getProductForCode(code);
-		final Set<ProductModel> relatedProducts = new HashSet<ProductModel>();
+    @Override
+    public List<ProductModel> getFeatureCompatibleProducts(final String code,
+            final ClassAttributeAssignmentModel classificationAttributeAssignment,
+            final ComposedTypeModel targetItemType) {
+        final ProductModel product = getProductService().getProductForCode(code);
+        final Set<ProductModel> relatedProducts = new HashSet<ProductModel>();
 
-		final Feature modelFeature = getClassificationService().getFeature(product, classificationAttributeAssignment);
+        final Feature modelFeature = getClassificationService().getFeature(product, classificationAttributeAssignment);
 
-		final List<ProductModel> selectedProducts = new ArrayList<ProductModel>();
-		if (modelFeature != null)
-		{
-			relatedProducts.addAll(getProductsWithFeature(modelFeature, targetItemType));
-		}
-		CollectionUtils.addAll(selectedProducts, relatedProducts.iterator());
-		return selectedProducts;
-	}
+        final List<ProductModel> selectedProducts = new ArrayList<ProductModel>();
+        if (modelFeature != null) {
+            relatedProducts.addAll(getProductsWithFeature(modelFeature, targetItemType));
+        }
+        CollectionUtils.addAll(selectedProducts, relatedProducts.iterator());
+        return selectedProducts;
+    }
 
-	@Override
-	public List<ProductModel> getAccessoriesForVendorCompatibility(final String code, final String productTypeCode)
-	{
-		final ProductModel product = getProductService().getProductForCode(code);
+    @Override
+    public List<ProductModel> getAccessoriesForVendorCompatibility(final String code, final String productTypeCode) {
+        final ProductModel product = getProductService().getProductForCode(code);
 
-		if (product.getManufacturerName() != null)
-		{
-			return getProductsFeaturesDao().findAccessoriesByVendorCompatibility(product.getManufacturerName(),
-					getClassificationClassCode(), getClassificationAttributeCode(), productTypeCode);
-		}
+        if (product.getManufacturerName() != null) {
+            return getProductsFeaturesDao().findAccessoriesByVendorCompatibility(product.getManufacturerName(),
+                    getClassificationClassCode(), getClassificationAttributeCode(), productTypeCode);
+        }
 
-		return Collections.emptyList();
-	}
+        return Collections.emptyList();
+    }
 
-	/**
-	 * Search list of products of a particular item and a particular classification feature value
-	 * 
-	 * @return list of matching products
-	 */
-	protected List<ProductModel> getProductsWithFeature(final Feature modelFeature, final ComposedTypeModel targetItemType)
-	{
-		final List<FeatureValue> featureValues = modelFeature.getValues();
-		final List<ProductModel> featureCompatibleProducts = new ArrayList<ProductModel>();
+    /**
+     * Search list of products of a particular item and a particular classification feature value
+     * 
+     * @return list of matching products
+     */
+    protected List<ProductModel> getProductsWithFeature(final Feature modelFeature,
+            final ComposedTypeModel targetItemType) {
+        final List<FeatureValue> featureValues = modelFeature.getValues();
+        final List<ProductModel> featureCompatibleProducts = new ArrayList<ProductModel>();
 
-		for (final FeatureValue featureValue : featureValues)
-		{
-			if (featureValue != null)
-			{
-				featureCompatibleProducts.addAll(getCompatibleProductsForFeature(featureValue, modelFeature, targetItemType));
-			}
-		}
-		return featureCompatibleProducts;
-	}
+        for (final FeatureValue featureValue : featureValues) {
+            if (featureValue != null) {
+                featureCompatibleProducts.addAll(getCompatibleProductsForFeature(featureValue, modelFeature,
+                        targetItemType));
+            }
+        }
+        return featureCompatibleProducts;
+    }
 
-	/**
-	 * Use generic search service to list of products based on feature compatibilty values
-	 * 
-	 * @param targetItemType
-	 *           device
-	 * @return collection of matching products
-	 */
-	protected Collection<ProductModel> getCompatibleProductsForFeature(final FeatureValue featureValue,
-			final Feature modelFeature, final ComposedTypeModel targetItemType)
-	{
-		ClassificationAttributeValue classAttributeValue;
-		if (featureValue.getValue() instanceof ClassificationAttributeValueModel)
-		{
-			classAttributeValue = getModelService().getSource(featureValue.getValue());
-		}
-		else
-		{
-			classAttributeValue = (ClassificationAttributeValue) featureValue.getValue();
-		}
-		final ClassAttributeAssignment classAttributeAssignment = getModelService().getSource(
-				modelFeature.getClassAttributeAssignment());
+    /**
+     * Use generic search service to list of products based on feature compatibilty values
+     * 
+     * @param targetItemType
+     *            device
+     * @return collection of matching products
+     */
+    protected Collection<ProductModel> getCompatibleProductsForFeature(final FeatureValue featureValue,
+            final Feature modelFeature, final ComposedTypeModel targetItemType) {
+        ClassificationAttributeValue classAttributeValue;
+        if (featureValue.getValue() instanceof ClassificationAttributeValueModel) {
+            classAttributeValue = getModelService().getSource(featureValue.getValue());
+        } else {
+            classAttributeValue = (ClassificationAttributeValue) featureValue.getValue();
+        }
+        final ClassAttributeAssignment classAttributeAssignment = getModelService().getSource(
+                modelFeature.getClassAttributeAssignment());
 
-		final SearchResult<ProductModel> prodsResult = getGenericSearchService().search(
-				generateQuery(classAttributeAssignment, classAttributeValue, targetItemType.getCode()));
+        final SearchResult<ProductModel> prodsResult = getGenericSearchService().search(
+                generateQuery(classAttributeAssignment, classAttributeValue, targetItemType.getCode()));
 
-		return prodsResult.getResult();
-	}
+        return prodsResult.getResult();
+    }
 
-	/**
-	 * Sample code given in hybris wiki https://wiki.hybris.com/display/release4/Classification+Feature+Value+API uses
-	 * GenericQuery and jalo classes. This should be replaced by servicelayer code as soon as wiki page us updated.
-	 */
-	protected GenericQuery generateQuery(final ClassAttributeAssignment classAttributeAssignment,
-			final ClassificationAttributeValue classAttributeValue, final String code)
-	{
-		final GenericQuery query = new GenericQuery(code, FeatureValueCondition.equals(classAttributeAssignment,
-				classAttributeValue));
-		return query;
-	}
+    /**
+     * Sample code given in hybris wiki
+     * https://wiki.hybris.com/display/release4/Classification+Feature+Value+API uses GenericQuery
+     * and jalo classes. This should be replaced by servicelayer code as soon as wiki page us
+     * updated.
+     */
+    protected GenericQuery generateQuery(final ClassAttributeAssignment classAttributeAssignment,
+            final ClassificationAttributeValue classAttributeValue, final String code) {
+        final GenericQuery query = new GenericQuery(code, FeatureValueCondition.equals(classAttributeAssignment,
+                classAttributeValue));
+        return query;
+    }
 
-	protected ProductsFeaturesDao getProductsFeaturesDao()
-	{
-		return productsFeaturesDao;
-	}
+    protected ProductsFeaturesDao getProductsFeaturesDao() {
+        return productsFeaturesDao;
+    }
 
-	@Required
-	public void setProductsFeaturesDao(final ProductsFeaturesDao productsFeaturesDao)
-	{
-		this.productsFeaturesDao = productsFeaturesDao;
-	}
+    @Required
+    public void setProductsFeaturesDao(final ProductsFeaturesDao productsFeaturesDao) {
+        this.productsFeaturesDao = productsFeaturesDao;
+    }
 
-	protected ModelService getModelService()
-	{
-		return modelService;
-	}
+    protected ModelService getModelService() {
+        return modelService;
+    }
 
-	@Required
-	public void setModelService(final ModelService modelService)
-	{
-		this.modelService = modelService;
-	}
+    @Required
+    public void setModelService(final ModelService modelService) {
+        this.modelService = modelService;
+    }
 
-	protected GenericSearchService getGenericSearchService()
-	{
-		return genericSearchService;
-	}
+    protected GenericSearchService getGenericSearchService() {
+        return genericSearchService;
+    }
 
-	@Required
-	public void setGenericSearchService(final GenericSearchService genericSearchService)
-	{
-		this.genericSearchService = genericSearchService;
-	}
+    @Required
+    public void setGenericSearchService(final GenericSearchService genericSearchService) {
+        this.genericSearchService = genericSearchService;
+    }
 
-	protected ClassificationService getClassificationService()
-	{
-		return classificationService;
-	}
+    protected ClassificationService getClassificationService() {
+        return classificationService;
+    }
 
-	@Required
-	public void setClassificationService(final ClassificationService classificationService)
-	{
-		this.classificationService = classificationService;
-	}
+    @Required
+    public void setClassificationService(final ClassificationService classificationService) {
+        this.classificationService = classificationService;
+    }
 
-	protected ProductService getProductService()
-	{
-		return productService;
-	}
+    protected ProductService getProductService() {
+        return productService;
+    }
 
-	@Required
-	public void setProductService(final ProductService productService)
-	{
-		this.productService = productService;
-	}
+    @Required
+    public void setProductService(final ProductService productService) {
+        this.productService = productService;
+    }
 
-	protected String getClassificationAttributeCode()
-	{
-		return classificationAttributeCode;
-	}
+    protected String getClassificationAttributeCode() {
+        return classificationAttributeCode;
+    }
 
-	@Required
-	public void setClassificationAttributeCode(final String classificationAttributeCode)
-	{
-		this.classificationAttributeCode = classificationAttributeCode;
-	}
+    @Required
+    public void setClassificationAttributeCode(final String classificationAttributeCode) {
+        this.classificationAttributeCode = classificationAttributeCode;
+    }
 
-	protected String getClassificationClassCode()
-	{
-		return classificationClassCode;
-	}
+    protected String getClassificationClassCode() {
+        return classificationClassCode;
+    }
 
-	@Required
-	public void setClassificationClassCode(final String classificationClassCode)
-	{
-		this.classificationClassCode = classificationClassCode;
-	}
+    @Required
+    public void setClassificationClassCode(final String classificationClassCode) {
+        this.classificationClassCode = classificationClassCode;
+    }
 }

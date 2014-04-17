@@ -19,20 +19,17 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-
 /**
  * An interceptor to set up the request the detected device information.
  */
-public class DeviceDetectionBeforeControllerHandler implements BeforeControllerHandler
-{
-	@Resource(name = "deviceDetectionFacade")
-	private DeviceDetectionFacade deviceDetectionFacade;
+public class DeviceDetectionBeforeControllerHandler implements BeforeControllerHandler {
+    @Resource(name = "deviceDetectionFacade")
+    private DeviceDetectionFacade deviceDetectionFacade;
 
-	@Override
-	public boolean beforeController(final HttpServletRequest request, final HttpServletResponse response)
-	{
-		// Detect the device information for the current request
-		deviceDetectionFacade.initializeRequest(request);
-		return true;
-	}
+    @Override
+    public boolean beforeController(final HttpServletRequest request, final HttpServletResponse response) {
+        // Detect the device information for the current request
+        deviceDetectionFacade.initializeRequest(request);
+        return true;
+    }
 }

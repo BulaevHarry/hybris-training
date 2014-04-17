@@ -27,35 +27,30 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-
 /**
- * Filter that evaluates the BTG context for the current request. This is a spring configured filter that is executed by
- * the PlatformFilterChain.
- * The segments are evaluated after the nested chain is executed.
+ * Filter that evaluates the BTG context for the current request. This is a spring configured filter
+ * that is executed by the PlatformFilterChain. The segments are evaluated after the nested chain is
+ * executed.
  */
-public class BTGSegmentFilter extends OncePerRequestFilter implements CMSFilter
-{
-	@SuppressWarnings("unused")
-	private static final Logger LOG = Logger.getLogger(BTGSegmentFilter.class);
+public class BTGSegmentFilter extends OncePerRequestFilter implements CMSFilter {
+    @SuppressWarnings("unused")
+    private static final Logger LOG = Logger.getLogger(BTGSegmentFilter.class);
 
-	private BTGSegmentStrategy btgSegmentStrategy;
+    private BTGSegmentStrategy btgSegmentStrategy;
 
-	@Override
-	protected void doFilterInternal(final HttpServletRequest httpRequest, final HttpServletResponse httpResponse,
-			final FilterChain filterChain) throws ServletException, IOException
-	{
-		filterChain.doFilter(httpRequest, httpResponse);
-		getBtgSegmentStrategy().evaluateSegment(httpRequest);
-	}
+    @Override
+    protected void doFilterInternal(final HttpServletRequest httpRequest, final HttpServletResponse httpResponse,
+            final FilterChain filterChain) throws ServletException, IOException {
+        filterChain.doFilter(httpRequest, httpResponse);
+        getBtgSegmentStrategy().evaluateSegment(httpRequest);
+    }
 
-	protected BTGSegmentStrategy getBtgSegmentStrategy()
-	{
-		return btgSegmentStrategy;
-	}
+    protected BTGSegmentStrategy getBtgSegmentStrategy() {
+        return btgSegmentStrategy;
+    }
 
-	@Required
-	public void setBtgSegmentStrategy(final BTGSegmentStrategy btgSegmentStrategy)
-	{
-		this.btgSegmentStrategy = btgSegmentStrategy;
-	}
+    @Required
+    public void setBtgSegmentStrategy(final BTGSegmentStrategy btgSegmentStrategy) {
+        this.btgSegmentStrategy = btgSegmentStrategy;
+    }
 }

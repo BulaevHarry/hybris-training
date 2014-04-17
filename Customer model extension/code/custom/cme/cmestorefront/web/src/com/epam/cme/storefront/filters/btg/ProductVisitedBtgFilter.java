@@ -16,16 +16,13 @@ package com.epam.cme.storefront.filters.btg;
 import de.hybris.platform.btg.events.AbstractBTGRuleDataEvent;
 import de.hybris.platform.btg.events.ProductVisitedBTGRuleDataEvent;
 
-
 /**
- * FilterBean to produce the BTG event {@link ProductVisitedBTGRuleDataEvent}
- * This is a spring configured filter that is executed by the PlatformFilterChain.
+ * FilterBean to produce the BTG event {@link ProductVisitedBTGRuleDataEvent} This is a spring
+ * configured filter that is executed by the PlatformFilterChain.
  */
-public class ProductVisitedBtgFilter extends AbstractPkResolvingBtgFilter
-{
-	@Override
-	protected AbstractBTGRuleDataEvent internalGetEvent(final String pk)
-	{
-		return new ProductVisitedBTGRuleDataEvent(pk);
-	}
+public class ProductVisitedBtgFilter extends AbstractPkResolvingBtgFilter {
+    @Override
+    protected AbstractBTGRuleDataEvent internalGetEvent(final String pk) {
+        return new ProductVisitedBTGRuleDataEvent(pk);
+    }
 }

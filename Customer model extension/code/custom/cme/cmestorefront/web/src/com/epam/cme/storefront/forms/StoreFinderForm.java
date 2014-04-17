@@ -13,18 +13,14 @@
  */
 package com.epam.cme.storefront.forms;
 
+public class StoreFinderForm {
+    public String q;
 
-public class StoreFinderForm
-{
-	public String q;
+    public String getQ() {
+        return q;
+    }
 
-	public String getQ()
-	{
-		return q;
-	}
-
-	public void setQ(final String q)
-	{
-		this.q = q;
-	}
+    public void setQ(final String q) {
+        this.q = q;
+    }
 }

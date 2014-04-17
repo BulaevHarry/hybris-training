@@ -334,7 +334,7 @@
   <property name="organizationService" ref="organizationService"></property>
  </bean>
  
- <alias name="defaultBlockableCustomerFacade" alias="blockableCustomerFacade" />
+ <alias name="defaultBlockableCustomerFacade" alias="customerFacade" />
  <bean id="defaultBlockableCustomerFacade" parent="defaultCustomerFacade" class="com.epam.cme.facades.blockablecustomer.impl.DefaultBlockableCustomerFacade">
   <property name="organizationService" ref="organizationService"></property>
  </bean>

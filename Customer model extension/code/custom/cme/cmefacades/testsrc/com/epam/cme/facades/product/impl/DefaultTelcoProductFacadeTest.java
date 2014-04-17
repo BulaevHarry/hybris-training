@@ -44,139 +44,130 @@ import org.mockito.MockitoAnnotations;
 
 import org.apache.log4j.Logger;
 
-
 @IntegrationTest
-public class DefaultTelcoProductFacadeTest
-{
-	private static final Logger LOG = Logger.getLogger(DefaultTelcoProductFacadeTest.class);
+public class DefaultTelcoProductFacadeTest {
+    private static final Logger LOG = Logger.getLogger(DefaultTelcoProductFacadeTest.class);
 
-	private final DefaultTelcoProductFacade telcoProductFacade = new DefaultTelcoProductFacade();
+    private final DefaultTelcoProductFacade telcoProductFacade = new DefaultTelcoProductFacade();
 
-	@Mock
-	private CompatibilityService compatibilityService;
+    @Mock
+    private CompatibilityService compatibilityService;
 
-	@Mock
-	private ProductService productService;
+    @Mock
+    private ProductService productService;
 
-	@Mock
-	private ModelService modelService;
+    @Mock
+    private ModelService modelService;
 
-	@Mock
-	private Converter<ProductModel, ProductData> productConverter;
+    @Mock
+    private Converter<ProductModel, ProductData> productConverter;
 
-	@Mock
-	private CommerceProductReferenceService commerceProductReferenceService;
+    @Mock
+    private CommerceProductReferenceService commerceProductReferenceService;
 
-	private ProductModel demoProduct;
+    private ProductModel demoProduct;
 
-	@Before
-	public void mockSetup()
-	{
-		MockitoAnnotations.initMocks(this);
-		telcoProductFacade.setCompatibilityService(compatibilityService);
-		telcoProductFacade.setProductService(productService);
-		telcoProductFacade.setModelService(modelService);
-		telcoProductFacade.setProductConverter(productConverter);
-		telcoProductFacade.setCommerceProductReferenceService(commerceProductReferenceService);
-		demoProduct = new ProductModel();
-		demoProduct.setCode("democode");
+    @Before
+    public void mockSetup() {
+        MockitoAnnotations.initMocks(this);
+        telcoProductFacade.setCompatibilityService(compatibilityService);
+        telcoProductFacade.setProductService(productService);
+        telcoProductFacade.setModelService(modelService);
+        telcoProductFacade.setProductConverter(productConverter);
+        telcoProductFacade.setCommerceProductReferenceService(commerceProductReferenceService);
+        demoProduct = new ProductModel();
+        demoProduct.setCode("democode");
 
-		demoProduct.setProductReferences(Collections.<ProductReferenceModel> emptyList());
-	}
+        demoProduct.setProductReferences(Collections.<ProductReferenceModel>emptyList());
+    }
 
-	@Test
-	public void testRefsAndFeatureCCompatibleLimitsSizeToMaxAmount()
-	{
-		final Integer limit = Integer.valueOf(5);
-		final ClassAttributeAssignmentModel classAttributeAssignmentModel = new ClassAttributeAssignmentModel();
-		final ComposedTypeModel targetItemType = new ComposedTypeModel();
-		final List<ProductModel> mockProducts = createRandomProducts(9);
-		when(productService.getProductForCode("democode")).thenReturn(demoProduct);
-		when(productConverter.convert((ProductModel) Matchers.any())).thenReturn(createProductData("democode"));
-		when(modelService.getAttributeValue(demoProduct, ProductModel.PRODUCTREFERENCES)).thenReturn(
-				Collections.<ProductReferenceModel> emptyList());
-		when(compatibilityService.getFeatureCompatibleProducts("democode", classAttributeAssignmentModel, targetItemType))
-				.thenReturn(mockProducts);
-		final List<ProductOption> options = null;
+    @Test
+    public void testRefsAndFeatureCCompatibleLimitsSizeToMaxAmount() {
+        final Integer limit = Integer.valueOf(5);
+        final ClassAttributeAssignmentModel classAttributeAssignmentModel = new ClassAttributeAssignmentModel();
+        final ComposedTypeModel targetItemType = new ComposedTypeModel();
+        final List<ProductModel> mockProducts = createRandomProducts(9);
+        when(productService.getProductForCode("democode")).thenReturn(demoProduct);
+        when(productConverter.convert((ProductModel) Matchers.any())).thenReturn(createProductData("democode"));
+        when(modelService.getAttributeValue(demoProduct, ProductModel.PRODUCTREFERENCES)).thenReturn(
+                Collections.<ProductReferenceModel>emptyList());
+        when(
+                compatibilityService.getFeatureCompatibleProducts("democode", classAttributeAssignmentModel,
+                        targetItemType)).thenReturn(mockProducts);
+        final List<ProductOption> options = null;
 
-		final List<ProductData> productData = telcoProductFacade.getProductReferencesAndFeatureCompatibleProductsForCode(
-				"democode", Collections.singletonList(ProductReferenceTypeEnum.ACCESSORIES), options, limit,
-				classAttributeAssignmentModel, targetItemType);
+        final List<ProductData> productData = telcoProductFacade
+                .getProductReferencesAndFeatureCompatibleProductsForCode("democode",
+                        Collections.singletonList(ProductReferenceTypeEnum.ACCESSORIES), options, limit,
+                        classAttributeAssignmentModel, targetItemType);
 
-		LOG.info(productData.size() + " is size of returned data");
-		Assert.assertTrue(productData.size() <= limit.intValue());
-	}
+        LOG.info(productData.size() + " is size of returned data");
+        Assert.assertTrue(productData.size() <= limit.intValue());
+    }
 
-	@Test
-	public void testRefsFeatureCompatibleandVendorCompatibleSizeToMaxAmount()
-	{
-		final Integer limit = Integer.valueOf(5);
-		final ClassAttributeAssignmentModel classAttributeAssignmentModel = new ClassAttributeAssignmentModel();
-		final ComposedTypeModel targetItemType = new ComposedTypeModel();
-		final List<ProductModel> mockProducts = createRandomAccessories(9);
-		when(productService.getProductForCode("democode")).thenReturn(demoProduct);
-		when(productConverter.convert((ProductModel) Matchers.any())).thenReturn(createProductData("docde"));
-		when(modelService.getAttributeValue(demoProduct, ProductModel.PRODUCTREFERENCES)).thenReturn(
-				Collections.<ProductReferenceModel> emptyList());
-		when(compatibilityService.getFeatureCompatibleProducts("democode", classAttributeAssignmentModel, targetItemType))
-				.thenReturn(Collections.<ProductModel> emptyList());
-		when(compatibilityService.getAccessoriesForVendorCompatibility("democode", AccessoryModel._TYPECODE)).thenReturn(
-				mockProducts);
-		final List<ProductOption> options = null;
+    @Test
+    public void testRefsFeatureCompatibleandVendorCompatibleSizeToMaxAmount() {
+        final Integer limit = Integer.valueOf(5);
+        final ClassAttributeAssignmentModel classAttributeAssignmentModel = new ClassAttributeAssignmentModel();
+        final ComposedTypeModel targetItemType = new ComposedTypeModel();
+        final List<ProductModel> mockProducts = createRandomAccessories(9);
+        when(productService.getProductForCode("democode")).thenReturn(demoProduct);
+        when(productConverter.convert((ProductModel) Matchers.any())).thenReturn(createProductData("docde"));
+        when(modelService.getAttributeValue(demoProduct, ProductModel.PRODUCTREFERENCES)).thenReturn(
+                Collections.<ProductReferenceModel>emptyList());
+        when(
+                compatibilityService.getFeatureCompatibleProducts("democode", classAttributeAssignmentModel,
+                        targetItemType)).thenReturn(Collections.<ProductModel>emptyList());
+        when(compatibilityService.getAccessoriesForVendorCompatibility("democode", AccessoryModel._TYPECODE))
+                .thenReturn(mockProducts);
+        final List<ProductOption> options = null;
 
-		final List<ProductData> productData = telcoProductFacade
-				.getProductReferencesAndFeatureCompatibleAndVendorCompatibleProductsForCode("democode",
-						Collections.singletonList(ProductReferenceTypeEnum.ACCESSORIES), options, limit, classAttributeAssignmentModel,
-						targetItemType);
+        final List<ProductData> productData = telcoProductFacade
+                .getProductReferencesAndFeatureCompatibleAndVendorCompatibleProductsForCode("democode",
+                        Collections.singletonList(ProductReferenceTypeEnum.ACCESSORIES), options, limit,
+                        classAttributeAssignmentModel, targetItemType);
 
-		LOG.info(productData.size() + " is size of returned data");
-		Assert.assertTrue(productData.size() <= limit.intValue());
-	}
+        LOG.info(productData.size() + " is size of returned data");
+        Assert.assertTrue(productData.size() <= limit.intValue());
+    }
 
+    private List<ProductModel> createRandomProducts(final int count) {
+        final List<ProductModel> products = new ArrayList<ProductModel>();
+        for (int k = 0; k < count; k++) {
+            products.add(new ProductModel());
+        }
+        return products;
+    }
 
-	private List<ProductModel> createRandomProducts(final int count)
-	{
-		final List<ProductModel> products = new ArrayList<ProductModel>();
-		for (int k = 0; k < count; k++)
-		{
-			products.add(new ProductModel());
-		}
-		return products;
-	}
+    private List<ProductModel> createRandomAccessories(final int count) {
+        final List<ProductModel> products = new ArrayList<ProductModel>();
+        for (int k = 0; k < count; k++) {
+            products.add(new ProductModel());
+        }
+        return products;
+    }
 
-	private List<ProductModel> createRandomAccessories(final int count)
-	{
-		final List<ProductModel> products = new ArrayList<ProductModel>();
-		for (int k = 0; k < count; k++)
-		{
-			products.add(new ProductModel());
-		}
-		return products;
-	}
+    private ProductData createProductData(final String code) {
+        final ProductData productData = new ProductData();
+        productData.setCode(code);
+        return productData;
+    }
 
-	private ProductData createProductData(final String code)
-	{
-		final ProductData productData = new ProductData();
-		productData.setCode(code);
-		return productData;
-	}
+    @Test
+    public void testDuplicateProductsDontGetAddedTwice() {
+        final List<ProductData> products = new ArrayList<ProductData>();
+        final ProductData product1 = new ProductData();
+        product1.setCode("jokd");
+        final ProductData product2 = new ProductData();
+        product2.setCode("kodfkk");
+        final ProductData newProduct = new ProductData();
+        newProduct.setCode("jokd");
+        final ProductData brandnewProduct = new ProductData();
+        brandnewProduct.setCode("mitthi");
+        products.add(product1);
+        products.add(product2);
+        Assert.assertTrue(telcoProductFacade.contains(products, newProduct));
 
-	@Test
-	public void testDuplicateProductsDontGetAddedTwice()
-	{
-		final List<ProductData> products = new ArrayList<ProductData>();
-		final ProductData product1 = new ProductData();
-		product1.setCode("jokd");
-		final ProductData product2 = new ProductData();
-		product2.setCode("kodfkk");
-		final ProductData newProduct = new ProductData();
-		newProduct.setCode("jokd");
-		final ProductData brandnewProduct = new ProductData();
-		brandnewProduct.setCode("mitthi");
-		products.add(product1);
-		products.add(product2);
-		Assert.assertTrue(telcoProductFacade.contains(products, newProduct));
-
-		Assert.assertFalse(telcoProductFacade.contains(products, brandnewProduct));
-	}
+        Assert.assertFalse(telcoProductFacade.contains(products, brandnewProduct));
+    }
 }

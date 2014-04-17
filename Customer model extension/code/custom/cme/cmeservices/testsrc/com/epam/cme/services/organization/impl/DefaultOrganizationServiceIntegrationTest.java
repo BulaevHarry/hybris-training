@@ -10,18 +10,15 @@ import org.junit.Test;
 
 import com.epam.cme.services.organization.OrganizationService;
 
-
 @IntegrationTest
-public class DefaultOrganizationServiceIntegrationTest extends ServicelayerTransactionalTest
-{
+public class DefaultOrganizationServiceIntegrationTest extends ServicelayerTransactionalTest {
 
-	@Resource
-	private OrganizationService organizationService;
+    @Resource
+    private OrganizationService organizationService;
 
-	@Test(expected = UnknownIdentifierException.class)
-	public void testGetOrganizationByIdNotExistingOrganization()
-	{
-		organizationService.getOrganizationById(Integer.valueOf(1));
-	}
+    @Test(expected = UnknownIdentifierException.class)
+    public void testGetOrganizationByIdNotExistingOrganization() {
+        organizationService.getOrganizationById(Integer.valueOf(1));
+    }
 
 }

@@ -32,120 +32,98 @@ import org.springframework.beans.factory.annotation.Required;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.CookieGenerator;
 
-
 /**
- * Filter that initializes the session for the cmestorefront. This is a spring configured filter that is
- * executed by the PlatformFilterChain.
+ * Filter that initializes the session for the cmestorefront. This is a spring configured filter
+ * that is executed by the PlatformFilterChain.
  */
-public class StorefrontFilter extends OncePerRequestFilter
-{
-	private StoreSessionFacade storeSessionFacade;
-	private BrowseHistory browseHistory;
-	private CookieGenerator cookieGenerator;
+public class StorefrontFilter extends OncePerRequestFilter {
+    private StoreSessionFacade storeSessionFacade;
+    private BrowseHistory browseHistory;
+    private CookieGenerator cookieGenerator;
 
-	@Override
-	public void doFilterInternal(final HttpServletRequest request, final HttpServletResponse response,
-			final FilterChain filterChain) throws IOException, ServletException
-	{
-		final HttpSession session = request.getSession();
-		final String queryString = request.getQueryString();
+    @Override
+    public void doFilterInternal(final HttpServletRequest request, final HttpServletResponse response,
+            final FilterChain filterChain) throws IOException, ServletException {
+        final HttpSession session = request.getSession();
+        final String queryString = request.getQueryString();
 
-		if (isSessionNotInitialized(session, queryString))
-		{
-			initDefaults(request);
+        if (isSessionNotInitialized(session, queryString)) {
+            initDefaults(request);
 
-			markSessionInitialized(session);
-		}
+            markSessionInitialized(session);
+        }
 
-		// For secure requests ensure that the JSESSIONID cookie is visible to insecure requests
-		if (isRequestSecure(request))
-		{
-			fixSecureHttpJSessionIdCookie(request, response);
-		}
+        // For secure requests ensure that the JSESSIONID cookie is visible to insecure requests
+        if (isRequestSecure(request)) {
+            fixSecureHttpJSessionIdCookie(request, response);
+        }
 
-		if (isGetMethod(request))
-		{
-			getBrowseHistory().addBrowseHistoryEntry(new BrowseHistoryEntry(request.getRequestURI(), null));
-		}
+        if (isGetMethod(request)) {
+            getBrowseHistory().addBrowseHistoryEntry(new BrowseHistoryEntry(request.getRequestURI(), null));
+        }
 
-		filterChain.doFilter(request, response);
-	}
+        filterChain.doFilter(request, response);
+    }
 
-	protected boolean isGetMethod(final HttpServletRequest httpRequest)
-	{
-		return "GET".equalsIgnoreCase(httpRequest.getMethod());
-	}
+    protected boolean isGetMethod(final HttpServletRequest httpRequest) {
+        return "GET".equalsIgnoreCase(httpRequest.getMethod());
+    }
 
-	protected boolean isRequestSecure(final HttpServletRequest httpRequest)
-	{
-		return httpRequest.isSecure();
-	}
+    protected boolean isRequestSecure(final HttpServletRequest httpRequest) {
+        return httpRequest.isSecure();
+    }
 
-	protected boolean isSessionNotInitialized(final HttpSession session, final String queryString)
-	{
-		return session.isNew() || StringUtils.contains(queryString, CMSFilter.CLEAR_CMSSITE_PARAM)
-				|| !isSessionInitialized(session);
-	}
+    protected boolean isSessionNotInitialized(final HttpSession session, final String queryString) {
+        return session.isNew() || StringUtils.contains(queryString, CMSFilter.CLEAR_CMSSITE_PARAM)
+                || !isSessionInitialized(session);
+    }
 
-	@Required
-	public void setStoreSessionFacade(final StoreSessionFacade storeSessionFacade)
-	{
-		this.storeSessionFacade = storeSessionFacade;
-	}
+    @Required
+    public void setStoreSessionFacade(final StoreSessionFacade storeSessionFacade) {
+        this.storeSessionFacade = storeSessionFacade;
+    }
 
-	@Required
-	public void setBrowseHistory(final BrowseHistory browseHistory)
-	{
-		this.browseHistory = browseHistory;
-	}
+    @Required
+    public void setBrowseHistory(final BrowseHistory browseHistory) {
+        this.browseHistory = browseHistory;
+    }
 
-	protected void initDefaults(final HttpServletRequest request)
-	{
-		final StoreSessionFacade storeSessionFacade = getStoreSessionFacade();
-		storeSessionFacade.initializeSession(Collections.list(request.getLocales()));
-	}
+    protected void initDefaults(final HttpServletRequest request) {
+        final StoreSessionFacade storeSessionFacade = getStoreSessionFacade();
+        storeSessionFacade.initializeSession(Collections.list(request.getLocales()));
+    }
 
-	protected StoreSessionFacade getStoreSessionFacade()
-	{
-		return storeSessionFacade;
-	}
+    protected StoreSessionFacade getStoreSessionFacade() {
+        return storeSessionFacade;
+    }
 
-	protected BrowseHistory getBrowseHistory()
-	{
-		return browseHistory;
-	}
+    protected BrowseHistory getBrowseHistory() {
+        return browseHistory;
+    }
 
+    protected boolean isSessionInitialized(final HttpSession session) {
+        return session.getAttribute(this.getClass().getName()) != null;
+    }
 
-	protected boolean isSessionInitialized(final HttpSession session)
-	{
-		return session.getAttribute(this.getClass().getName()) != null;
-	}
+    protected void markSessionInitialized(final HttpSession session) {
+        session.setAttribute(this.getClass().getName(), "initialized");
+    }
 
-	protected void markSessionInitialized(final HttpSession session)
-	{
-		session.setAttribute(this.getClass().getName(), "initialized");
-	}
+    protected void fixSecureHttpJSessionIdCookie(final HttpServletRequest httpServletRequest,
+            final HttpServletResponse httpServletResponse) {
+        final HttpSession session = httpServletRequest.getSession(false);
+        if (session != null) {
+            getCookieGenerator().addCookie(httpServletResponse, session.getId());
+        }
 
-	protected void fixSecureHttpJSessionIdCookie(final HttpServletRequest httpServletRequest,
-			final HttpServletResponse httpServletResponse)
-	{
-		final HttpSession session = httpServletRequest.getSession(false);
-		if (session != null)
-		{
-			getCookieGenerator().addCookie(httpServletResponse, session.getId());
-		}
+    }
 
-	}
+    protected CookieGenerator getCookieGenerator() {
+        return cookieGenerator;
+    }
 
-
-	protected CookieGenerator getCookieGenerator()
-	{
-		return cookieGenerator;
-	}
-
-	@Required
-	public void setCookieGenerator(final CookieGenerator cookieGenerator)
-	{
-		this.cookieGenerator = cookieGenerator;
-	}
+    @Required
+    public void setCookieGenerator(final CookieGenerator cookieGenerator) {
+        this.cookieGenerator = cookieGenerator;
+    }
 }

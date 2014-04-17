@@ -24,66 +24,58 @@ import de.hybris.platform.servicelayer.util.ServicesUtil;
 
 import org.springframework.beans.factory.annotation.Required;
 
-
 /**
  * Listener for customer registration events.
  */
-public class RegistrationEventListener extends AbstractSiteEventListener<RegisterEvent>
-{
+public class RegistrationEventListener extends AbstractSiteEventListener<RegisterEvent> {
 
-	private ModelService modelService;
-	private BusinessProcessService businessProcessService;
+    private ModelService modelService;
+    private BusinessProcessService businessProcessService;
 
-	protected BusinessProcessService getBusinessProcessService()
-	{
-		return businessProcessService;
-	}
+    protected BusinessProcessService getBusinessProcessService() {
+        return businessProcessService;
+    }
 
-	@Required
-	public void setBusinessProcessService(final BusinessProcessService businessProcessService)
-	{
-		this.businessProcessService = businessProcessService;
-	}
+    @Required
+    public void setBusinessProcessService(final BusinessProcessService businessProcessService) {
+        this.businessProcessService = businessProcessService;
+    }
 
-	/**
-	 * @return the modelService
-	 */
-	protected ModelService getModelService()
-	{
-		return modelService;
-	}
+    /**
+     * @return the modelService
+     */
+    protected ModelService getModelService() {
+        return modelService;
+    }
 
-	/**
-	 * @param modelService
-	 *           the modelService to set
-	 */
-	@Required
-	public void setModelService(final ModelService modelService)
-	{
-		this.modelService = modelService;
-	}
+    /**
+     * @param modelService
+     *            the modelService to set
+     */
+    @Required
+    public void setModelService(final ModelService modelService) {
+        this.modelService = modelService;
+    }
 
-	@Override
-	protected void onSiteEvent(final RegisterEvent registerEvent)
-	{
-		final StoreFrontCustomerProcessModel storeFrontCustomerProcessModel = (StoreFrontCustomerProcessModel) getBusinessProcessService()
-				.createProcess(
-						"telcoCustomerRegistrationEmailProcess-" + registerEvent.getCustomer().getUid() + "-"
-								+ System.currentTimeMillis(), "telcoCustomerRegistrationEmailProcess");
-		storeFrontCustomerProcessModel.setSite(registerEvent.getSite());
-		storeFrontCustomerProcessModel.setCustomer(registerEvent.getCustomer());
-		storeFrontCustomerProcessModel.setLanguage(registerEvent.getLanguage());
-		storeFrontCustomerProcessModel.setCurrency(registerEvent.getCurrency());
-		storeFrontCustomerProcessModel.setStore(registerEvent.getBaseStore());
-		getModelService().save(storeFrontCustomerProcessModel);
-		getBusinessProcessService().startProcess(storeFrontCustomerProcessModel);
-	}
+    @Override
+    protected void onSiteEvent(final RegisterEvent registerEvent) {
+        final StoreFrontCustomerProcessModel storeFrontCustomerProcessModel = (StoreFrontCustomerProcessModel) getBusinessProcessService()
+                .createProcess(
+                        "telcoCustomerRegistrationEmailProcess-" + registerEvent.getCustomer().getUid() + "-"
+                                + System.currentTimeMillis(), "telcoCustomerRegistrationEmailProcess");
+        storeFrontCustomerProcessModel.setSite(registerEvent.getSite());
+        storeFrontCustomerProcessModel.setCustomer(registerEvent.getCustomer());
+        storeFrontCustomerProcessModel.setLanguage(registerEvent.getLanguage());
+        storeFrontCustomerProcessModel.setCurrency(registerEvent.getCurrency());
+        storeFrontCustomerProcessModel.setStore(registerEvent.getBaseStore());
+        getModelService().save(storeFrontCustomerProcessModel);
+        getBusinessProcessService().startProcess(storeFrontCustomerProcessModel);
+    }
 
-	@Override
-	protected boolean shouldHandleEvent(final RegisterEvent event)
-	{
-		final BaseSiteModel site = event.getSite();
-		ServicesUtil.validateParameterNotNullStandardMessage("event.order.site", site);
-		return SiteChannel.TELCO.equals(site.getChannel());
-	}
+    @Override
+    protected boolean shouldHandleEvent(final RegisterEvent event) {
+        final BaseSiteModel site = event.getSite();
+        ServicesUtil.validateParameterNotNullStandardMessage("event.order.site", site);
+        return SiteChannel.TELCO.equals(site.getChannel());
+    }
 }

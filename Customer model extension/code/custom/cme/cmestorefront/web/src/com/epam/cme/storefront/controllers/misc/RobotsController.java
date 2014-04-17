@@ -27,17 +27,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
  * Controller for web robots instructions
  */
 @Controller
-public class RobotsController extends AbstractController
-{
-	// Number of seconds in one day
-	private static final String ONE_DAY = String.valueOf(60 * 60 * 24);
+public class RobotsController extends AbstractController {
+    // Number of seconds in one day
+    private static final String ONE_DAY = String.valueOf(60 * 60 * 24);
 
-	@RequestMapping(value = "/robots.txt", method = RequestMethod.GET)
-	public String getRobots(final HttpServletResponse response)
-	{
-		// Add cache control header to cache response for a day
-		response.setHeader("Cache-Control", "public, max-age=" + ONE_DAY);
+    @RequestMapping(value = "/robots.txt", method = RequestMethod.GET)
+    public String getRobots(final HttpServletResponse response) {
+        // Add cache control header to cache response for a day
+        response.setHeader("Cache-Control", "public, max-age=" + ONE_DAY);
 
-		return ControllerConstants.Views.Pages.Misc.MiscRobotsPage;
-	}
+        return ControllerConstants.Views.Pages.Misc.MiscRobotsPage;
+    }
 }

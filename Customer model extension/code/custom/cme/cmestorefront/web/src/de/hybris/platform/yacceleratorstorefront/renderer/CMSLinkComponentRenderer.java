@@ -33,90 +33,79 @@ import javax.servlet.jsp.PageContext;
 import org.apache.taglibs.standard.tag.common.core.UrlSupport;
 import org.springframework.beans.factory.annotation.Required;
 
-
 /**
  */
-public class CMSLinkComponentRenderer implements CMSComponentRenderer<CMSLinkComponentModel>
-{
-	private Converter<ProductModel, ProductData> productUrlConverter;
-	private Converter<CategoryModel, CategoryData> categoryUrlConverter;
+public class CMSLinkComponentRenderer implements CMSComponentRenderer<CMSLinkComponentModel> {
+    private Converter<ProductModel, ProductData> productUrlConverter;
+    private Converter<CategoryModel, CategoryData> categoryUrlConverter;
 
-	protected Converter<ProductModel, ProductData> getProductUrlConverter()
-	{
-		return productUrlConverter;
-	}
+    protected Converter<ProductModel, ProductData> getProductUrlConverter() {
+        return productUrlConverter;
+    }
 
-	@Required
-	public void setProductUrlConverter(final Converter<ProductModel, ProductData> productUrlConverter)
-	{
-		this.productUrlConverter = productUrlConverter;
-	}
+    @Required
+    public void setProductUrlConverter(final Converter<ProductModel, ProductData> productUrlConverter) {
+        this.productUrlConverter = productUrlConverter;
+    }
 
-	protected Converter<CategoryModel, CategoryData> getCategoryUrlConverter()
-	{
-		return categoryUrlConverter;
-	}
+    protected Converter<CategoryModel, CategoryData> getCategoryUrlConverter() {
+        return categoryUrlConverter;
+    }
 
-	@Required
-	public void setCategoryUrlConverter(final Converter<CategoryModel, CategoryData> categoryUrlConverter)
-	{
-		this.categoryUrlConverter = categoryUrlConverter;
-	}
+    @Required
+    public void setCategoryUrlConverter(final Converter<CategoryModel, CategoryData> categoryUrlConverter) {
+        this.categoryUrlConverter = categoryUrlConverter;
+    }
 
-	protected String getUrl(final CMSLinkComponentModel component)
-	{
-		// Call the function getUrlForCMSLinkComponent so that this code is only in one place
-		return Functions.getUrlForCMSLinkComponent(component, null, getProductUrlConverter(), getCategoryUrlConverter()); // null for request!
-	}
+    protected String getUrl(final CMSLinkComponentModel component) {
+        // Call the function getUrlForCMSLinkComponent so that this code is only in one place
+        return Functions
+                .getUrlForCMSLinkComponent(component, null, getProductUrlConverter(), getCategoryUrlConverter()); // null
+                                                                                                                  // for
+                                                                                                                  // request!
+    }
 
-	@Override
-	public void renderComponent(final PageContext pageContext, final CMSLinkComponentModel component) throws ServletException,
-			IOException
-	{
-		try
-		{
-			final String url = getUrl(component);
-			final String encodedUrl = UrlSupport.resolveUrl(url, null, pageContext);
+    @Override
+    public void renderComponent(final PageContext pageContext, final CMSLinkComponentModel component)
+            throws ServletException, IOException {
+        try {
+            final String url = getUrl(component);
+            final String encodedUrl = UrlSupport.resolveUrl(url, null, pageContext);
 
-			final JspWriter out = pageContext.getOut();
+            final JspWriter out = pageContext.getOut();
 
-			if (encodedUrl == null || encodedUrl.isEmpty())
-			{
-				// <span class="empty-nav-item">${component.linkName}</span>
-				out.write("<span class=\"empty-nav-item\">");
-				out.write(component.getLinkName());
-				out.write("</span>");
-			}
-			else
-			{
-				// <a href="${encodedUrl}" ${component.styleAttributes} title="${component.linkName}" ${component.target == null || component.target == 'SAMEWINDOW' ? '' : 'target="_blank"'}>${component.linkName}</a>
+            if (encodedUrl == null || encodedUrl.isEmpty()) {
+                // <span class="empty-nav-item">${component.linkName}</span>
+                out.write("<span class=\"empty-nav-item\">");
+                out.write(component.getLinkName());
+                out.write("</span>");
+            } else {
+                // <a href="${encodedUrl}" ${component.styleAttributes}
+                // title="${component.linkName}" ${component.target == null || component.target ==
+                // 'SAMEWINDOW' ? '' : 'target="_blank"'}>${component.linkName}</a>
 
-				out.write("<a href=\"");
-				out.write(encodedUrl);
-				out.write("\" ");
+                out.write("<a href=\"");
+                out.write(encodedUrl);
+                out.write("\" ");
 
-				// Write additional attributes onto the link
-				if (component.getStyleAttributes() != null)
-				{
-					out.write(component.getStyleAttributes());
-				}
+                // Write additional attributes onto the link
+                if (component.getStyleAttributes() != null) {
+                    out.write(component.getStyleAttributes());
+                }
 
-				out.write(" title=\"");
-				out.write(component.getLinkName());
-				out.write("\" ");
+                out.write(" title=\"");
+                out.write(component.getLinkName());
+                out.write("\" ");
 
-				if (component.getTarget() != null && !LinkTargets.SAMEWINDOW.equals(component.getTarget()))
-				{
-					out.write(" target=\"_blank\"");
-				}
-				out.write(">");
-				out.write(component.getLinkName());
-				out.write("</a>");
-			}
-		}
-		catch (final JspException ignore)
-		{
-			// ignore
-		}
-	}
+                if (component.getTarget() != null && !LinkTargets.SAMEWINDOW.equals(component.getTarget())) {
+                    out.write(" target=\"_blank\"");
+                }
+                out.write(">");
+                out.write(component.getLinkName());
+                out.write("</a>");
+            }
+        } catch (final JspException ignore) {
+            // ignore
+        }
+    }
 }

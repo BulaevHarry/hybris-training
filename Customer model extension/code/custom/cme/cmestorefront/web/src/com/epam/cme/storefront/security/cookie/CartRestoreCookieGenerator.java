@@ -18,28 +18,23 @@ import de.hybris.platform.site.BaseSiteService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Required;
 
-
 /**
  * Generates the name for the cart restore cookie
  */
-public class CartRestoreCookieGenerator extends EnhancedCookieGenerator
-{
-	private BaseSiteService baseSiteService;
+public class CartRestoreCookieGenerator extends EnhancedCookieGenerator {
+    private BaseSiteService baseSiteService;
 
-	@Override
-	public String getCookieName()
-	{
-		return StringUtils.deleteWhitespace(getBaseSiteService().getCurrentBaseSite().getUid()) + "-cart";
-	}
+    @Override
+    public String getCookieName() {
+        return StringUtils.deleteWhitespace(getBaseSiteService().getCurrentBaseSite().getUid()) + "-cart";
+    }
 
-	protected BaseSiteService getBaseSiteService()
-	{
-		return baseSiteService;
-	}
+    protected BaseSiteService getBaseSiteService() {
+        return baseSiteService;
+    }
 
-	@Required
-	public void setBaseSiteService(final BaseSiteService baseSiteService)
-	{
-		this.baseSiteService = baseSiteService;
-	}
+    @Required
+    public void setBaseSiteService(final BaseSiteService baseSiteService) {
+        this.baseSiteService = baseSiteService;
+    }
 }

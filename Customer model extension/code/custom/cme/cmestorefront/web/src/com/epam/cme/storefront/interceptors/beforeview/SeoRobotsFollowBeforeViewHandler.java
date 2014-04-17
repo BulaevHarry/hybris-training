@@ -19,35 +19,26 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
+public class SeoRobotsFollowBeforeViewHandler implements BeforeViewHandler {
+    @Override
+    public void beforeView(final HttpServletRequest request, final HttpServletResponse response,
+            final ModelAndView modelAndView) {
+        // Check to see if the controller has specified a Index/Follow directive for robots
+        if (modelAndView != null && !modelAndView.getModel().containsKey("metaRobots")) {
+            // Build a default directive
+            String robotsValue = "no-index,no-follow";
 
-public class SeoRobotsFollowBeforeViewHandler implements BeforeViewHandler
-{
-	@Override
-	public void beforeView(final HttpServletRequest request, final HttpServletResponse response, final ModelAndView modelAndView)
-	{
-		// Check to see if the controller has specified a Index/Follow directive for robots
-		if (modelAndView != null && !modelAndView.getModel().containsKey("metaRobots"))
-		{
-			// Build a default directive
-			String robotsValue = "no-index,no-follow";
+            if (RequestMethod.GET.name().equalsIgnoreCase(request.getMethod())) {
+                if (request.isSecure()) {
+                    robotsValue = "no-index,follow";
+                } else {
+                    robotsValue = "index,follow";
+                }
+            } else if (RequestMethod.POST.name().equalsIgnoreCase(request.getMethod())) {
+                robotsValue = "no-index,no-follow";
+            }
 
-			if (RequestMethod.GET.name().equalsIgnoreCase(request.getMethod()))
-			{
-				if (request.isSecure())
-				{
-					robotsValue = "no-index,follow";
-				}
-				else
-				{
-					robotsValue = "index,follow";
-				}
-			}
-			else if (RequestMethod.POST.name().equalsIgnoreCase(request.getMethod()))
-			{
-				robotsValue = "no-index,no-follow";
-			}
-
-			modelAndView.addObject("metaRobots", robotsValue);
-		}
-	}
+            modelAndView.addObject("metaRobots", robotsValue);
+        }
+    }
 }
