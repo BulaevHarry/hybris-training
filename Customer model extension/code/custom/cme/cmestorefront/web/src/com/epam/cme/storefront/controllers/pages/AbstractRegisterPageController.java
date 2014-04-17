@@ -17,6 +17,7 @@ import de.hybris.platform.cms2.exceptions.CMSItemNotFoundException;
 import de.hybris.platform.cms2.model.pages.AbstractPageModel;
 import de.hybris.platform.cms2.model.pages.ContentPageModel;
 import de.hybris.platform.commercefacades.user.UserFacade;
+import de.hybris.platform.commercefacades.user.data.RegisterData;
 import de.hybris.platform.commercefacades.user.data.TitleData;
 import de.hybris.platform.commerceservices.customer.DuplicateUidException;
 import de.hybris.platform.subscriptionfacades.SubscriptionFacade;
@@ -126,6 +127,41 @@ public abstract class AbstractRegisterPageController extends AbstractPageControl
             GlobalMessages.addErrorMessage(model, "form.global.error");
             return handleRegistrationError(model);
         }
+        final RegisterData data = new RegisterData();
+        data.setFirstName(form.getFirstName());
+        data.setLastName(form.getLastName());
+        data.setLogin(form.getEmail());
+        data.setPassword(form.getPwd());
+        data.setTitleCode(form.getTitleCode());
+        try {
+            getCustomerFacade().register(data);
+            getAutoLoginStrategy().login(form.getEmail(), form.getPwd(), request, response);
+            getSubscriptionFacade().updateProfile(new HashMap<String, String>());
+            RequestContextUtils.getOutputFlashMap(request).put(GlobalMessages.CONF_MESSAGES_HOLDER,
+                    Collections.singletonList("registration.confirmation.message.title"));
+        } catch (final DuplicateUidException e) {
+            LOG.warn("registration failed: " + e);
+            model.addAttribute(new LoginForm());
+            bindingResult.rejectValue("email", "registration.error.account.exists.title");
+            GlobalMessages.addErrorMessage(model, "form.global.error");
+            return handleRegistrationError(model);
+        } catch (final SubscriptionFacadeException e) {
+            LOG.warn(String.format("Creating new subscription billing profile for user %s failed", form.getEmail()), e);
+            model.addAttribute(new LoginForm());
+            GlobalMessages.addErrorMessage(model, "registration.error.subscription.billing.profil");
+            return handleRegistrationError(model);
+        }
+        return REDIRECT_PREFIX + getSuccessRedirect(request, response);
+    }
+
+    protected String processRegisterCmeUserRequest(final String referer, final RegisterForm form,
+            final BindingResult bindingResult, final Model model, final HttpServletRequest request,
+            final HttpServletResponse response) throws CMSItemNotFoundException {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute(new LoginForm());
+            GlobalMessages.addErrorMessage(model, "form.global.error");
+            return handleRegistrationError(model);
+        }
         final CmeRegisterData data = new CmeRegisterData();
         data.setFirstName(form.getFirstName());
         data.setLastName(form.getLastName());
@@ -154,7 +190,7 @@ public abstract class AbstractRegisterPageController extends AbstractPageControl
         return REDIRECT_PREFIX + getSuccessRedirect(request, response);
     }
 
-    private String handleRegistrationError(final Model model) throws CMSItemNotFoundException {
+    protected String handleRegistrationError(final Model model) throws CMSItemNotFoundException {
         storeCmsPageInModel(model, getCmsPage());
         setUpMetaDataForContentPage(model, (ContentPageModel) getCmsPage());
         return getView();

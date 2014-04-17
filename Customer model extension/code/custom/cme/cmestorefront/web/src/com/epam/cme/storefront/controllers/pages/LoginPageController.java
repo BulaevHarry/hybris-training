@@ -15,8 +15,6 @@ package com.epam.cme.storefront.controllers.pages;
 
 import de.hybris.platform.cms2.exceptions.CMSItemNotFoundException;
 import de.hybris.platform.cms2.model.pages.AbstractPageModel;
-import com.epam.cme.storefront.controllers.ControllerConstants;
-import com.epam.cme.storefront.forms.RegisterForm;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -26,7 +24,6 @@ import javax.validation.Valid;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Scope;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -35,6 +32,9 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import com.epam.cme.storefront.controllers.ControllerConstants;
+import com.epam.cme.storefront.forms.RegisterForm;
 
 /**
  * Login Controller. Handles login and register for the account flow.
@@ -91,7 +91,7 @@ public class LoginPageController extends AbstractLoginPageController {
     public String doRegister(@RequestHeader(value = "referer", required = false) final String referer,
             @Valid final RegisterForm form, final BindingResult bindingResult, final Model model,
             final HttpServletRequest request, final HttpServletResponse response) throws CMSItemNotFoundException {
-        return processRegisterUserRequest(referer, form, bindingResult, model, request, response);
+        return processRegisterCmeUserRequest(referer, form, bindingResult, model, request, response);
     }
 
 }

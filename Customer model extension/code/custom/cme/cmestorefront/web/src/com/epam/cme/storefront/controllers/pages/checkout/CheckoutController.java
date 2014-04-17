@@ -89,7 +89,7 @@ public class CheckoutController extends AbstractCheckoutController {
         model.addAttribute("deliveryAddress", orderDetails.getDeliveryAddress());
         model.addAttribute("deliveryMode", orderDetails.getDeliveryMode());
         model.addAttribute("paymentInfo", orderDetails.getPaymentInfo());
-        model.addAttribute("email", getBlockableCustomerFacade().getCurrentCustomer().getUid());
+        model.addAttribute("email", getCustomerFacade().getCurrentCustomer().getUid());
         model.addAttribute("pageType", PageType.OrderConfirmation);
 
         final AbstractPageModel cmsPage = getContentPageForLabelOrId(CHECKOUT_ORDER_CONFIRMATION_CMS_PAGE_LABEL);

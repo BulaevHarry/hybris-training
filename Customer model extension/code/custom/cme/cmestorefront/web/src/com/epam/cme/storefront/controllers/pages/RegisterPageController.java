@@ -15,8 +15,6 @@ package com.epam.cme.storefront.controllers.pages;
 
 import de.hybris.platform.cms2.exceptions.CMSItemNotFoundException;
 import de.hybris.platform.cms2.model.pages.AbstractPageModel;
-import com.epam.cme.storefront.controllers.ControllerConstants;
-import com.epam.cme.storefront.forms.RegisterForm;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -31,12 +29,16 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.epam.cme.storefront.controllers.ControllerConstants;
+import com.epam.cme.storefront.forms.RegisterForm;
+
 /**
  * Register Controller for mobile. Handles login and register for the account flow.
  */
 @Controller
 @RequestMapping(value = "/register")
 public class RegisterPageController extends AbstractRegisterPageController {
+
     @Override
     protected AbstractPageModel getCmsPage() throws CMSItemNotFoundException {
         return getContentPageForLabelOrId("register");
@@ -73,4 +75,5 @@ public class RegisterPageController extends AbstractRegisterPageController {
             final HttpServletRequest request, final HttpServletResponse response) throws CMSItemNotFoundException {
         return processRegisterUserRequest(null, form, bindingResult, model, request, response);
     }
+
 }

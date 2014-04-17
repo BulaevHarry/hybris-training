@@ -95,6 +95,12 @@
      <modifiers optional="false" unique="true" />
      <persistence type="property" />
     </attribute>
+    
+    <attribute qualifier="email" type="java.lang.String">
+     <description>Organization email</description>
+     <modifiers optional="false" unique="true" />
+     <persistence type="property" />
+    </attribute>
 
     <attribute qualifier="phone" type="java.lang.String">
      <description>Phone number</description>

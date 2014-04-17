@@ -23,6 +23,7 @@ import de.hybris.platform.cms2.model.pages.PageTemplateModel;
 import de.hybris.platform.cms2.model.site.CMSSiteModel;
 import de.hybris.platform.cms2.servicelayer.services.CMSPageService;
 import de.hybris.platform.cms2.servicelayer.services.CMSSiteService;
+import de.hybris.platform.commercefacades.customer.CustomerFacade;
 import de.hybris.platform.commercefacades.order.CartFacade;
 import de.hybris.platform.commercefacades.order.data.CartData;
 import de.hybris.platform.commercefacades.storesession.StoreSessionFacade;
@@ -92,6 +93,9 @@ public abstract class AbstractPageController extends AbstractController {
     @Resource(name = "customerFacade")
     private BlockableCustomerFacade blockableCustomerFacade;
 
+    @Resource(name = "customerFacade")
+    private CustomerFacade customerFacade;
+
     @Resource(name = "pageTitleResolver")
     private PageTitleResolver pageTitleResolver;
 
@@ -131,6 +135,10 @@ public abstract class AbstractPageController extends AbstractController {
 
     protected BlockableCustomerFacade getBlockableCustomerFacade() {
         return blockableCustomerFacade;
+    }
+
+    protected CustomerFacade getCustomerFacade() {
+        return customerFacade;
     }
 
     protected SessionService getSessionService() {
