@@ -10,13 +10,18 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import com.epam.cme.core.model.OrganizationModel;
 import com.epam.cme.facades.organization.OrganizationFacade;
 import com.epam.cme.facades.organization.data.OrganizationData;
 
 public class DefaultOrganizationFacadeIntegrationTest extends ServicelayerTransactionalTest {
+
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
 
     @Resource
     private OrganizationFacade organizationFacade;
@@ -28,16 +33,19 @@ public class DefaultOrganizationFacadeIntegrationTest extends ServicelayerTransa
     private static final Integer id = new Integer(1);
     private static final String name = "Apple";
     private static final String phone = "111-222-333";
+    private static final String email = "apple@a.a";
 
     @Before
     public void setUp() {
         organizationModel.setId(id);
         organizationModel.setName(name);
         organizationModel.setPhone(phone);
+        organizationModel.setEmail(email);
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void testNullParameter() {
+    @Test
+    public void testGetOrganizationByIdNullParameterException() {
+        thrown.expect(IllegalArgumentException.class);
         organizationFacade.getOrganizationById(null);
     }
 
@@ -52,6 +60,7 @@ public class DefaultOrganizationFacadeIntegrationTest extends ServicelayerTransa
         assertEquals(id, data.getCode());
         assertEquals(name, data.getName());
         assertEquals(phone, data.getPhone());
+        assertEquals(email, data.getEmail());
     }
 
     @Test
@@ -61,6 +70,7 @@ public class DefaultOrganizationFacadeIntegrationTest extends ServicelayerTransa
         assertEquals(id, data.getCode());
         assertEquals(name, data.getName());
         assertEquals(phone, data.getPhone());
+        assertEquals(email, data.getEmail());
     }
 
 }

@@ -6,18 +6,24 @@ import de.hybris.platform.servicelayer.exceptions.UnknownIdentifierException;
 
 import javax.annotation.Resource;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import com.epam.cme.services.organization.OrganizationService;
 
 @IntegrationTest
 public class DefaultOrganizationServiceIntegrationTest extends ServicelayerTransactionalTest {
 
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
+
     @Resource
     private OrganizationService organizationService;
 
-    @Test(expected = UnknownIdentifierException.class)
+    @Test
     public void testGetOrganizationByIdNotExistingOrganization() {
+        thrown.expect(UnknownIdentifierException.class);
         organizationService.getOrganizationById(Integer.valueOf(1));
     }
 

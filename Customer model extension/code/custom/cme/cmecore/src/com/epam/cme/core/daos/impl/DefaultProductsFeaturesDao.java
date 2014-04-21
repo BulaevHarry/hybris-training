@@ -25,11 +25,12 @@ import de.hybris.platform.core.model.type.TypeModel;
 import de.hybris.platform.servicelayer.internal.dao.AbstractItemDao;
 import de.hybris.platform.servicelayer.search.FlexibleSearchQuery;
 import de.hybris.platform.servicelayer.type.TypeService;
-import com.epam.cme.core.daos.ProductsFeaturesDao;
 
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Required;
+
+import com.epam.cme.core.daos.ProductsFeaturesDao;
 
 /**
  * Default implementation of ProductsFeaturesDao {@link ProductsFeaturesDao}
@@ -72,12 +73,13 @@ public class DefaultProductsFeaturesDao extends AbstractItemDao implements Produ
         return typeModel.getPk();
     }
 
+    protected TypeService getTypeService() {
+        return typeService;
+    }
+
     @Required
     public void setTypeService(final TypeService typeService) {
         this.typeService = typeService;
     }
 
-    protected TypeService getTypeService() {
-        return typeService;
-    }
 }

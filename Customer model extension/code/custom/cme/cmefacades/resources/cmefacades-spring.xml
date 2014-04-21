@@ -329,13 +329,31 @@
   <property name="add" ref="telcoProductTypePopulator" />
  </bean>
 
+ <bean id="organizationData" class="com.epam.cme.facades.organization.data.OrganizationData" scope="prototype" />
+
+ <alias name="defaultOrganizationPopulator" alias="organizationPopulator" />
+ <bean id="defaultOrganizationPopulator" class="com.epam.cme.facades.converters.populator.OrganizationPopulator">
+ </bean>
+
+ <alias name="defaultOrganizationConverter" alias="organizationConverter" />
+ <bean id="defaultOrganizationConverter" parent="abstractPopulatingConverter">
+  <lookup-method name="createTarget" bean="organizationData" />
+  <property name="populators">
+   <list>
+    <ref bean="organizationPopulator" />
+   </list>
+  </property>
+ </bean>
+
  <alias name="defaultOrganizationFacade" alias="organizationFacade" />
  <bean id="defaultOrganizationFacade" class="com.epam.cme.facades.organization.impl.DefaultOrganizationFacade">
   <property name="organizationService" ref="organizationService"></property>
+  <property name="organizationConverter" ref="organizationConverter"></property>
  </bean>
- 
+
  <alias name="defaultBlockableCustomerFacade" alias="customerFacade" />
- <bean id="defaultBlockableCustomerFacade" parent="defaultCustomerFacade" class="com.epam.cme.facades.blockablecustomer.impl.DefaultBlockableCustomerFacade">
+ <bean id="defaultBlockableCustomerFacade" parent="defaultCustomerFacade"
+  class="com.epam.cme.facades.blockablecustomer.impl.DefaultBlockableCustomerFacade">
   <property name="organizationService" ref="organizationService"></property>
  </bean>
 

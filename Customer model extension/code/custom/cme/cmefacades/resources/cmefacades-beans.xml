@@ -118,6 +118,7 @@
  <bean class="com.epam.cme.facades.organization.data.OrganizationData">
   <property name="code" type="Integer" />
   <property name="name" type="String" />
+  <property name="email" type="String" />
   <property name="phone" type="String" />
  </bean>
 

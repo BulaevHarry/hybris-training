@@ -28,6 +28,7 @@ public class DefaultOrganizationServiceUnitTest {
     private static final Integer id = new Integer(1);
     private static final String name = "Apple";
     private static final String phone = "111-222-333";
+    private static final String email = "apple@a.a";
 
     @Before
     public void setUp() {
@@ -37,6 +38,7 @@ public class DefaultOrganizationServiceUnitTest {
         organizationModel = new OrganizationModel();
         organizationModel.setName(name);
         organizationModel.setPhone(phone);
+        organizationModel.setEmail(email);
     }
 
     @Test

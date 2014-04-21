@@ -36,6 +36,8 @@ public class DefaultOrganizationDaoIntegrationTest extends ServicelayerTransacti
     private static final String organizationModel2Name = "Samsung";
     private static final String organizationModel1Phone = "111-222-333";
     private static final String organizationModel2Phone = "222-333-444";
+    private static final String organizationModel1Email = "apple@a.a";
+    private static final String organizationModel2Email = "samsung@s.s";
 
     @Before
     public void setUp() {
@@ -45,6 +47,8 @@ public class DefaultOrganizationDaoIntegrationTest extends ServicelayerTransacti
         organizationModel2.setName(organizationModel2Name);
         organizationModel1.setPhone(organizationModel1Phone);
         organizationModel2.setPhone(organizationModel2Phone);
+        organizationModel1.setEmail(organizationModel1Email);
+        organizationModel2.setEmail(organizationModel2Email);
         modelService.save(organizationModel1);
     }
 
@@ -69,12 +73,13 @@ public class DefaultOrganizationDaoIntegrationTest extends ServicelayerTransacti
         assertEquals(organizationModel1Id, organization.getId());
         assertEquals(organizationModel1Name, organization.getName());
         assertEquals(organizationModel1Phone, organization.getPhone());
+        assertEquals(organizationModel1Email, organization.getEmail());
     }
 
     @Test
     public void testFindOrganizationsByIdsReturnCorrectOrganizationCount() {
         modelService.save(organizationModel2);
-        final List<Integer> organizationsIds = new ArrayList<Integer>();
+        final List<Integer> organizationsIds = new ArrayList<>();
         organizationsIds.add(organizationModel1Id);
         List<OrganizationModel> organizations = organizationDao.findOrganizationsByIds(organizationsIds);
         final int size = organizations.size();

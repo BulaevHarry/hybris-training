@@ -1,8 +1,11 @@
 package com.epam.cme.facades.organization.impl;
 
-import java.util.ArrayList;
+import de.hybris.platform.converters.Converters;
+import de.hybris.platform.servicelayer.dto.converter.Converter;
+
 import java.util.List;
 
+import org.apache.commons.lang.Validate;
 import org.springframework.beans.factory.annotation.Required;
 
 import com.epam.cme.core.model.OrganizationModel;
@@ -13,34 +16,29 @@ import com.epam.cme.services.organization.OrganizationService;
 public class DefaultOrganizationFacade implements OrganizationFacade {
 
     private OrganizationService organizationService;
+    private Converter<OrganizationModel, OrganizationData> organizationConverter;
 
     @Override
     public List<OrganizationData> getOrganizations() {
         final List<OrganizationModel> models = organizationService.getOrganizations();
-        final List<OrganizationData> datas = new ArrayList<OrganizationData>();
-        for (final OrganizationModel om : models) {
-            final OrganizationData od = new OrganizationData();
-            od.setCode(om.getId());
-            od.setName(om.getName());
-            od.setPhone(om.getPhone());
-            datas.add(od);
-        }
-        return datas;
+        return Converters.convertAll(models, getOrganizationConverter());
     }
 
     @Override
     public OrganizationData getOrganizationById(final Integer id) {
         OrganizationModel model = null;
-        if (id != null) {
-            model = organizationService.getOrganizationById(id);
-        } else {
-            throw new IllegalArgumentException("Organization with id " + id + "not found");
-        }
-        final OrganizationData data = new OrganizationData();
-        data.setCode(model.getId());
-        data.setName(model.getName());
-        data.setPhone(model.getPhone());
-        return data;
+        Validate.notNull(id, "Organization with id " + id + "not found");
+        model = organizationService.getOrganizationById(id);
+        return getOrganizationConverter().convert(model);
+    }
+
+    public Converter<OrganizationModel, OrganizationData> getOrganizationConverter() {
+        return organizationConverter;
+    }
+
+    @Required
+    public void setOrganizationConverter(final Converter<OrganizationModel, OrganizationData> organizationConverter) {
+        this.organizationConverter = organizationConverter;
     }
 
     @Required

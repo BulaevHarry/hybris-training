@@ -20,27 +20,29 @@ public class DefaultOrganizationDao implements OrganizationDao {
     @Autowired
     private FlexibleSearchService flexibleSearchService;
 
+    private static final String FIND_ORGANIZATIONS_QUERY = "SELECT {p:" + OrganizationModel.PK + "} " + "FROM {"
+            + OrganizationModel._TYPECODE + " AS p} ";
+    private static final String FIND_ORGANIZATION_BY_ID_QUERY = "SELECT {p:" + OrganizationModel.PK + "} " + "FROM {"
+            + OrganizationModel._TYPECODE + " AS p} " + "WHERE " + "{p:" + OrganizationModel.ID + "}=?id ";
+    private static final String FIND_ORGANIZATIONS_BY_IDS_QUERY = "SELECT {p:" + OrganizationModel.PK + "} " + "FROM {"
+            + OrganizationModel._TYPECODE + " AS p} " + "WHERE " + "{p:" + OrganizationModel.ID + "} IN ";
+
     @Override
     public List<OrganizationModel> findOrganizations() {
-        final String queryString = "SELECT {p:" + OrganizationModel.PK + "} " + "FROM {" + OrganizationModel._TYPECODE
-                + " AS p} ";
-        final FlexibleSearchQuery query = new FlexibleSearchQuery(queryString);
+        final FlexibleSearchQuery query = new FlexibleSearchQuery(FIND_ORGANIZATIONS_QUERY);
         return flexibleSearchService.<OrganizationModel>search(query).getResult();
     }
 
     @Override
     public List<OrganizationModel> findOrganizationById(final Integer id) {
-        final String queryString = "SELECT {p:" + OrganizationModel.PK + "} " + "FROM {" + OrganizationModel._TYPECODE
-                + " AS p} " + "WHERE " + "{p:" + OrganizationModel.ID + "}=?id ";
-        final FlexibleSearchQuery query = new FlexibleSearchQuery(queryString);
+        final FlexibleSearchQuery query = new FlexibleSearchQuery(FIND_ORGANIZATION_BY_ID_QUERY);
         query.addQueryParameter("id", id);
         return flexibleSearchService.<OrganizationModel>search(query).getResult();
     }
 
     @Override
     public List<OrganizationModel> findOrganizationsByIds(final List<Integer> ids) {
-        String queryString = "SELECT {p:" + OrganizationModel.PK + "} " + "FROM {" + OrganizationModel._TYPECODE
-                + " AS p} " + "WHERE " + "{p:" + OrganizationModel.ID + "} IN ";
+        String queryString = FIND_ORGANIZATIONS_BY_IDS_QUERY;
         String idsCommaSep = ids.toString();
         idsCommaSep = idsCommaSep.substring(1, idsCommaSep.length() - 1);
         queryString += "(" + idsCommaSep + ")";
