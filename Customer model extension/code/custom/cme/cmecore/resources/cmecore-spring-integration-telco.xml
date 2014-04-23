@@ -48,11 +48,11 @@
  <bean id="batchOrganizationConverter" class="de.hybris.platform.acceleratorservices.dataimport.batch.converter.impl.DefaultImpexConverter">
   <property name="header">
    <value>
-    INSERT_UPDATE Organization;id[unique=true];name[unique=true];phone[unique=true]
+    INSERT_UPDATE Organization;id[unique=true];name[unique=true];email[unique=true];phone[unique=true]
    </value>
   </property>
   <property name="impexRow">
-   <value>;{+0};{1};{2}</value>
+   <value>;{+0};{1};{2};{3}</value>
   </property>
  </bean>
 

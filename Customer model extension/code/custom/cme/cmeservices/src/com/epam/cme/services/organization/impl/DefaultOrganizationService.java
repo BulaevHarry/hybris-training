@@ -6,11 +6,13 @@ import de.hybris.platform.servicelayer.exceptions.UnknownIdentifierException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Required;
+import org.springframework.stereotype.Service;
 
 import com.epam.cme.core.model.OrganizationModel;
 import com.epam.cme.services.organization.OrganizationService;
 import com.epam.cme.services.organization.dao.OrganizationDao;
 
+@Service("organizationService")
 public class DefaultOrganizationService implements OrganizationService {
 
     private OrganizationDao organizationDao;

@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <testclasses>
   <cmeservices>
+    <testclass>com.epam.cme.services.mail.impl.MailSenderFactoryUnitTest</testclass>
+    <testclass>com.epam.cme.services.mail.impl.DefaultMailServiceUnitTest</testclass>
     <testclass>com.epam.cme.services.jalo.CmeservicesTest</testclass>
     <testclass>com.epam.cme.services.organization.impl.DefaultOrganizationServiceIntegrationTest</testclass>
     <testclass>com.epam.cme.services.organization.dao.impl.DefaultOrganizationDaoIntegrationTest</testclass>
+    <testclass>com.epam.cme.services.cronjobs.SendCustomersListJobUnitTest</testclass>
     <testclass>com.epam.cme.services.organization.impl.DefaultOrganizationServiceUnitTest</testclass>
   </cmeservices>
 </testclasses>
