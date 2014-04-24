@@ -25,7 +25,7 @@
   <property name="organizationDao" ref="organizationDao" />
  </bean>
  
- <bean id="sendCustomersListJob" class="com.epam.cme.services.cronjobs.SendCustomersListJob" parent="abstractJobPerformable" />
+ <bean id="sendCustomersListJob" class="com.epam.cme.services.cronjobs.SendCustomersListJob" autowire="byName" />
 
  <!--
   The hybris platform provides one single Spring application context for beans located at the jalo layer.

@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<testclasses>
-  <cmehmc>
-    <testclass>com.epam.cme.hmc.jalo.CmehmcTest</testclass>
-  </cmehmc>
-</testclasses>
