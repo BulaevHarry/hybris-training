@@ -150,7 +150,8 @@
 		<extension name="cmeservices" />
 		<extension name="cmefacades" />
 		<extension name="cmestorefront" />
-		<extension name="cmecockpits" />		
+		<extension name="cmecockpits" />
+		<extension name="cmehmc" />		
 				
 	</extensions>
 </hybrisconfig>
