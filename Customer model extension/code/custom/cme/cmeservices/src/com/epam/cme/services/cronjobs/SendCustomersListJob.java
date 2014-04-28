@@ -32,14 +32,14 @@ public class SendCustomersListJob extends AbstractJobPerformable<CronJobModel> {
 
         if (organizations.isEmpty()) {
             LOG.info("No organizations are defined, skipping send of mails");
-            return new PerformResult(CronJobResult.SUCCESS, CronJobStatus.FINISHED);
-        }
-
-        for (final OrganizationModel organization : organizations) {
-            if (!organization.getCustomers().isEmpty()) {
-                mailService.sendCustomersListMail(organization);
+        } else {
+            for (final OrganizationModel organization : organizations) {
+                if (!organization.getCustomers().isEmpty()) {
+                    mailService.sendCustomersListMail(organization);
+                }
             }
         }
+
         return new PerformResult(CronJobResult.SUCCESS, CronJobStatus.FINISHED);
     }
 

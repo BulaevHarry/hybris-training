@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<configuration xmlns="hybris.de/schemas/hmc/generic" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="hybris.de/schemas/hmc/generic hmc.xsd">
+
+ <explorertree>
+  <group name="cmegroup">
+   <typeref type="BlockableCustomer" />
+   <typeref type="Organization" />
+  </group>
+ </explorertree>
+
+ <type name="Organization" mode="append">
+  <organizer>
+   <search mode="replace">
+    <condition attribute="uid" />
+   </search>
+   <result>
+    <listview mode="replace">
+     <itemlayout>
+      <attribute name="name" />
+      <attribute name="phone" />
+      <attribute name="email" />
+     </itemlayout>
+    </listview>
+   </result>
+   <editor>
+    <essentials>
+     <listlayout>
+      <attribute name="id" />
+     </listlayout>
+    </essentials>
+   </editor>
+  </organizer>
+ </type>
+
+ <type name="BlockableCustomer" mode="append">
+  <organizer>
+   <search mode="replace">
+    <condition attribute="uid" />
+   </search>
+   <result>
+    <listview mode="replace">
+     <itemlayout>
+      <attribute name="uid" />
+      <attribute name="name" />
+      <attribute name="attemptCount" />
+      <attribute name="status" />
+     </itemlayout>
+    </listview>
+   </result>
+   <editor>
+    <essentials>
+     <listlayout>
+      <attribute name="uid" />
+     </listlayout>
+    </essentials>
+    <tab name="tab.common">
+     <section name="section.cme">
+      <listlayout>
+       <attribute name="organizations" />
+      </listlayout>
+     </section>
+    </tab>
+   </editor>
+  </organizer>
+ </type>
+
+</configuration>

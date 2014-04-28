@@ -10,21 +10,25 @@
  Information and shall use it only in accordance with the terms of the
  license agreement you entered into with hybris.
 
-  
---><extensioninfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="extensioninfo.xsd">
 
-   <extension abstractclassprefix="Generated" classprefix="Cmehmc" managername="CmehmcManager" managersuperclass="de.hybris.platform.jalo.extension.Extension" name="cmehmc">
-               
-      <!-- you should add all required extensions to this list, except platform extensions which are automatically required -->         
-      <!-- <requires-extension name="cms"/> -->         
-      
+-->
+<extensioninfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="extensioninfo.xsd">
 
-      <coremodule generated="true" manager="com.epam.cme.hmc.jalo.CmehmcManager" packageroot="com.epam.cme.hmc"/>
+ <extension abstractclassprefix="Generated" classprefix="Cmehmc" managername="CmehmcManager"
+  managersuperclass="de.hybris.platform.jalo.extension.Extension" name="cmehmc">
 
-      <webmodule jspcompile="false" webroot="/cmehmc"/>
-					
-	
+  <!-- you should add all required extensions to this list, except platform extensions which are automatically required -->
+  <!-- <requires-extension name="cms"/> -->
 
-   </extension>
-      
+  <requires-extension name="cmecore" />
+  <requires-extension name="hmc" />
+
+  <coremodule generated="true" manager="com.epam.cme.hmc.jalo.CmehmcManager" packageroot="com.epam.cme.hmc" />
+
+  <!-- <webmodule jspcompile="false" webroot="/cmehmc"/> -->
+
+  <hmcmodule extensionclassname="com.epam.cme.hmc.CMEHMCExtension" />
+
+ </extension>
+
 </extensioninfo>
