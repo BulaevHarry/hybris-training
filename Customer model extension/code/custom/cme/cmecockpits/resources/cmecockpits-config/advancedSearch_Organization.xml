@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<advanced-search>
+ <group name="root" type="Organization">
+  <property qualifier="Organization.id" sort-enabled="true" visible="true" />
+  <property qualifier="Organization.name" sort-enabled="true" visible="true" />
+  <property qualifier="Organization.email" sort-enabled="true" visible="true" />
+  <property qualifier="Organization.phone" sort-enabled="true" visible="true" />
+ </group>
+</advanced-search>
