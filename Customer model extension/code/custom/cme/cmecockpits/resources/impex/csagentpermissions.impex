@@ -1,6 +1,0 @@
-$START_USERRIGHTS
-Type;UID;MemberOfGroups;Password;Target;read;change;create;delete;change_perm
-UserGroup;csagentgroup;employeegroup
-;;;;Organization.name;+;+;-;-;-
-;;;;Organization.phone;+;+;-;-;-
-$END_USERRIGHTS

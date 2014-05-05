@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<list-view unassigned-group-name="Other">
- <group name="General">
-  <property qualifier="Organization.name" visible="true" />
-  <property qualifier="Organization.email" visible="true" />
-  <property qualifier="Organization.phone" visible="true" />
- </group>
-</list-view>
