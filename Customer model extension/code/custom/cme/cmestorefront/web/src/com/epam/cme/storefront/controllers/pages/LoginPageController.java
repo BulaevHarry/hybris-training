@@ -24,6 +24,7 @@ import javax.validation.Valid;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -31,7 +32,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.epam.cme.storefront.controllers.ControllerConstants;
 import com.epam.cme.storefront.forms.RegisterForm;
@@ -70,14 +70,15 @@ public class LoginPageController extends AbstractLoginPageController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public String doLogin(@RequestHeader(value = "referer", required = false) final String referer,
-            @RequestParam(value = "error", defaultValue = "false") final boolean loginError, final Model model,
+    public String doLogin(@RequestHeader(value = "referer", required = false) final String referer, final Model model,
             final HttpServletRequest request, final HttpServletResponse response, final HttpSession session)
             throws CMSItemNotFoundException {
-        if (!loginError) {
+        final AuthenticationException loginException = (AuthenticationException) request.getSession().getAttribute(
+                "exception");
+        if (loginException == null) {
             storeReferer(referer, request, response);
         }
-        return getDefaultLoginPage(loginError, session, model);
+        return getDefaultLoginPage(loginException, session, model);
     }
 
     protected void storeReferer(final String referer, final HttpServletRequest request,

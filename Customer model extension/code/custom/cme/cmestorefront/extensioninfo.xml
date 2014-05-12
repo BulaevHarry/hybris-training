@@ -10,19 +10,21 @@
  Information and shall use it only in accordance with the terms of the
  license agreement you entered into with hybris.
 
-  
---><extensioninfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="extensioninfo.xsd">
 
-	<extension abstractclassprefix="Generated" classprefix="CmeStorefront" name="cmestorefront">
+-->
+<extensioninfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="extensioninfo.xsd">
 
-		<!-- you should add all required extensions to this list, except platform extensions which are automatically required -->
-		<requires-extension name="btg"/>
-		<requires-extension name="cmefacades"/>
+ <extension abstractclassprefix="Generated" classprefix="CmeStorefront" name="cmestorefront">
 
-		<webmodule jspcompile="false" webroot="/cmestorefront"/>
+  <!-- you should add all required extensions to this list, except platform extensions which are automatically required -->
+  <requires-extension name="btg" />
+  <requires-extension name="cmefacades" />
+  <requires-extension name="cmeservices" />
 
-		
+  <webmodule jspcompile="false" webroot="/cmestorefront" />
 
-	</extension>
+
+
+ </extension>
 
 </extensioninfo>

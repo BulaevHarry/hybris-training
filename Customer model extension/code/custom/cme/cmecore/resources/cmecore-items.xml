@@ -65,7 +65,7 @@
    <deployment table="BlockableCustomer" typecode="10501" />
    <attributes>
 
-    <attribute qualifier="status" type="java.lang.Boolean">
+    <attribute qualifier="blockedStatus" type="java.lang.Boolean">
      <description>Account lock state</description>
      <persistence type="property" />
      <defaultvalue>java.lang.Boolean.FALSE</defaultvalue>

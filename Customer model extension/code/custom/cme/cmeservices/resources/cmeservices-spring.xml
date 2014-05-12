@@ -25,6 +25,11 @@
   <property name="organizationDao" ref="organizationDao" />
  </bean>
  
+ <alias name="defaultBlockableCustomerService" alias="blockableCustomerService" />
+ <bean id="defaultBlockableCustomerService" class="com.epam.cme.services.blockablecustomer.impl.DefaultBlockableCustomerService">
+  <property name="blockableCustomerDao" ref="blockableCustomerDao" />
+ </bean>
+ 
  <bean id="sendCustomersListJob" class="com.epam.cme.services.cronjobs.SendCustomersListJob" parent="abstractJobPerformable" />
 
  <!--

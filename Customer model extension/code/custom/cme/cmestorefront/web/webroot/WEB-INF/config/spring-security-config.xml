@@ -102,7 +102,7 @@
 	</security:http>
 
 	<security:authentication-manager alias="authenticationManager">
-		<security:authentication-provider ref="acceleratorAuthenticationProvider" />
+		<security:authentication-provider ref="cmeAuthenticationProvider" />
 	</security:authentication-manager>
 
 	<bean id="acceleratorAuthenticationProvider" class="com.epam.cme.storefront.security.AcceleratorAuthenticationProvider"
@@ -114,6 +114,12 @@
 		<property name="userDetailsService" ref="originalUidUserDetailsService" />
 		<property name="adminGroup" value="ROLE_ADMINGROUP"/>
 	</bean>
+ 
+   <bean id="cmeAuthenticationProvider" class="com.epam.cme.storefront.security.CmeAuthenticationProvider" >
+        <property name="acceleratorAuthenticationProvider" ref="acceleratorAuthenticationProvider" />
+        <property name="blockableCustomerService" ref="blockableCustomerService"/>
+        <property name="userDetailsService" ref="originalUidUserDetailsService" />
+   </bean>
 
 	<bean id="coreUserDetailsService" class="de.hybris.platform.spring.security.CoreUserDetailsService"  />
 
@@ -185,20 +191,29 @@
 	</bean>
 
 	<!-- Login Failure Handlers -->
-    <bean id="bruteForceAttackCounter" class="com.epam.cme.storefront.security.impl.DefaultBruteForceAttackCounter">
-        <constructor-arg name="maxFailedLogins" value="5" />
-        <constructor-arg name="cacheExpiration" value="60" />
-        <constructor-arg name="cacheSizeLimit" value="1000" />
-    </bean>
+    
+   <alias alias="bruteForceAttackCounter" name="cmeBruteForceAttackCounter"/>
+   
+   <bean id="cmeBruteForceAttackCounter" class="com.epam.cme.storefront.security.impl.CmeBruteForceAttackCounter">
+      <constructor-arg name="maxFailedLogins" value="3" />
+      <property name="modelService" ref="modelService" />
+      <property name="blockableCustomerService" ref="blockableCustomerService"/>
+   </bean>
+
+   <bean id="defaultBruteForceAttackCounter" class="com.epam.cme.storefront.security.impl.DefaultBruteForceAttackCounter">
+      <constructor-arg name="maxFailedLogins" value="5" />
+      <constructor-arg name="cacheExpiration" value="60" />
+      <constructor-arg name="cacheSizeLimit" value="1000" />
+   </bean>
 
 	<bean id="loginAuthenticationFailureHandler" class="com.epam.cme.storefront.security.LoginAuthenticationFailureHandler">
-	    <property name="bruteForceAttackCounter" ref="bruteForceAttackCounter" />
-		<property name="defaultFailureUrl" value="/login?error=true"/>
+	   <property name="bruteForceAttackCounter" ref="bruteForceAttackCounter" />
+		<property name="defaultFailureUrl" value="/login"/>
 	</bean>
 	
 	<bean id="loginCheckoutAuthenticationFailureHandler" class="com.epam.cme.storefront.security.LoginAuthenticationFailureHandler">
-        <property name="bruteForceAttackCounter" ref="bruteForceAttackCounter" />
-		<property name="defaultFailureUrl" value="/login/checkout?error=true"/>		
+      <property name="bruteForceAttackCounter" ref="bruteForceAttackCounter" />
+		<property name="defaultFailureUrl" value="/login/checkout"/>		
 	</bean>
 
 	<!-- Logout Success Handler -->

@@ -34,6 +34,7 @@ public class LoginAuthenticationFailureHandler extends SimpleUrlAuthenticationFa
 
         // Store the j_username in the session
         request.getSession().setAttribute("SPRING_SECURITY_LAST_USERNAME", request.getParameter("j_username"));
+        request.getSession().setAttribute("exception", exception);
 
         super.onAuthenticationFailure(request, response, exception);
     }

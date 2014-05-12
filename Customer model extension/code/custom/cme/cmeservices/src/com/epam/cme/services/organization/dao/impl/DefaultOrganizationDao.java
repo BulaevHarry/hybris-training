@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 import com.epam.cme.core.model.OrganizationModel;
 import com.epam.cme.services.organization.dao.OrganizationDao;
 
-@Component(value = "organizationDao")
+@Component("organizationDao")
 public class DefaultOrganizationDao implements OrganizationDao {
 
     @Autowired

@@ -70,16 +70,7 @@ public class AcceleratorAuthenticationProvider extends CoreAuthenticationProvide
                         "Bad credentials"));
             }
         }
-
-        // check if the user of the cart matches the current user and if the
-        // user is not anonymous. If otherwise, remove delete the session cart as it might
-        // be stolen / from another user
-        final String sessionCartUserId = getCartService().getSessionCart().getUser().getUid();
-
-        if (!username.equals(sessionCartUserId) && !sessionCartUserId.equals(userService.getAnonymousUser().getUid())) {
-            getCartService().setSessionCart(null);
-        }
-
+        checkUserCart(username);
         return super.authenticate(authentication);
     }
 
@@ -116,12 +107,28 @@ public class AcceleratorAuthenticationProvider extends CoreAuthenticationProvide
         }
     }
 
+    protected void checkUserCart(final String username) {
+
+        // check if the user of the cart matches the current user and if the
+        // user is not anonymous. If otherwise, remove delete the session cart as it might
+        // be stolen / from another user
+        final String sessionCartUserId = getCartService().getSessionCart().getUser().getUid();
+
+        if (!username.equals(sessionCartUserId) && !sessionCartUserId.equals(userService.getAnonymousUser().getUid())) {
+            getCartService().setSessionCart(null);
+        }
+    }
+
     protected GrantedAuthority getAdminAuthority() {
         return adminAuthority;
     }
 
     protected BruteForceAttackCounter getBruteForceAttackCounter() {
         return bruteForceAttackCounter;
+    }
+
+    public static Logger getLog() {
+        return LOG;
     }
 
     @Required
