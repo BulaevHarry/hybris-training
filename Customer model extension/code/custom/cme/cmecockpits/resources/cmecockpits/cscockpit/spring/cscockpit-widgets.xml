@@ -27,26 +27,4 @@
   </property>
  </bean>
 
- <alias alias="csCustomerEditWidgetRenderer" name="cmeCsCustomerEditWidgetRenderer" />
- 
- <alias alias="csCallContextController" name="cmeCsCallContextController"/>
- 
- <alias alias="csCustomerController" name="cmeCsCallContextController" />
- 
- <alias alias="csCustomerBrowser" name="cmeCsCustomerBrowser"/>
- 
- <bean id="cmeCsCustomerEditWidgetRenderer" parent="abstractWidgetRenderer"
-  class="com.epam.cme.cockpits.widgets.renderers.impl.CmeCustomerDetailsEditWidgetRenderer">
-  <property name="editorConfigurationCode" value="editCustomerDetails" />
-  <property name="userService" ref="userService"/>
-  <property name="footerRenderer">
-   <bean class="de.hybris.platform.cscockpit.widgets.renderers.details.impl.ConfigurableItemWidgetDetailRenderer"
-    parent="abstractWidgetDetailRenderer">
-    <property name="configurationCode" value="customerReadonlyDetails" />
-   </bean>
-  </property>
- </bean>
- 
- <bean id="cmeCsCallContextController" parent="defaultCsCallContextController" class="com.epam.cme.cockpits.widgets.controllers.impl.CmeCallContextController" scope="session" />
-
 </beans>

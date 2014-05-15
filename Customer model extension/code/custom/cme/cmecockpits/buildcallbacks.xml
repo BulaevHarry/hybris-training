@@ -75,25 +75,13 @@
  
 -->
 <project name="cmecockpits_buildcallbacks">
-	
+
 	<!-- 
 	    Called whenever 'ant ear' is used. this callback can be used to modify the content of the ear file
 	
 	     ${ear.path}: 			path to ear
 	 -->
-	
-	<echo level="info" message="cmecockpits - Copying custom template and css to cscockpit..."/>
-	<copy todir="${ext.cscockpit.path}/web/webroot/" overwrite="true">
-		<fileset dir="${ext.cmecockpits.path}/resources/cmecockpits/cscockpit/templates/" >
-			<include name="index.zul" />
-		</fileset>
-	</copy>
-	<copy todir="${ext.cscockpit.path}/web/webroot/cscockpit/css" overwrite="true">
-		<fileset dir="${ext.cmecockpits.path}/resources/cmecockpits/cscockpit/css">
-			<include name="**/**.css" />
-		</fileset>
-	</copy>
-	
+
 	<macrodef name="cmecockpits_before_ear">
 		<sequential>
 
