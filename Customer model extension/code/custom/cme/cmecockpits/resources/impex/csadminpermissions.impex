@@ -1,0 +1,7 @@
+$START_USERRIGHTS
+INSERT_UPDATE UserGroup;UID[unique=true];groups(uid)[mode=append];locname[lang=en]
+;csadmingroup;cockpitgroup,customerservicegroup;"Customer Service Admin Group"
+
+INSERT_UPDATE Employee;uid[unique=true];password;name;groups(uid)
+;csadmin;1234;CS Admin;csadmingroup
+$END_USERRIGHTS
