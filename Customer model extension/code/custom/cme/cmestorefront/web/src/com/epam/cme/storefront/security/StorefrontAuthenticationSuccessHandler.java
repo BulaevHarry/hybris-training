@@ -18,27 +18,19 @@ import de.hybris.platform.acceleratorservices.uiexperience.UiExperienceService;
 import de.hybris.platform.commercefacades.customer.CustomerFacade;
 import de.hybris.platform.commercefacades.order.CartFacade;
 import de.hybris.platform.commerceservices.order.CommerceCartRestorationException;
-import de.hybris.platform.commerceservices.order.CommerceCartService;
-import de.hybris.platform.core.model.order.CartModel;
-import de.hybris.platform.order.CartFactory;
-import de.hybris.platform.order.CartService;
-import de.hybris.platform.servicelayer.model.ModelService;
 import de.hybris.platform.servicelayer.session.SessionService;
+import com.epam.cme.storefront.constants.WebConstants;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
-
-import com.epam.cme.storefront.constants.WebConstants;
 
 /**
  * Success handler initializing user settings and ensuring the cart is handled correctly
@@ -49,14 +41,6 @@ public class StorefrontAuthenticationSuccessHandler extends SavedRequestAwareAut
     private CartFacade cartFacade;
     private SessionService sessionService;
     private BruteForceAttackCounter bruteForceAttackCounter;
-    @Autowired
-    private CartService cartService;
-    @Autowired
-    private CommerceCartService defaultCommerceCartService;
-    @Autowired
-    private CartFactory defaultCartFactory;
-    @Autowired
-    private ModelService modelService;
 
     private Map<UiExperienceLevel, Boolean> forceDefaultTargetForUiExperienceLevel;
 
@@ -72,10 +56,7 @@ public class StorefrontAuthenticationSuccessHandler extends SavedRequestAwareAut
     @Override
     public void onAuthenticationSuccess(final HttpServletRequest request, final HttpServletResponse response,
             final Authentication authentication) throws IOException, ServletException {
-
-        final CartModel newCart = defaultCartFactory.createCart();
-        cartService.appendToCart(cartService.getSessionCart(), newCart);
-        cartService.removeSessionCart();
+        getCustomerFacade().loginSuccess();
 
         if (!getCartFacade().hasSessionCart() || getCartFacade().getSessionCart().getEntries().isEmpty()) {
             try {
@@ -84,11 +65,6 @@ public class StorefrontAuthenticationSuccessHandler extends SavedRequestAwareAut
                 getSessionService().setAttribute(WebConstants.CART_RESTORATION, "basket.restoration.errorMsg");
             }
         }
-
-        cartService.appendToCart(newCart, cartService.getSessionCart());
-        newCart.setEntries(Collections.EMPTY_LIST);
-        getCustomerFacade().loginSuccess();
-        modelService.remove(newCart);
 
         getBruteForceAttackCounter().resetUserCounter(getCustomerFacade().getCurrentCustomer().getUid());
         super.onAuthenticationSuccess(request, response, authentication);
