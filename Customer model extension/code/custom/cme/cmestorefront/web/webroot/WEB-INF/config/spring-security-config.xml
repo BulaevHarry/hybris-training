@@ -169,8 +169,7 @@
 		</property>
       <property name="bruteForceAttackCounter" ref="bruteForceAttackCounter" />
       <property name="cartService" ref="cartService" />
-      <property name="defaultCartFactory" ref="defaultCartFactory" />
-      <property name="modelService" ref="modelService" />
+      <property name="bundleCartFacade" ref="bundleCartFacade" />
 	</bean>
 
 	<bean id="loginCheckoutGuidAuthenticationSuccessHandler" class="com.epam.cme.storefront.security.GUIDAuthenticationSuccessHandler" >
@@ -192,8 +191,7 @@
 		</property>
 		<property name="bruteForceAttackCounter" ref="bruteForceAttackCounter" />
       <property name="cartService" ref="cartService" />
-      <property name="defaultCartFactory" ref="defaultCartFactory" />
-      <property name="modelService" ref="modelService" />
+      <property name="bundleCartFacade" ref="bundleCartFacade" />
 	</bean>
 
 	<!-- Login Failure Handlers -->
