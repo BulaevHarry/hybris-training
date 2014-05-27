@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+		
+<div width="100%" height="100%" class="csContentArea csOrderArea">
+	<attribute name="onCreate">
+		org.zkoss.zk.ui.util.Clients.evalJavaScript("tabLoaded('order');");
+	</attribute>
+
+	<div class="csLeftContent">
+		<div id="orderDetailsWidget" class="orderDetailsWidget" />
+		<div id="orderDetailsBillingAddressWidget" class="orderDetailsBillingAddressWidget"/>
+		<div id="orderDetailsDeliveryAddressWidget" class="orderDetailsDeliveryAddressWidget"/>
+		<div id="orderDetailsOrderPaymentWidget" class="orderDetailsOrderPaymentWidget"/>
+
+	</div>
+	<div class="csMainContent">
+		<div id="orderDetailOrderItemsWidget" class="orderDetailOrderItemsWidget" />
+		<div id="orderDetailOrderTotalsWidget" class="orderDetailOrderTotalsWidget" />
+		<div id="orderDetailAppliedPromotionsWidget" class="appliedPromotionsWidget"/>
+		<div id="orderConsignmentsWidget" class="orderConsignmentsWidget"/>
+		<div id="orderPaymentTransactionsWidget" class="orderPaymentTransactionsWidget"/>
+		<div id="orderTicketListWidget" class="orderTicketListWidget"/>
+		<div id="orderReturnRequestsWidget" class="orderReturnRequestsWidget"/>
+		<div id="orderHistoryWidget" class="orderHistoryWidget"/>
+		<div id="orderModificationsHistoryWidget" class="orderModificationsHistoryWidget"/>
+		<div id="orderActionsWidget" class="csOrderActionsWidget" />
+		<div id="fraudReportWidget" class="csFraudReportWidget" />
+	</div>
+</div>

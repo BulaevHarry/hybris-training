@@ -26,6 +26,7 @@
 	<classpathentry exported="true" kind="lib" path="resources"/>
 	<classpathentry kind="lib" path="xmlpull-1.1.3.1.jar"/>
 	<classpathentry kind="lib" path="kxml2-2.3.0.jar"/>
+	<classpathentry kind="lib" path="spring-webmvc-3.1.1.RELEASE.jar"/>
 	<classpathentry kind="src" output="eclipsebin/web/classes" path="web/src"/>
 	<classpathentry kind="src" output="eclipsebin/web/classes" path="web/testsrc"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/cmeservices"/>

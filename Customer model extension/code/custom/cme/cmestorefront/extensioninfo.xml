@@ -11,17 +11,17 @@
  license agreement you entered into with hybris.
 
 
--->
-<extensioninfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="extensioninfo.xsd">
+--><extensioninfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="extensioninfo.xsd">
 
  <extension abstractclassprefix="Generated" classprefix="CmeStorefront" name="cmestorefront">
 
   <!-- you should add all required extensions to this list, except platform extensions which are automatically required -->
-  <requires-extension name="btg" />
-  <requires-extension name="cmefacades" />
-  <requires-extension name="cmeservices" />
+  <requires-extension name="sbgdemostorefront"/>
+<requires-extension name="btg"/>
+  <requires-extension name="cmefacades"/>
+  <requires-extension name="cmeservices"/>
 
-  <webmodule jspcompile="false" webroot="/cmestorefront" />
+  <webmodule jspcompile="false" webroot="/cmestorefront"/>
 
 
 

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?page title="ZK Test" language="xul/html"?>
+<!--
+test.zul
+
+{{IS_NOTE
+	Purpose:
+		View the specified subject.
+	Description:
+
+	History:
+		Mon May 30 19:13:47     2005, Created by tomyeh
+}}IS_NOTE
+
+Copyright (C) 2005 Potix Corporation. All Rights Reserved.
+
+{{IS_RIGHT
+	This program is distributed under GPL Version 3.0 in the hope that
+	it will be useful, but WITHOUT ANY WARRANTY.
+}}IS_RIGHT
+-->
+<window title="${arg.title}" border="normal" width="250pt" closable="true"
+			use="de.hybris.platform.cockpit.components.dialog.WarnDialog"
+			sclass="confirmDialog">
+	<hbox>
+		<div class="${arg.icon}"/>
+		<div sclass="z-messagebox" width="210pt">
+			<label value="${arg.message}" multiline="false"/>
+		</div>
+	</hbox>
+	<separator bar="true"/>
+	<hbox style="margin-left:auto; margin-right:auto">
+	<toolbarbutton identity="${arg.YES}" use="de.hybris.platform.cockpit.components.dialog.WarnDialog$Toolbarbutton"
+		image="/cockpit/images/ok_btn.gif"/>
+	</hbox>
+</window>

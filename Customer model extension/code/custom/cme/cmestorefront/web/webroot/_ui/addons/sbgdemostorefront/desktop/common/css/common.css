@@ -1,0 +1,107 @@
+
+
+
+
+/*
+# sbg Product List Styles
+******************************************************************************/
+
+
+.sbgProductList{
+	margin:15px 0 0 0;
+}
+
+.sbgProductList .sbgProduct{
+	float:left;
+	width:240px;
+	margin:0 0 0 10px;
+	background:#fff;
+}
+
+.sbgProductList .sbgProduct:first-child{
+	margin:0;
+}
+
+
+
+
+/*
+## sbgProductHeader
+******************************************************************************/
+
+.sbgProductList .sbgProduct .sbgProductHeader{
+	border-bottom:2px solid #c0c1c2;
+	padding:20px;
+}
+
+.sbgProductList .sbgProduct .sbgProductHeader .thumb{
+	text-align: center;
+}
+
+.sbgProductList .sbgProduct .sbgProductHeader .name{
+	text-align:center;
+	
+}
+
+.sbgProductList .sbgProduct .sbgProductHeader .name a,
+.sbgProductList .sbgProduct .sbgProductHeader .name a:hover{
+	font-size:24px;
+	font-weight:normal;
+	color:#000;
+	text-transform:uppercase;
+}
+
+.sbgProductList .sbgProduct .sbgProductHeader .summary{
+	text-align:center;
+}
+
+
+
+
+/*
+## viewplans
+******************************************************************************/
+
+.sbgProductList .sbgProduct .viewplan{
+	border-bottom:2px solid #c0c1c2;
+}
+
+.sbgProductList .sbgProduct .viewplan .header{
+	font-size:14px;
+	line-height:30px;
+	font-weight:bold;
+	color:#000;
+	text-transform:uppercase;
+	margin-left:8px;
+	margin-right:8px;
+	white-space:nowrap;
+}
+
+.sbgProductList .sbgProduct .viewplan .content{
+	padding:5px 0;
+	margin-left:8px;
+	margin-right:8px;
+	white-space:nowrap;
+}
+
+
+
+
+/*
+## buybutton
+******************************************************************************/
+
+.sbgProductList .sbgProduct .buybutton,
+.sbgProductList .sbgProduct .addtocartbutton{
+	width:100%;
+	margin:12px 0 0 0;
+}
+
+
+
+
+
+
+
+
+

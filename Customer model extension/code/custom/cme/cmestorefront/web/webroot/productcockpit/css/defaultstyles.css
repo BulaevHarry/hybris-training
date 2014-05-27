@@ -1,0 +1,85 @@
+
+/*###  Table Styles  ############################################################*/
+
+.product_table {
+	border-top: solid black 2px;
+	border-bottom: solid black 2px;
+	border-left: solid black 2px;
+	border-right: solid black 2px;
+}
+
+.details_table {
+}
+
+
+/*###  Table Cell Styles  ######################################################*/
+
+.product_header {
+	color: rgb(0,0,0);
+	font-weight: bold;
+	font-size: 8pt;
+	font-family: Arial, sans-serif;
+	padding-left: 3px;
+	padding-top: 3px;
+	padding-bottom: 3px;
+	padding-right: 6px;
+	border-bottom: solid black 1px;
+	text-align: center;
+}
+
+.product_body {
+	color: rgb(0,0,0);
+	font-size: 8pt;
+	font-family: Arial, sans-serif;
+	padding-left: 3px;
+	padding-top: 3px;
+	padding-bottom: 3px;
+	padding-right: 6px;
+	text-align: center;
+}
+
+.product_body_right {
+	color: rgb(0,0,0);
+	font-size: 8pt;
+	font-family: Arial, sans-serif;
+	padding-left: 3px;
+	padding-top: 3px;
+	padding-bottom: 3px;
+	padding-right: 6px;
+	text-align: right;
+}
+
+.details_header {
+	color: rgb(255,255,255);
+	font-weight: bold;
+	font-size: 12pt;
+	font-family: Verdana;
+	padding-left: 3px;
+	padding-top: 3px;
+	padding-bottom: 3px;
+	padding-right: 6px;
+	background-color: rgb(100,100,100);
+	text-align: center;
+}
+.details_body {
+	color: rgb(0,0,0);
+	font-size: 10pt;
+	font-family: Verdana;
+	padding-left: 3px;
+	padding-top: 3px;
+	padding-bottom: 3px;
+	padding-right: 6px;
+	text-align: center;
+}
+.details_body_highlight {
+	color: rgb(0,0,0);
+	font-weight: bold;
+	font-size: 10pt;
+	font-family: Verdana;
+	padding-left: 3px;
+	padding-top: 3px;
+	padding-bottom: 3px;
+	padding-right: 6px;
+	text-align: center;
+	background-color: rgb(220,220,130);
+}

@@ -1,0 +1,130 @@
+.navigationNodesDropSlotVbox {
+	display: inline-block;
+}
+
+.navigationNodeTree tr.z-tree-row td.z-tree-cell {
+ padding: 6px 0 2px 0;
+}
+
+.navigationNodeTree tr.z-tree-row td.z-tree-cell .z-dottree-ico {
+ cursor: pointer;
+}
+
+div.browserMainBorderLayout div.z-center-noborder div.z-center-body {
+	overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.ie7 .navigationNodesDropSlotVbox {
+	display: inline;
+	zoom: 1;
+}
+
+div.query-browser-paging .commentMultiSelectAction{
+	margin-top: 2px;
+}
+
+
+.featureWithUnits .featureCombo span.z-combobox,
+.featureWithUnits .featureCombo span.z-combobox input.z-combobox-inp{
+	width: 95%;
+	margin-left: 3px; 
+}
+
+table.featureWithUnits {
+	width: 100%;
+}
+
+.featureValue {
+  width: auto;
+}
+
+.section-row-value-container .z-doublebox {
+    width: 95%;
+}
+
+.marginHelper {
+	margin: 15px 10px 20px 5px;
+	color: #999;
+	text-align: left;
+}
+
+.marginHelper .messageText .z-label {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 5px;
+  display: block;
+}
+
+.navigationSectionContainerLeft .navigationNodeTree {
+    border: 1px solid #CCCCCC;
+    padding: 5px;
+}
+
+.z-center .navigationTreePanel .z-splitter-hor {
+  background-image: none;
+}
+
+.navigationSectionContainerLeft tr.z-tree-row span.z-label {
+	cursor: pointer;
+}
+
+.addRelatedItemsAddBtn {
+	margin: 10px 0;
+}
+
+.search-product-button {
+	height: auto !important;
+}
+
+.navigationSectionContainerLeft .navigationNodeTree .z-toolbar-button {
+	margin-right: 5px;
+}
+
+.relatedItemsContainer .z-toolbar-button {
+	margin-left: 5px;
+}
+
+.relatedItemList .relatedItemLabel .z-toolbar-button img {
+	width: 65px;
+	margin-right: 5px;
+}
+
+.relatedItemList tr.z-list-item:hover td.relatedItemLabel {
+	background-color: #dae7f6;
+}
+
+.relatedItemList tr.z-list-item:hover td.navigationNodesRelItemActions {
+	background-color: #dae7f6;
+}
+
+.catalog_section_container .navigation_catalogues tr.z-list-item-seld {
+  background: none repeat scroll 0 0 #DBDDE3;
+  border: 1px solid #CCCCCC;
+  font-weight: bold;
+}
+
+.catalog_section_container .navigation_catalogues tr.z-list-item-seld .z-list-cell-cnt {
+	font-weight: bold;
+}
+
+span.autoCompleteCmp input.z-bandbox-inp {
+  padding: 2px 0 2px 3px;
+  width: 98% !important;
+}
+
+.navigationNodesRelItemActions .z-list-cell-cnt {
+	text-align: right;
+}
+
+.section_selected_row .z-combobox-inp {
+  display: inline-block;
+}
+
+
+
+
+.z-tree-children tr.z-tree-row td.tree_last_col div.z-tree-cell-cnt {
+    margin-left: 0;
+    width: 80px;
+}

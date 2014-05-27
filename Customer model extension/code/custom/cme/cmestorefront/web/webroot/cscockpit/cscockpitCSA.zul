@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<div visible="false" use="de.hybris.platform.cockpit.components.CustomCsaIncludeHelper">
+	<html>
+		<![CDATA[ 
+			<script type="text/javascript">
+				
+				////////////////////////////////
+				// Global key shortcuts
+				
+				function isTextInputNode(element)
+				{
+					return (element.nodeName=="INPUT" && element.type=="text" ) || element.nodeName=="TEXTAREA";
+				}
+				
+				function focusListbox(id)
+				{
+					var containerDiv = document.getElementById(id);
+
+					if(containerDiv.children.length > 1)
+					{
+						var focusComponent = containerDiv.children[1].children[1];
+						focusComponent.focus();
+					}
+					else
+					{
+						var focusComponent = containerDiv.children[0].children[1];
+						focusComponent.focus();
+					}
+				}
+				
+				function globalKeyHit(e) 
+				{								
+					//disable if we don't can determine the focused element (firefox < 3.0)
+					if(!document.activeElement)
+					{
+						return true;
+					}
+					
+					if(isTextInputNode(document.activeElement))
+					{						
+						return true;
+					}
+					var pressedKey = e ? e.which: window.event.keyCode;
+					var ctrlPressed = e ? e.ctrlKey: window.event.ctrlKey;
+					var altPressed = e ? e.altKey: window.event.altKey;
+					var shiftPressed = e ? e.shiftKey: window.event.shiftKey;
+
+					var comp = document.getElementsByName("globalKeyHandlerComponent")[0];
+
+					if((48 <= pressedKey && pressedKey <= 57) || (65 <= pressedKey && pressedKey <= 90) || (97 <= pressedKey && pressedKey <= 122))
+					{
+						// Matched a number or letter (lower or upper)
+
+						if (!ctrlPressed && !altPressed)
+						{
+							// If ctrl or alt not pressed then send all the keys
+							comm.sendUser(comp, "key_" + String.fromCharCode(pressedKey));
+							return false;
+						}
+					}
+					else if(pressedKey == 13)
+					{
+						// Matched enter key
+						
+						if(ctrlPressed && shiftPressed)
+						{
+							comm.sendUser(comp, "key_ctrl_shift_enter");
+							return false;
+						}
+						else if(ctrlPressed && altPressed)
+						{
+							comm.sendUser(comp, "key_ctrl_alt_enter");
+							return false;
+						}
+						else if(ctrlPressed)
+						{
+							comm.sendUser(comp, "key_ctrl_enter");
+							return false;
+						}
+						else if(shiftPressed)
+						{
+							comm.sendUser(comp, "key_shift_enter");
+							return false;
+						}
+					}
+					else if(pressedKey == 9)
+					{
+						// Matched tab key
+
+						if(shiftPressed)
+						{
+							comm.sendUser(comp, "key_shift_tab");
+							return false;
+						}
+					}
+					else if(pressedKey == 91 || pressedKey == 93 || pressedKey == 123 || pressedKey == 125)
+					{
+						// Matched symbol key. 91=[, 93=], 123={, 125=}
+
+						// Often symbol keys require alt or shift keys to be pressed, so we can't rely on them here
+						if (ctrlPressed)
+						{
+							comm.sendUser(comp, "key_ctrl_" + String.fromCharCode(pressedKey));
+						}
+						else
+						{
+							comm.sendUser(comp, "key_" + String.fromCharCode(pressedKey));
+						}
+						return false;
+					}
+					return true;
+				}
+				
+				document.onkeypress = globalKeyHit;
+				if (document.layers)
+				{
+					document.captureEvents(Event.KEYPRESS);
+				}
+
+				///////////////////////////////////////////////////////////
+				// Analytics call back
+				//
+				// - implement analyticsCallback_tabLoaded(tabId) and call your favourite analytics provider
+				//
+				function tabLoaded(tabid)
+				{
+					if(window.analyticsCallback_tabLoaded)
+					{
+						analyticsCallback_tabLoaded(tabid);
+					}
+				}
+			</script>
+			]]>
+	</html>
+</div>

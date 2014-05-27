@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver" ?>-->
+<?taglib 			uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
+
+	
+<div width="100%" align="right" height="100%" use="de.hybris.platform.cockpit.components.editorarea.BasePopupEditorComponent" />

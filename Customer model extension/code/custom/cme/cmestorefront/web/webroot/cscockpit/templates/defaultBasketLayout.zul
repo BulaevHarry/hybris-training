@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<div width="100%" height="100%" class="csContentArea">
+	<attribute name="onCreate">
+		org.zkoss.zk.ui.util.Clients.evalJavaScript("tabLoaded('cart');");
+	</attribute>
+
+	<div class="csLeftContent">
+		<div id="basketSearchWidget" class="basketSearchWidget" />
+	</div>
+	<div class="csMainContent">
+		<div id="basketCartWidget" class="basketCartWidget" />
+		<div id="basketResultWidget" class="basketResultWidget" />
+	</div>
+</div>

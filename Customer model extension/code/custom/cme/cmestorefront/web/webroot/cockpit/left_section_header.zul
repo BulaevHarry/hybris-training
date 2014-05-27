@@ -1,0 +1,9 @@
+<!-- <?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver" ?> -->
+<?taglib 			uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
+
+<zk xmlns="http://www.zkoss.org/2005/zul"
+	xmlns:h="http://www.w3.org/1999/xhtml"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	
+	<div sclass="section_header" width="100%" use="de.hybris.platform.cockpit.components.LeftSectionHeaderComponent"/>
+</zk>

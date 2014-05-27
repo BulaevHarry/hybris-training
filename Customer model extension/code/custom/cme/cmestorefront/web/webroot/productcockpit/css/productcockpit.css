@@ -1,0 +1,620 @@
+.loginContainerWindow {
+	background-image: url(../images/login-productcockpit.png);
+}
+
+
+
+
+
+.navigation_catalogues tr.z-listbox-odd { background-color: transparent; }
+.navigation_catalogues tr.z-list-item-seld { background: #DBDDE3; border: 1px solid #6f97d2; }
+
+.catalog_section_container td.activeCatalogVersionTreeItem div.z-list-cell-cnt { margin: 3px 2px 3px 1px; }
+.catalog_section_container td.catalogVersionTreeItem div.z-list-cell-cnt { margin: 3px 2px 3px 1px; }
+
+.catalog_section_container tr.z-list-item-seld
+  {background:#bcd2ef;border:1px solid #6f97d2;}
+
+.catalog_section_container tr.z-list-item-over
+  {background:#dae7f6;}
+
+.catalog_section_container tr.z-list-item-over-seld
+  {background:#6eadff;}
+
+div.catalog_section_container {
+	padding: 3px;
+	background: white;
+	overflow: hidden;
+}
+
+.catalog_section_container table.z-button {
+	background-color:#dfedf6;
+	background-image: none;
+	background-repeat:repeat-x;
+	border: 1px solid #d8e2e8;
+	color: #aeaeae;
+	font-size: 11px;
+}
+
+.catalog_section_container .z-button .z-button-tl { height: 0; }
+.catalog_section_container .z-button .z-button-tr { height: 0; }
+.catalog_section_container .z-button .z-button-bl { height: 0; }
+.catalog_section_container .z-button .z-button-br { height: 0; }
+.catalog_section_container .z-button .z-button-bm { height: 0; }
+
+div.catalog_section_container div.navigation_catalogues{
+	border:none;	
+}
+
+tr.activeCatalogVersionTreeItem div.z-tree-cell-cnt {
+	color: #222;
+	font-weight: normal;
+	font-size: 11px;
+	padding-left: 7px;
+}
+
+td.activeCatalogVersionTreeItem div.z-list-cell-cnt{
+	color: #222;
+	font-weight: normal;
+	width:100%;
+	position:relative;
+	white-space: nowrap;
+	margin: 10px;
+	margin-bottom: 3px;
+	margin-top: 3px;
+	margin-right: 2px;
+	overflow: hidden;
+	width:95%;
+	font-size:11px;
+	font-family:Arial,non-serif;
+}
+
+tr.catalogVersionTreeItem div.z-tree-cell-cnt {
+	color: #222;
+	font-weight: normal;
+	font-size: 11px;
+	padding-left: 7px;
+}
+
+
+td.catalogVersionTreeItem div.z-list-cell-cnt {
+	color: #222;
+	font-weight: normal
+	width:100%;
+	white-space: nowrap;
+	margin: 10px;
+	margin-bottom: 3px;
+	margin-top: 3px;
+	margin-right: 2px;
+	overflow: hidden;
+	width:95%;
+	font-size:11px;
+	font-family:Arial,non-serif;
+}
+
+tr.categoryTreeItem div.z-tree-cell-cnt {
+	color: #222;
+}
+
+tr.no-label div.z-tree-cell-cnt {
+	font-style: italic;
+}
+
+.spacer_treeitem div.z-tree-cell-cnt {
+	padding-top: 3px;
+}
+
+.categoryTreeItem span.z-dottree-line {
+	min-height: 15px !important;
+}
+
+span.catalog-language-label {
+	font-size: 8px !important;	
+	color: grey !important;
+}
+
+span.catalog-mnemonic-label {
+	font-size: x-small !important;
+	color: #444 !important;
+	font-weight: normal !important;
+}
+
+div.sectionpaneltitle span.itemBaseName {
+	color: #ccc;
+}
+
+span.editor_label_code { font-weight: normal !important; font-weight: 85%; display: block; margin-top: 3px; float:left }
+
+span.editor_label_catalogversion {
+	color: #838384 !important;
+	font-weight: normal !important;
+	margin-left: 0.3em;
+	font-weight: 85%;
+	display: block;
+	margin-top: 2px;
+	float:left;
+}
+
+div.categoryColumnListbox{
+	border:none;	
+	background-color:white;
+	/*width: 280px !important;*/
+}
+
+/* .categoryColumnListbox div{
+	width: 279px !important;
+}
+
+ div.categoryColumnListbox table.z-hbox {
+	width: 270px !important;
+}  */
+
+div.categoryColumnListbox tr.z-list-item-seld {
+/*	filter:alpha(opacity=80);
+	-moz-opacity:0.8;
+	-khtml-opacity: 0.8;
+	opacity: 0.8; */
+	background-color: #dbdde3 !important;
+}
+
+div.categoryColumnListbox tr.z-list-item {
+	background-color: white;
+}
+
+div.categoryColumnListbox tr.z-list-item-seld .z-label { display: block; padding-top: 2px; }
+div.categoryColumnListbox tr.z-list-item .z-label { display: block; padding-top: 2px; }
+
+tr.z-list-item td.z-list-item-focus {
+	background-image: none;
+}
+
+div.mainColumnClass {
+	width: 320px !important;
+}
+
+td.mainColumnClass{
+	border: 1px solid #e0e0e0;
+	border-top: 1px solid #ccc;
+	border-left:none; 
+	vertical-align: top;
+	height:100% !important;
+	padding-top:0px;
+	margin-top:0px;
+	padding-right:0px;
+/* 	width: 280px !important;
+ */	
+}
+
+
+div.scrollContainer{
+  position:relative;
+  height:100% !important;
+  /*background-color:#CCCCCC;*/
+}
+
+
+.ie div.categoryColumnListbox div.z-listbox-body {
+	overflow-y:auto;
+}
+
+div.categoryColumnListbox div.z-listbox-body {
+	overflow-x:hidden;
+	border:none;
+	left: 0px;
+	border-bottom: 0;
+	top:0px;
+	background-color: transparent;
+}
+
+table td.breadcrumbsContent{
+	/*overflow-x:auto; 
+	width: auto !important;*/ 
+	white-space: nowrap;
+}
+
+table td a.breadcrumbs{
+	text-decoration:none;	
+	font-weight: normal; 
+	font-size: 11px;
+	color: #444;
+}
+
+table td a.breadcrumbs:hover{
+	text-decoration:underline;	
+}
+
+div.macfindertree{
+	height:99%;
+	width:100%;
+	text-align: left;
+	/*overflow-y:hidden;*/	
+}
+
+.macfindertreecell {
+	height:99%;
+/* 	width:100%;
+ */	text-align: left;
+}
+
+/* tree browser hack for ie7 */
+.treeBrowserCenter > .z-center-body,
+div.scrolledContainer,
+div.scrolledContainer > table,
+div.scrolledContainer > table > tr,
+div.scrolledContainer > table > tr > td {
+	position: relative;
+}
+/* END tree browser hack for ie7 */
+
+
+div.currentSelectedArea{
+	margin-top:0px !important;	
+	color:blue !important;
+	font-size:13px !important;
+	padding-left:10px;
+	padding-top:5px;
+	font-family: Arial, Helvetica, Verdana; 
+	font-weight:bold;
+	border-bottom:1px solid gray;
+	height:20px;
+	background-color: #fff;
+	
+}
+
+div.breadcrumbsArea{
+	background: #d3d5d7;
+	padding: 2px 0 0 7px;
+}
+
+div.scrolledContainer{
+	overflow-x:scroll; 
+	overflow-y:hidden; 
+	height:100%;                      
+}
+
+table tr td span.leafEntryLabel{
+	margin-top:1px;
+	margin-bottom:1px;
+}
+
+table tr td.additionalEntry{
+	font-weight:normal;
+	padding: 1px 8px !important;
+	background-image:url(images/topflat_bg.gif);
+	background-repeat:repeat-x;
+	border-top: 1px solid #ccc;
+}
+table tr td.leafEntry{
+	font-weight:normal;
+	white-space: nowrap;
+}
+
+table tr td.additionalEntry span.z-label {
+	color: #202B4A;
+}
+
+table tr td.leafEntry span.z-label {
+	color: #202B4A;
+}
+			
+table tr td.childableEntry.z-list-cell {
+	padding: 1px 8px;
+}
+
+
+table tr td.additionalEntry.entryNoChild img{
+	opacity:0.5;
+}
+
+/** UI Improvments for 4.4 - START **/
+
+img.section-label-image { 
+	width: 84px;
+}
+
+div.section-label-image {
+	height: 86px;
+	width: 86px;
+	margin-right: 7px;
+	margin-left: 4px;
+	padding: 2px;
+	background-color: #fff;
+	overflow: hidden;
+	border: 1px solid #bababa;
+	float:left;
+	position:relative;
+	left:-3px;
+}
+div.sectionmessagebox {
+	text-align: left;	
+}
+
+div.statusActionContainer{
+    float: left;
+    position: absolute;
+    width: 97%;
+    border-bottom:1px solid #ddd;
+    padding-bottom: 3px;
+    top:-15px;
+}
+
+div.editorAreaActionsDiv > div{
+	position: absolute;
+	float:right;
+	right:0px;
+	top: 12px;
+}
+
+div.descriptionContainer{
+    width:98%;
+    overflow: hidden;
+}
+
+/* GRID VIEW */
+div.gridItemMainDiv {
+	position: relative;
+	text-align: left;
+	width: 136px;
+	height: 146px;
+	top: 22px;
+	left: 2px;
+}
+
+div.gridImageDiv {
+	width: 134px;
+}
+
+.gridImageDiv > img {
+	width:134px;
+}
+
+div.editorAreaStatusDiv{
+    left: 107px;
+    position: absolute;
+    top: 15px;	
+}
+
+div.gridActionsDiv {
+	position: absolute;
+	left: 1px;
+	top: 160px;
+	
+}
+
+.gridActionsDiv img {
+	margin-top: 3px;
+}
+
+div.gridStatusDiv {
+	position: relative;
+	top: -20px;
+}
+.gridStatusDiv img {
+	margin-top: 3px;
+	padding-right:2px;
+}
+
+.itemBox {
+	border: 2px solid #f5f5f5;
+	background: #f5f6f8 repeat-x scroll 0 0; 
+	background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0.07, rgb(222,225,229)), color-stop(0.77, rgb(248,249,250)));
+	background-image: -moz-linear-gradient(center bottom, rgb(222,225,229) 7%, rgb(248,249,250) 77% );
+	overflow: hidden;
+	position: relative;
+	width: 140px;
+	height: 170px;
+	top:0px;
+}
+
+.itemOuter {
+	float: left;
+	width: 150px;
+	height: 180px;
+	text-align: center;
+	vertical-align: middle;
+}
+
+div.selectedGridItem div.itemBox:hover {
+	height: 235px;
+}
+
+div.selectedGridItem div.itemBox {
+	border: 2px dashed #7f8ca4;
+	background: #e6e8ed repeat-x scroll 0 0 !important;
+	background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0.07, rgb(222,225,229)), color-stop(0.77, rgb(248,249,250))) !important;
+	background-image: -moz-linear-gradient(center bottom, rgb(222,225,229) 7%, rgb(248,249,250) 77% ) !important;
+	height: 170px;
+	z-index: 99999999;
+	position: relative;
+	width: 140px;
+	top:0px;
+	-moz-box-shadow: 0 2px 3px #aaa;
+ 	-webkit-box-shadow: 0 2px 3px #aaa;
+	box-shadow: 0 3px 4px #999;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+}
+
+div.itemBox:hover {
+	height: 235px;
+	overflow: visible;
+	z-index: 999999999;
+	position: relative;
+	width: 140px;
+	top:0px;
+	background-color: #e0e3e6;
+	background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0.07, rgb(212,216,222)), color-stop(0.77, rgb(248,249,250)));
+	background-image: -moz-linear-gradient(center bottom, rgb(212,216,222) 7%, rgb(248,249,250) 77% );
+	-moz-box-shadow: 0 2px 3px #aaa;
+ 	-webkit-box-shadow: 0 2px 3px #aaa;
+	box-shadow: 0 3px 4px #999;
+}
+
+div.activeGridItem div.itemBox {
+	border: 2px solid #334669;
+	background: #b9bdc3 repeat-x scroll 0 0 !important;
+	background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0.07, rgb(212,216,222)), color-stop(0.77, rgb(248,249,250))) !important;
+	background-image: -moz-linear-gradient(center bottom, rgb(174, 178, 185) 7%, rgb(212,216,222) 77% ) !important;
+	overflow: hidden;
+	z-index: 999999;
+	position: relative;
+	width: 140px;
+	top:0px; 
+	-moz-box-shadow: 0 3px 5px #888;
+ 	-webkit-box-shadow: 0 3px 5px #888;
+	box-shadow: 0 3px 5px #888;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+}
+
+div.selectedGridItem div.multiSelectedItem{
+	border: 2px dashed #7f8ca4;
+	background: #e6e8ed repeat-x scroll 0 0 !important;
+	background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0.07, rgb(222,225,229)), color-stop(0.77, rgb(248,249,250))) !important;
+	background-image: -moz-linear-gradient(center bottom, rgb(222,225,229) 7%, rgb(248,249,250) 77% ) !important;
+	overflow: hidden;
+	position: relative;
+	width: 140px;
+	height: 170px;
+	top:0px;
+	-moz-box-shadow: 0 2px 3px #aaa;
+ 	-webkit-box-shadow: 0 2px 3px #aaa;
+	box-shadow: 0 3px 4px #999;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+}
+
+div.selectedGridItem div.multiSelectedItem:HOVER {
+	height: 235px;
+}
+
+div.editorLabelNavigation {
+    color: #c3bebd;
+    background: none;
+    border: none;
+    float:left;
+    position: absolute;
+    top:70px;
+    left:115px;
+    margin-right: 3px;
+}
+
+div.labelContainer {
+	float: left; 	
+    border-top: 1px solid #DDDDDD;
+    float: left;
+    left: 115px;
+    margin-top: -8px;
+    padding-top: 10px;
+    position: absolute;
+    top: 30px;
+    width: 98%;	
+}
+
+img.gridImageSclass{
+	display: block; 
+	cursor: pointer;
+	float:left; 
+}
+
+img.gridImageSclass.gridImageInactiveSclass {
+	cursor: default;
+}
+
+.editorarea_browse_btn {
+    cursor: pointer;
+    padding-left:2px;
+}
+
+.advancedSearchMainArea .searchFieldRow {
+	padding-left: 10px;
+}
+
+.advancedSearchMainArea .searchFieldRow:hover {
+	background-color: #EAEBED;
+}
+
+.advancedSearchMainArea .searchFieldRow:hover {
+	padding-left: 10px;
+    font-weight: bold;	
+}
+
+.advancedSearchMainArea .searchFieldRow .z-hbox-sep {
+	width: 4px;
+}
+
+/** UI Improvments for 4.4 - END **/
+
+div.perspectiveChooser .z-groupbox-hl {
+	padding-left: 45px;
+	background: transparent url(../images/icon_cockpits_product.png) no-repeat 6px 3px;
+	min-height: 36px;
+}
+
+tr.z-list-item-seld div.catalogBrowserListEntryContainer {
+	background: transparent url(../images/tree_selected.png) no-repeat right;
+    right: 15px;
+}
+
+tr.z-list-item .catalogBrowserListEntryContainer {
+	background: transparent url(../images/tree_closed.gif) no-repeat right;
+    right: 15px;
+    padding-right: 15px;
+}
+
+div.navigation_path_div {
+    margin-bottom: -3px;
+}
+
+.centerAreaContainer.browserAreaSplitted div.contentBrowser {
+  opacity: 0.8;
+}
+
+.toolbar_multiselect_action {
+	border-left:none;
+	margin-left:0px;
+	padding-left:0px;
+}
+
+.toolbar_multiselect_action_context {
+	margin-top:-5px;
+	float:left;	
+}
+
+div.query-browser-paging .z-combobox-inp {
+	min-width: 40px;
+}
+
+..clearfix.gridviewMain {
+    display: block;
+}
+
+.clearfix.gridviewMain{
+	padding-bottom: 60px;
+}
+
+
+.context-header-div .z-label{
+	white-space:nowrap;	
+	padding-left: 5px;
+}
+
+
+tr.z-tree-row-over-seld {
+	background: #DAE7F6;
+}
+
+tr.z-tree-row td.tree_first_col {
+	width: 100%;
+}
+
+tr.z-tree-row td.tree_last_col div.z-tree-cell-cnt {
+	margin-left: -80px;
+}
+
+tr.z-drag-over.z-list-item-over td {
+	border-top: 2px solid #2b9134;
+}

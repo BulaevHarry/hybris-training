@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<div width="100%" height="100%" class="csContentArea">
+	<attribute name="onCreate">
+		org.zkoss.zk.ui.util.Clients.evalJavaScript("tabLoaded('checkout');");
+	</attribute>
+
+	<div id="checkoutCartWidget" class="checkoutCartWidget" />
+	<div class="csRowContent">
+		<div id="shippingAddressWidget" class="shippingAddressWidget"/>
+		<div id="paymentAddressWidget" class="paymentAddressWidget"/>
+		<div id="checkoutCartTotalsWidget" class="checkoutCartTotalsWidget"/>
+		<div class="clear"></div>
+	</div>
+	<div id="checkoutCartAppliedPromotionsWidget" class="appliedPromotionsWidget"/>
+	<div id="cartPaymentTransactionsWidget" class="orderPaymentTransactionsWidget"/>
+	<div id="checkoutPaymentWidget" class="checkoutPaymentWidget" />
+	<div id="placeOrderWidget" class="placeOrderWidget"/>
+</div>

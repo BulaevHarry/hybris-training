@@ -167,7 +167,10 @@
 				<entry key="MOBILE" value="false"/>
 			</map>
 		</property>
-        <property name="bruteForceAttackCounter" ref="bruteForceAttackCounter" />
+      <property name="bruteForceAttackCounter" ref="bruteForceAttackCounter" />
+      <property name="cartService" ref="cartService" />
+      <property name="defaultCartFactory" ref="defaultCartFactory" />
+      <property name="modelService" ref="modelService" />
 	</bean>
 
 	<bean id="loginCheckoutGuidAuthenticationSuccessHandler" class="com.epam.cme.storefront.security.GUIDAuthenticationSuccessHandler" >
@@ -188,6 +191,9 @@
 			</map>
 		</property>
 		<property name="bruteForceAttackCounter" ref="bruteForceAttackCounter" />
+      <property name="cartService" ref="cartService" />
+      <property name="defaultCartFactory" ref="defaultCartFactory" />
+      <property name="modelService" ref="modelService" />
 	</bean>
 
 	<!-- Login Failure Handlers -->
