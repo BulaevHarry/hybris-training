@@ -21,18 +21,21 @@ import de.hybris.platform.configurablebundleservices.bundle.BundleCommerceCartSe
 import de.hybris.platform.configurablebundleservices.bundle.BundleTemplateService;
 import de.hybris.platform.configurablebundleservices.model.BundleTemplateModel;
 import de.hybris.platform.converters.Converters;
+import de.hybris.platform.core.model.order.AbstractOrderEntryModel;
 import de.hybris.platform.core.model.order.CartEntryModel;
 import de.hybris.platform.core.model.order.CartModel;
 import de.hybris.platform.core.model.product.ProductModel;
 import de.hybris.platform.servicelayer.dto.converter.Converter;
 import de.hybris.platform.subscriptionfacades.order.impl.DefaultSubscriptionCartFacade;
 import de.hybris.platform.subscriptionservices.subscription.BillingTimeService;
-import com.epam.cme.facades.order.BundleCartFacade;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Required;
+
+import com.epam.cme.facades.order.BundleCartFacade;
 
 /**
  * Default implementation for {@link BundleCartFacade}
@@ -110,6 +113,25 @@ public class DefaultBundleCartFacade extends DefaultSubscriptionCartFacade imple
             return true;
         }
         return false;
+    }
+
+    @Override
+    public List<CartModificationData> addRestoredEntriesToCart(final List<AbstractOrderEntryModel> restoredEntries)
+            throws CommerceCartModificationException {
+        int prevBundleNo = -1;
+        int newBundleNo = 0;
+        List<CartModificationData> modifications = new ArrayList<>();
+        for (AbstractOrderEntryModel e : restoredEntries) {
+            if (e.getBundleNo() != prevBundleNo) {
+                prevBundleNo = e.getBundleNo();
+                modifications.addAll(addToCart(e.getProduct().getCode(), e.getQuantity(), -1, e.getBundleTemplate()
+                        .getId(), false));
+                newBundleNo = modifications.get(modifications.size() - 1).getEntry().getBundleNo();
+            } else {
+                addToCart(e.getProduct().getCode(), e.getQuantity(), newBundleNo, e.getBundleTemplate().getId(), false);
+            }
+        }
+        return modifications;
     }
 
     protected BillingTimeService getBillingTimeService() {

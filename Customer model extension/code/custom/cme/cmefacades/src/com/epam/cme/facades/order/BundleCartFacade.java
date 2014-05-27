@@ -15,6 +15,7 @@ package com.epam.cme.facades.order;
 
 import de.hybris.platform.commercefacades.order.data.CartModificationData;
 import de.hybris.platform.commerceservices.order.CommerceCartModificationException;
+import de.hybris.platform.core.model.order.AbstractOrderEntryModel;
 import de.hybris.platform.subscriptionfacades.order.SubscriptionCartFacade;
 
 import java.util.List;
@@ -94,4 +95,8 @@ public interface BundleCartFacade extends SubscriptionCartFacade {
      * @return <code>true</code> if the session cart is valid, otherwise <code>false</code>
      */
     boolean isCartValid();
+
+    List<CartModificationData> addRestoredEntriesToCart(final List<AbstractOrderEntryModel> restoredEntries)
+            throws CommerceCartModificationException;
+
 }

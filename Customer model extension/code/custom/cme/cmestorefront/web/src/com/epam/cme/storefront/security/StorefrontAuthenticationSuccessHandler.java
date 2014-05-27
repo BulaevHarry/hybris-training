@@ -17,20 +17,27 @@ import de.hybris.platform.acceleratorservices.enums.UiExperienceLevel;
 import de.hybris.platform.acceleratorservices.uiexperience.UiExperienceService;
 import de.hybris.platform.commercefacades.customer.CustomerFacade;
 import de.hybris.platform.commercefacades.order.CartFacade;
+import de.hybris.platform.commerceservices.order.CommerceCartModificationException;
 import de.hybris.platform.commerceservices.order.CommerceCartRestorationException;
+import de.hybris.platform.core.model.order.AbstractOrderEntryModel;
+import de.hybris.platform.order.CartService;
 import de.hybris.platform.servicelayer.session.SessionService;
-import com.epam.cme.storefront.constants.WebConstants;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
+
+import com.epam.cme.facades.order.BundleCartFacade;
+import com.epam.cme.storefront.constants.WebConstants;
 
 /**
  * Success handler initializing user settings and ensuring the cart is handled correctly
@@ -41,6 +48,8 @@ public class StorefrontAuthenticationSuccessHandler extends SavedRequestAwareAut
     private CartFacade cartFacade;
     private SessionService sessionService;
     private BruteForceAttackCounter bruteForceAttackCounter;
+    private CartService cartService;
+    private BundleCartFacade bundleCartFacade;
 
     private Map<UiExperienceLevel, Boolean> forceDefaultTargetForUiExperienceLevel;
 
@@ -56,7 +65,9 @@ public class StorefrontAuthenticationSuccessHandler extends SavedRequestAwareAut
     @Override
     public void onAuthenticationSuccess(final HttpServletRequest request, final HttpServletResponse response,
             final Authentication authentication) throws IOException, ServletException {
-        getCustomerFacade().loginSuccess();
+
+        List<AbstractOrderEntryModel> mergeEntries = cartService.getSessionCart().getEntries();
+        cartService.removeSessionCart();
 
         if (!getCartFacade().hasSessionCart() || getCartFacade().getSessionCart().getEntries().isEmpty()) {
             try {
@@ -65,6 +76,13 @@ public class StorefrontAuthenticationSuccessHandler extends SavedRequestAwareAut
                 getSessionService().setAttribute(WebConstants.CART_RESTORATION, "basket.restoration.errorMsg");
             }
         }
+
+        try {
+            bundleCartFacade.addRestoredEntriesToCart(mergeEntries);
+        } catch (CommerceCartModificationException ccme) {
+            Logger.getLogger(StorefrontAuthenticationSuccessHandler.class).error(ccme);
+        }
+        getCustomerFacade().loginSuccess();
 
         getBruteForceAttackCounter().resetUserCounter(getCustomerFacade().getCurrentCustomer().getUid());
         super.onAuthenticationSuccess(request, response, authentication);
@@ -130,4 +148,15 @@ public class StorefrontAuthenticationSuccessHandler extends SavedRequestAwareAut
     public void setBruteForceAttackCounter(final BruteForceAttackCounter bruteForceAttackCounter) {
         this.bruteForceAttackCounter = bruteForceAttackCounter;
     }
+
+    @Required
+    public void setCartService(final CartService cartService) {
+        this.cartService = cartService;
+    }
+
+    @Required
+    public void setBundleCartFacade(final BundleCartFacade bundleCartFacade) {
+        this.bundleCartFacade = bundleCartFacade;
+    }
+
 }
