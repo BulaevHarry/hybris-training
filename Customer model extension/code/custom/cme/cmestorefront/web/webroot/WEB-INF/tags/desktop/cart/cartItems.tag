@@ -244,7 +244,7 @@
 								<input type="hidden" name="initialQuantity" value="${entry.quantity}"/>								
 								<ycommerce:testId code="cart_product_quantity">
 									<c:choose>
-									  <c:when test="${not entry.updateable}">
+									  <c:when test="${not entry.updateable && entry.product.itemType!='Device'}">
 										<input type="hidden" name="quantity" class="qty" value="${entry.quantity}"/>
 									  	<span class="quantity-not-updateable">${entry.quantity}</span>
 									  </c:when>
@@ -254,7 +254,7 @@
 									  </c:otherwise>
 									</c:choose>						
 								</ycommerce:testId>
-									<c:if test="${entry.updateable}" >
+									<c:if test="${entry.updateable || entry.product.itemType=='Device'}" >
 										<ycommerce:testId code="cart_product_updateQuantity">										
 											<a href="javascript:submitUpdate('${uniqueFormId}');"><spring:theme code="basket.page.update"/></a>										
 								</ycommerce:testId>

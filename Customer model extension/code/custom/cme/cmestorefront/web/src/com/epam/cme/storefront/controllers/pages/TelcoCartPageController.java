@@ -20,14 +20,6 @@ import de.hybris.platform.commercefacades.order.data.CartModificationData;
 import de.hybris.platform.commercefacades.order.data.OrderEntryData;
 import de.hybris.platform.commerceservices.order.CommerceCartModificationException;
 import de.hybris.platform.servicelayer.session.SessionService;
-import com.epam.cme.storefront.breadcrumb.ResourceBreadcrumbBuilder;
-import com.epam.cme.storefront.constants.WebConstants;
-import com.epam.cme.storefront.controllers.ControllerConstants;
-import com.epam.cme.storefront.controllers.pages.AbstractPageController;
-import com.epam.cme.storefront.controllers.util.GlobalMessages;
-import com.epam.cme.storefront.forms.UpdateQuantityForm;
-import com.epam.cme.facades.order.BundleCartFacade;
-import com.epam.cme.storefront.forms.DeleteBundleForm;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -47,6 +39,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import com.epam.cme.facades.order.BundleCartFacade;
+import com.epam.cme.storefront.breadcrumb.ResourceBreadcrumbBuilder;
+import com.epam.cme.storefront.constants.WebConstants;
+import com.epam.cme.storefront.controllers.ControllerConstants;
+import com.epam.cme.storefront.controllers.util.GlobalMessages;
+import com.epam.cme.storefront.forms.DeleteBundleForm;
+import com.epam.cme.storefront.forms.UpdateQuantityForm;
 
 /**
  * Controller for cart page
@@ -236,7 +236,11 @@ public class TelcoCartPageController extends AbstractPageController {
                 // again
                 return REDIRECT_PREFIX + "/cart";
             } catch (final CommerceCartModificationException ex) {
+                redirectModel.addFlashAttribute(GlobalMessages.ERROR_MESSAGES_HOLDER,
+                        Collections.singletonList(ex.getMessage()));
                 LOG.warn("Couldn't update product with the entry number: " + entryNumber + ".", ex);
+            } finally {
+                return REDIRECT_PREFIX + "/cart";
             }
         }
 

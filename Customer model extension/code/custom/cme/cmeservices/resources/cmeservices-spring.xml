@@ -31,6 +31,11 @@
  </bean>
  
  <bean id="sendCustomersListJob" class="com.epam.cme.services.cronjobs.SendCustomersListJob" parent="abstractJobPerformable" />
+ 
+ <alias alias="bundleCommerceCartService" name="cmeBundleCommerceCartService" />
+ <bean id="cmeBundleCommerceCartService" class="com.epam.cme.services.bundle.impl.DefaultCmeBundleCommerceCartService" parent="defaultBundleCommerceCartService">
+  <property name="defaultSubscriptionCommerceCartService" ref="defaultSubscriptionCommerceCartService" />
+ </bean>
 
  <!--
   The hybris platform provides one single Spring application context for beans located at the jalo layer.
